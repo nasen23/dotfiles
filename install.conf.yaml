@@ -1,0 +1,16 @@
+- defaults:
+    link:
+      relink: true
+
+- clean: ['~']
+
+- link:
+    ~/.dotfiles: ''
+    ~/.tmux.conf: tmux.conf
+    ~/.config/alacritty: config/alacritty
+    ~/.zshrc: zshrc
+    ~/.config/ranger: config/ranger
+    ~/.thinkvim.d: thinkvim.d
+
+- shell:
+  - [git submodule update --init --recursive, Installing submodules]

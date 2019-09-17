@@ -1,0 +1,27 @@
+# __     ___             _                          __  __
+# \ \   / (_)_ __ ___   | |    _____   _____  ___  |  \/  | ___
+#  \ \ / /| | '_ ` _ \  | |   / _ \ \ / / _ \/ __| | |\/| |/ _ \
+#   \ V / | | | | | | | | |__| (_) \ V /  __/\__ \ | |  | |  __/
+#    \_/  |_|_| |_| |_| |_____\___/ \_/ \___||___/ |_|  |_|\___|
+#
+# My custom plugins for ThinkVim.
+# Author: Na Sen
+
+
+#  Language {{{ #
+# language support for rust
+- repo: rust-lang/rust.vim
+  on_ft: rust
+- repo: gcollura/vim-masm
+#  }}} Language #
+
+#  Editing {{{ #
+# fix neovim block paste bug
+#  }}} Editing #
+
+#  Theme {{{ #
+- repo: sainnhe/gruvbox-material
+#  }}} Theme #
+
+#  Main {{{ #
+#  }}} Main #
