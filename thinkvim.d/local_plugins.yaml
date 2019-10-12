@@ -12,16 +12,22 @@
 # language support for rust
 - repo: rust-lang/rust.vim
   on_ft: rust
-- repo: gcollura/vim-masm
+- repo: lervag/vimtex
+  on_ft: tex
 #  }}} Language #
 
 #  Editing {{{ #
 # fix neovim block paste bug
+- repo: mg979/vim-visual-multi
 #  }}} Editing #
 
 #  Theme {{{ #
-- repo: sainnhe/gruvbox-material
+- repo: KeitaNakamura/neodark.vim
 #  }}} Theme #
 
 #  Main {{{ #
+- repo: liuchengxu/eleline.vim
+- repo: Shougo/vimproc.vim
+  build: make
+- repo: idanarye/vim-vebugger
 #  }}} Main #

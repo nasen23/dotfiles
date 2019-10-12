@@ -1,15 +1,16 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
-export PATH="/usr/local/opt/make/libexec/gnubin:$PATH"
+export PATH="$HOME/.emacs.d/bin:$HOME/.local/bin:$PATH"
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/nasen/.oh-my-zsh"
+export ZSH="/home/nasen/.oh-my-zsh"
 
+autoload -U promptinit; promptinit
+prompt pure
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
-ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -64,6 +65,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 source $ZSH/oh-my-zsh.sh
+plugins=(vi-mode git)
 
 # User configuration
 
@@ -95,12 +97,14 @@ source $ZSH/oh-my-zsh.sh
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-export TERM=screen-256color
-[[ $TMUX = "" ]] && export TERM=xterm-256color
+# export TERM=xterm-256color
+# [[ $TMUX = "" ]] && export TERM=xterm-256color
 export CLICOLOR=1
 eval $(thefuck --alias)
 
 export RANGER_LOAD_DEFAULT_RC=FALSE
+
+set -o vi
 
 # use neovim as default text editor
 export VISUAL=nvim
@@ -109,8 +113,15 @@ export EDITOR="$VISUAL"
 # matplotlib backend
 # export MPLBACKEND="module://itermplot"
 
+mkcd() {
+    mkdir $1
+    cd $1
+}
+
 # easy clear
 alias c="clear"
+
+alias cs="cowsay"
 
 # mkdir and cd into it
 
@@ -120,11 +131,12 @@ alias nvi="nvim"
 # simply write ra to open ranger
 alias ra="ranger"
 
+alias ar="arandr"
+
 # open neofetch
 alias s="neofetch"
 
 # open firefox
-alias firefox="/Applications/Firefox.app/Contents/MacOS/firefox"
 
 # tmux aliases
 alias tmux="TERM=screen-256color tmux"
@@ -142,7 +154,7 @@ alias python="python3"
 alias py3="python3"
 
 # quickly go to workspace
-alias work="cd desktopx/workspace"
+alias work="cd ~/Desktop/workspace"
 
 # nodejs path
 export NODE_PATH=~/.npm-global/lib/node_modules
@@ -153,7 +165,7 @@ export NODE_PATH=~/.npm-global/lib/node_modules
 [[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
 
 ### Added by Zplugin's installer
-source '/Users/nasen/.zplugin/bin/zplugin.zsh'
+source '/home/nasen/.zplugin/bin/zplugin.zsh'
 autoload -Uz _zplugin
 (( ${+_comps} )) && _comps[zplugin]=_zplugin
 ### End of Zplugin installer's chunk
@@ -165,3 +177,7 @@ zplugin light zdharma/fast-syntax-highlighting
 zplugin load zdharma/history-search-multi-word
 zplugin ice from"gh-r" as"program"
 zplugin load junegunn/fzf-bin
+
+(cat ~/.cache/wal/sequences &)
+cat ~/.cache/wal/sequences
+source ~/.cache/wal/colors-tty.sh

@@ -11,6 +11,7 @@
     ~/.zshrc: zshrc
     ~/.config/ranger: config/ranger
     ~/.thinkvim.d: thinkvim.d
+    ~/.doom.d: doom.d
 
 - shell:
   - [git submodule update --init --recursive, Installing submodules]
