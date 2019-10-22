@@ -6,12 +6,14 @@
 ;; (package! another-package :recipe (:host github :repo "username/repo"))
 ;; (package! builtin-package :disable t)
 
-
 (package! nyan-mode)
-(package! lsp-vue)
 (package! css-mode)
 (package! scss-mode)
 (package! lsp-ui)
 (package! company-box)
-(package! lsp-java)
+(package! company-quickhelp)
+(package! fcitx)
+(package! ox-hugo)
+(package! keyfreq)
+(package! ob-ipython)
 ;; (package! dap-java)

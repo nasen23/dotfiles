@@ -59,8 +59,7 @@
 
        :emacs
        (dired
-        +icons
-        +ranger)             ; making dired pretty [functional]
+        +icons)             ; making dired pretty [functional]
        electric          ; smarter, keyword-based electric-indent
        vc                ; version-control and Emacs, sitting in a tree
 
@@ -142,7 +141,7 @@
        ;;purescript        ; javascript, but functional
        (python
         +lsp)            ; beautiful is better than ugly
-       ;;qt                ; the 'cutest' gui framework ever
+       qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;rest              ; Emacs as a REST client
        ;;ruby              ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
@@ -153,7 +152,8 @@
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       web               ; the tubes
+       (web               ; the tubes
+        +lsp)
        ;;vala              ; GObjective-C
 
        :email
@@ -182,7 +182,6 @@
        ;; provides a Spacemacs-inspired keybinding scheme and a smartparens
        ;; config. Use it as a reference for your own modules.
        (default +bindings +smartparens))
-       (setq company-idle-delay 0.1 company-minimum-prefix-length 1)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

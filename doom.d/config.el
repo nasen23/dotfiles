@@ -8,6 +8,7 @@
 (setq-default evil-shift-width 4
               tab-width 4)
 
+(setq org-agenda-files (list "~/org"))
 (setq doom-font (font-spec :family "Hack" :size 16))
 (setq doom-variable-pitch-font (font-spec :family "Cantarell" :size 15 :style "Bold"))
 (setq +doom-dashboard-banner-file "kaguya.png"
@@ -23,8 +24,23 @@
 (define-key evil-visual-state-map (kbd "H") (kbd "5 h"))
 (define-key evil-visual-state-map (kbd "L") (kbd "5 l"))
 
-(add-hook 'java-mode-hook #'lsp)
-(require 'dap-gdb-lldb)
+;; keyfreq
+(def-package! keyfreq
+  :config
+  (keyfreq-mode 1)
+  (keyfreq-autosave-mode 1))
+
+;; org
+(setq org-plantuml-jar-path (expand-file-name "~/tools/plantuml.jar"))
+(setq org-startup-with-inline-images t)
+
+;; blog
+(defun deploy-my-blog ()
+  "Deploy my already generated markdown files to blog site."
+  (interactive)
+  (async-shell-command "~/Desktop/blog/deploy.sh"))
+
+;; theme
 (require 'doom-themes)
 ;; Global settings (defaults)
 (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
@@ -32,7 +48,7 @@
 
 ;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
 ;; may have their own settings.
-(load-theme 'doom-palenight t)
+(load-theme 'doom-tomorrow-day t)
 
 ;; Enable flashing mode-line on errors
 ;; (doom-themes-visual-bell-config)
@@ -46,13 +62,30 @@
 ;; Corrects (and improves) org-mode's native fontification.
 (doom-themes-org-config)
 
+;; ccls
+(require 'ccls)
+(setq ccls-executable "/usr/bin/ccls")
+(setq ccls-sem-highlight-method 'font-lock)
+(ccls-use-default-rainbow-sem-highlight)
+
+;; company and lsp
+
+(def-package! lsp-python-ms
+  :demand nil
+  :config
+  ;; for executable of language server, if it's not symlinked on your PATH
+  (setq lsp-python-ms-executable
+        (string-trim (shell-command-to-string
+         "fd -a ^Microsoft.Python.LanguageServer$ $HOME/.vscode-oss/extensions | tail -1")))
+  ;; for dev build of language server
+  (setq lsp-python-ms-dir
+        (file-name-directory lsp-python-ms-executable)))
+
 (def-package! nyan-mode
   :config
   (nyan-mode 1)
   (nyan-start-animation)
 )
-
-(def-package! lsp-ui :commands lsp-ui-mode)
 
 (def-package! dap-mode
   :after lsp-mode
@@ -60,10 +93,65 @@
   (dap-mode t)
   (dap-ui-mode t))
 
-(def-package! dap-java :after (lsp-java))
-
 (def-package! web-mode
   :mode ("\\.vue\\'"))
+
+(setq company-tooltip-align-annotations t
+      company-tooltip-limit 12
+      company-idle-delay 0
+      company-echo-delay (if (display-graphic-p) nil 0)
+      company-minimum-prefix-length 1
+      company-require-match nil
+      company-dabbrev-ignore-case nil
+      company-dabbrev-downcase nil)
+
+(def-package! company-quickhelp
+  :defines company-quickhelp-delay
+  :hook (company-mode . company-quickhelp-mode)
+  :init (setq company-quickhelp-delay 0.5))
+
+(def-package! lsp-ui
+     :functions my-lsp-ui-imenu-hide-mode-line
+     :commands lsp-ui-doc-hide
+     :custom-face
+     (lsp-ui-doc-background ((t (:background ,(face-background 'tooltip)))))
+     (lsp-ui-sideline-code-action ((t (:inherit warning))))
+     :bind (:map lsp-ui-mode-map
+            ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+            ([remap xref-find-references] . lsp-ui-peek-find-references)
+            ("M-<f6>" . lsp-ui-hydra/body)
+            ("C-c u" . lsp-ui-imenu))
+     :init (setq lsp-ui-doc-enable t
+                 lsp-ui-doc-use-webkit nil
+                 lsp-ui-doc-delay 0.5
+                 lsp-ui-doc-include-signature t
+                 lsp-ui-doc-position 'at-point
+                 lsp-ui-doc-border (face-foreground 'default)
+                 lsp-eldoc-enable-hover nil ; Disableeldoc displays in minibuffer
+
+                 lsp-ui-sideline-enable t
+                 lsp-ui-sideline-show-hover nil
+                 lsp-ui-sideline-show-diagnostics nil
+                 lsp-ui-sideline-ignore-duplicate t)
+     :config
+     (add-to-list 'lsp-ui-doc-frame-parameters '(right-fringe . 8))
+
+     ;; `C-g'to close doc
+     (advice-add #'keyboard-quit :before #'lsp-ui-doc-hide)
+
+     ;; Reset `lsp-ui-doc-background' after loading theme
+     (add-hook 'after-load-theme-hook
+               (lambda ()
+                 (setq lsp-ui-doc-border (face-foreground 'default))
+                 (set-face-background 'lsp-ui-doc-background
+                                      (face-background 'tooltip))))
+
+     ;; WORKAROUND Hide mode-line of the lsp-ui-imenu buffer
+     ;; @see https://github.com/emacs-lsp/lsp-ui/issues/243
+     (defun my-lsp-ui-imenu-hide-mode-line ()
+       "Hide the mode-line in lsp-ui-imenu."
+       (setq mode-line-format nil))
+     (advice-add #'lsp-ui-imenu :after #'my-lsp-ui-imenu-hide-mode-line))
 
 (def-package! company-box
       :diminish
