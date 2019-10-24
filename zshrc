@@ -104,8 +104,6 @@ eval $(thefuck --alias)
 
 export RANGER_LOAD_DEFAULT_RC=FALSE
 
-set -o vi
-
 # use neovim as default text editor
 export VISUAL=nvim
 export EDITOR="$VISUAL"
@@ -178,6 +176,6 @@ zplugin load zdharma/history-search-multi-word
 zplugin ice from"gh-r" as"program"
 zplugin load junegunn/fzf-bin
 
-(cat ~/.cache/wal/sequences &)
-cat ~/.cache/wal/sequences
-source ~/.cache/wal/colors-tty.sh
+# (cat ~/.cache/wal/sequences &)
+# cat ~/.cache/wal/sequences
+# source ~/.cache/wal/colors-tty.sh

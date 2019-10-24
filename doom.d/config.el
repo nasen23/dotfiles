@@ -7,6 +7,7 @@
 
 (setq-default evil-shift-width 4
               tab-width 4)
+(setq js-indent-level 2)
 
 (setq org-agenda-files (list "~/org"))
 (setq doom-font (font-spec :family "Hack" :size 16))
@@ -30,9 +31,14 @@
   (keyfreq-mode 1)
   (keyfreq-autosave-mode 1))
 
+;; fcitx
+(fcitx-evil-turn-on)
+
 ;; org
 (setq org-plantuml-jar-path (expand-file-name "~/tools/plantuml.jar"))
 (setq org-startup-with-inline-images t)
+(def-package! ox-hugo
+  :after ox)
 
 ;; blog
 (defun deploy-my-blog ()
@@ -48,7 +54,7 @@
 
 ;; Load the theme (doom-one, doom-molokai, etc); keep in mind that each theme
 ;; may have their own settings.
-(load-theme 'doom-tomorrow-day t)
+(load-theme 'doom-nova t)
 
 ;; Enable flashing mode-line on errors
 ;; (doom-themes-visual-bell-config)
@@ -84,7 +90,6 @@
 (def-package! nyan-mode
   :config
   (nyan-mode 1)
-  (nyan-start-animation)
 )
 
 (def-package! dap-mode
@@ -94,21 +99,22 @@
   (dap-ui-mode t))
 
 (def-package! web-mode
-  :mode ("\\.vue\\'"))
+  :mode ("\\.vue\\'" "\\.wxml\\'")
+  :config
+  (setq web-mode-indent-level 2)
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-code-indent-offset 2))
+
+(def-package! css-mode
+  :mode ("\\.wxss\\'"))
 
 (setq company-tooltip-align-annotations t
       company-tooltip-limit 12
-      company-idle-delay 0
+      company-idle-delay 0.2
       company-echo-delay (if (display-graphic-p) nil 0)
       company-minimum-prefix-length 1
-      company-require-match nil
-      company-dabbrev-ignore-case nil
-      company-dabbrev-downcase nil)
-
-(def-package! company-quickhelp
-  :defines company-quickhelp-delay
-  :hook (company-mode . company-quickhelp-mode)
-  :init (setq company-quickhelp-delay 0.5))
+      company-require-match nil)
 
 (def-package! lsp-ui
      :functions my-lsp-ui-imenu-hide-mode-line
@@ -242,64 +248,3 @@
                 (TypeParameter . ,(all-the-icons-faicon "arrows" :height 0.8 :v-adjust -0.05))
                 (Template . ,(all-the-icons-material "format_align_center" :height 0.85 :v-adjust -0.2)))
               company-box-icons-alist 'company-box-icons-all-the-icons)))
-;; (defun fira-code-mode--make-alist (list)
-;;   "Generate prettify-symbols alist from LIST."
-;;   (let ((idx -1))
-;;     (mapcar
-;;      (lambda (s)
-;;        (setq idx (1+ idx))
-;;        (let* ((code (+ #Xe100 idx))
-;;           (width (string-width s))
-;;           (prefix ())
-;;           (suffix '(?\s (Br . Br)))
-;;           (n 1))
-;;      (while (< n width)
-;;        (setq prefix (append prefix '(?\s (Br . Bl))))
-;;        (setq n (1+ n)))
-;;      (cons s (append prefix suffix (list (decode-char 'ucs code))))))
-;;      list)))
-
-;; (defconst fira-code-mode--ligatures
-;;   '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\"
-;;     "{-" "[]" "::" ":::" ":=" "!!" "!=" "!==" "-}"
-;;     "--" "---" "-->" "->" "->>" "-<" "-<<" "-~"
-;;     "#{" "#[" "##" "###" "####" "#(" "#?" "#_" "#_("
-;;     ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*"
-;;     "/**" "/=" "/==" "/>" "//" "///" "&&" "||" "||="
-;;     "|=" "|>" "^=" "$>" "++" "+++" "+>" "=:=" "=="
-;;     "===" "==>" "=>" "=>>" "<=" "=<<" "=/=" ">-" ">="
-;;     ">=>" ">>" ">>-" ">>=" ">>>" "<*" "<*>" "<|" "<|>"
-;;     "<$" "<$>" "<!--" "<-" "<--" "<->" "<+" "<+>" "<="
-;;     "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<" "<~"
-;;     "<~~" "</" "</>" "~@" "~-" "~=" "~>" "~~" "~~>" "%%"
-;;     "x" ":" "+" "+" "*"))
-
-;; (defvar fira-code-mode--old-prettify-alist)
-
-;; (defun fira-code-mode--enable ()
-;;   "Enable Fira Code ligatures in current buffer."
-;;   (setq-local fira-code-mode--old-prettify-alist prettify-symbols-alist)
-;;   (setq-local prettify-symbols-alist (append (fira-code-mode--make-alist fira-code-mode--ligatures) fira-code-mode--old-prettify-alist))
-;;   (prettify-symbols-mode t))
-
-;; (defun fira-code-mode--disable ()
-;;   "Disable Fira Code ligatures in current buffer."
-;;   (setq-local prettify-symbols-alist fira-code-mode--old-prettify-alist)
-;;   (prettify-symbols-mode -1))
-
-;; (define-minor-mode fira-code-mode
-;;   "Fira Code ligatures minor mode"
-;;   :lighter " Fira Code"
-;;   (setq-local prettify-symbols-unprettify-at-point 'right-edge)
-;;   (if fira-code-mode
-;;       (fira-code-mode--enable)
-;;     (fira-code-mode--disable)))
-
-;; (defun fira-code-mode--setup ()
-;;   "Setup Fira Code Symbols"
-;;   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol"))
-
-;; (define-globalized-minor-mode global-fira-code-mode fira-code-mode
-;;   (lambda () (fira-code-mode 1)))
-
-;; (global-fira-code-mode 1)

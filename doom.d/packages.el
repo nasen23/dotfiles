@@ -11,7 +11,6 @@
 (package! scss-mode)
 (package! lsp-ui)
 (package! company-box)
-(package! company-quickhelp)
 (package! fcitx)
 (package! ox-hugo)
 (package! keyfreq)

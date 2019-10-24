@@ -49,7 +49,7 @@ window:
   # Values for `decorations` (macOS only):
   #     - transparent: Title bar, transparent background and title bar buttons
   #     - buttonless: Title bar, transparent background, but no title bar buttons
-  decorations: none
+  decorations: full
 
   # Startup Mode (changes require restart)
   #
@@ -173,7 +173,7 @@ colors:
 
   # Bright colors
   bright:
-    black:   '0x575b70'
+    black:   '0x282a35'
     red:     '0xff6e67'
     green:   '0x5af78e'
     yellow:  '0xf4f99d'

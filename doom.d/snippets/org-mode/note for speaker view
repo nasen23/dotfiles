@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: note for speaker view
+# key: <n
+# condition: t
+# --
+
+#+BEGIN_NOTES
+    $0
+#+END_NOTES
