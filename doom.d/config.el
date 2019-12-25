@@ -31,9 +31,6 @@
   :config
   (setq leetcode-prefer-language "rust"))
 
-;; fcitx
-(fcitx-evil-turn-on)
-
 ;; org
 (setq org-agenda-files (list "~/org"))
 (setq org-latex-pdf-process
@@ -117,4 +114,4 @@
 
 
 ;; other files
-(load! "chinese-count")
+(load! "+chinese")

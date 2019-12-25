@@ -9,5 +9,6 @@
 (package! lsp-ui)
 (package! leetcode)
 (package! fcitx)
+(package! pangu-spacing)
 (package! ox-hugo)
 (package! winum)

@@ -1,12 +1,47 @@
-;;; ~/.dotfiles/doom.d/chinese-count.el -*- lexical-binding: t; -*-
+;;; ~/.dotfiles/doom.d/+chinese.el -*- lexical-binding: t; -*-
 
+
+(use-package! fcitx
+  :after evil
+  :config
+  (when (executable-find "fcitx-remote")
+    (fcitx-evil-turn-on)))
+
+
+(use-package! pangu-spacing
+  :hook (text-mode . pangu-spacing-mode)
+  :config
+  ;; Always insert `real' space in org-mode.
+  (setq-hook! 'org-mode-hook pangu-spacing-real-insert-separtor t))
+
+;;; Hacks
+(defadvice! +chinese--org-html-paragraph-a (args)
+  "Join consecutive Chinese lines into a single long line without unwanted space
+when exporting org-mode to html."
+  :filter-args #'org-html-paragraph
+  (cl-destructuring-bind (paragraph contents info) args
+    (let* ((fix-regexp "[[:multibyte:]]")
+           (origin-contents
+            (replace-regexp-in-string
+             "<[Bb][Rr] */>"
+             ""
+             contents))
+           (fixed-contents
+            (replace-regexp-in-string
+             (concat "\\(" fix-regexp "\\) *\n *\\(" fix-regexp "\\)")
+             "\\1\\2"
+             origin-contents)))
+      (list paragraph fixed-contents info))))
+
+
+
+;;; chinese word count
 (defvar word-count-rule-chinese "\\cc"
   "A regexp string to match chinese characters.")
 
 (defvar word-count-rule-nonespace "[^[:space:]]")
 
 (defvar word-count-rule-ansci "[A-Za-z]")
-
 
 (defun regexp-words-count (start end regexp)
   (let ((count 0))
