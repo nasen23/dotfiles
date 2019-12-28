@@ -18,3 +18,6 @@
   "Deploy my already generated markdown files to blog site."
   (interactive)
   (async-shell-command "~/Desktop/blog/deploy.sh"))
+
+(map! :map org-mode-map
+      :n "SPC \\" #'org-insert-subheading)
