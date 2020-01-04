@@ -18,6 +18,8 @@
 (load! "+web")
 (load! "+python")
 
+;; term
+(load! "+term")
 
 ;; leetcode
 (use-package! leetcode
