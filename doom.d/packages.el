@@ -12,3 +12,4 @@
 (package! pangu-spacing)
 (package! ox-hugo)
 (package! winum)
+(package! cdlatex)
