@@ -116,6 +116,11 @@ mkcd() {
     cd $1
 }
 
+# ls -> exa
+alias l="exa -lah"
+alias ls=exa
+alias ll="exa -l"
+
 # easy clear
 alias c="clear"
 
@@ -130,9 +135,6 @@ alias nvi="nvim"
 alias ra="ranger"
 
 alias ar="arandr"
-
-# open neofetch
-alias s="neofetch"
 
 # open firefox
 
