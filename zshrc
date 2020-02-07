@@ -178,6 +178,8 @@ zplugin load zdharma/history-search-multi-word
 zplugin ice from"gh-r" as"program"
 zplugin load junegunn/fzf-bin
 
+zplugin light hlissner/zsh-autopair
+
 # (cat ~/.cache/wal/sequences &)
 # cat ~/.cache/wal/sequences
 # source ~/.cache/wal/colors-tty.sh
