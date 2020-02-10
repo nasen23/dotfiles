@@ -9,7 +9,6 @@
     ~/.tmux.conf: tmux.conf
     ~/.config/alacritty: config/alacritty
     ~/.zshrc: zshrc
-    ~/.config/ranger: config/ranger
     ~/.doom.d: doom.d
 
 - shell:
