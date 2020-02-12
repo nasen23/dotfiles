@@ -116,10 +116,23 @@ mkcd() {
     cd $1
 }
 
+proxyon() {
+    export http_proxy='127.0.0.1:8888'
+    export https_proxy='127.0.0.1:8888'
+    echo 'http proxy on'
+}
+
+proxyoff() {
+    unset http_proxy
+    unset https_proxy
+    echo 'http proxy off'
+}
+
 # ls -> exa
 alias l="exa -lah"
 alias ls=exa
 alias ll="exa -l"
+alias lt="exa -T"
 
 # easy clear
 alias c="clear"
@@ -130,9 +143,6 @@ alias cs="cowsay"
 
 # make alias to nvi
 alias nvi="nvim"
-
-# simply write ra to open ranger
-alias ra="ranger"
 
 alias ar="arandr"
 
