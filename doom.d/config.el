@@ -18,11 +18,6 @@
 (load! "+web")
 (load! "+python")
 
-;; leetcode
-(use-package! leetcode
-  :config
-  (setq leetcode-prefer-language "rust"))
-
 ;; latex
 (setq-default TeX-engine 'xetex
               TeX-PDF-mode t)
