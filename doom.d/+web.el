@@ -12,6 +12,5 @@
 (use-package! css-mode
   :mode ("\\.wxss\\'"))
 
-(use-package! js2-mode
-  :config
-  (setq js-indent-level 2))
+(after! js2-mode
+  (setq js2-indent-level 2))

@@ -2,7 +2,7 @@
 
 
 (use-package! lsp-python-ms
-  :demand nil
+  :after python
   :config
   ;; for executable of language server, if it's not symlinked on your PATH
   (setq lsp-python-ms-executable
