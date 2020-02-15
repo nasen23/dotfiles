@@ -1,8 +1,6 @@
 ;;; ~/.dotfiles/doom.d/+ui.el -*- lexical-binding: t; -*-
 
 
-(setq +doom-dashboard-banner-file "kaguya.png"
-      +doom-dashboard-banner-dir "~/Pictures/avatar/")
 (setq doom-font (font-spec :family "Liberation Mono" :size 18)
       doom-variable-pitch-font (font-spec :family "Noto Sans" :size 16)
       doom-unicode-font (font-spec :family "WenQuanYi Micro Hei"))
