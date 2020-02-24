@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: org css
+# uuid:
+# key: css
+# condition: t
+# --
+
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://nasen23.github.io/org-vue-theme/vue.css" />
