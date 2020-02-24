@@ -14,25 +14,33 @@
   ;; Always insert `real' space in org-mode.
   (setq-hook! 'org-mode-hook pangu-spacing-real-insert-separtor t))
 
+
+(use-package! youdao-dictionary
+  :defer 5
+  :config
+  (map! :leader
+        "t c" #'youdao-dictionary-search-at-point-tooltip
+        "t v" #'youdao-dictionary-play-voice-at-point))
+
+
 ;;; Hacks
-(after! org
-  (defadvice! +chinese--org-html-paragraph-a (args)
-    "Join consecutive Chinese lines into a single long line without unwanted space
+(defadvice! +chinese--org-html-paragraph-a (args)
+  "Join consecutive Chinese lines into a single long line without unwanted space
 when exporting org-mode to html."
-    :filter-args #'org-html-paragraph
-    (cl-destructuring-bind (paragraph contents info) args
-      (let* ((fix-regexp "[[:multibyte:]]")
-             (origin-contents
-              (replace-regexp-in-string
-               "<[Bb][Rr] */>"
-               ""
-               contents))
-             (fixed-contents
-              (replace-regexp-in-string
-               (concat "\\(" fix-regexp "\\) *\n *\\(" fix-regexp "\\)")
-               "\\1\\2"
-               origin-contents)))
-        (list paragraph fixed-contents info)))))
+  :filter-args #'org-html-paragraph
+  (cl-destructuring-bind (paragraph contents info) args
+    (let* ((fix-regexp "[[:multibyte:]]")
+           (origin-contents
+            (replace-regexp-in-string
+             "<[Bb][Rr] */>"
+             ""
+             contents))
+           (fixed-contents
+            (replace-regexp-in-string
+             (concat "\\(" fix-regexp "\\) *\n *\\(" fix-regexp "\\)")
+             "\\1\\2"
+             origin-contents)))
+      (list paragraph fixed-contents info))))
 
 
 ;;; chinese word count
