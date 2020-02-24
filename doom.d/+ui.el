@@ -2,15 +2,13 @@
 
 
 (setq doom-font (font-spec :family "Liberation Mono" :size 18)
-      doom-variable-pitch-font (font-spec :family "Arimo" :size 16)
+      doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16)
       doom-unicode-font (font-spec :family "WenQuanYi Micro Hei"))
 
 (after! doom-modeline
   (setq doom-modeline-major-mode-icon t))
 
 (setq doom-theme 'doom-tomorrow-day)
-(setq doom-themes-enable-bold t
-      doom-themes-enable-italic nil)
 
 (after! winner
   (winum-mode))
