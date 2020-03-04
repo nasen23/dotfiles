@@ -1,14 +1,17 @@
 ;;; ~/.dotfiles/doom.d/+org.el -*- lexical-binding: t; -*-
 
 
-(setq org-agenda-files (list "~/org"))
+(setq org-directory "~/org/"
+      org-agenda-files '("~/org"))
+
 (after! org
-  (setq org-startup-with-inline-images t)
-  (setq org-latex-pdf-process
-        '("xelatex -interaction nonstopmode -output-directory %o %f"
-          "xelatex -interaction nonstopmode -output-directory %o %f"
-          "xelatex -interaction nonstopmode -output-directory %o %f"))
-  (setq org-plantuml-jar-path (expand-file-name "~/tools/plantuml.jar")))
+  (setq org-startup-with-inline-images t
+        org-bullets-bullet-list '("~" ">" "!" "+")
+        org-ellipsis "…"
+        org-latex-pdf-process '("xelatex -interaction nonstopmode -output-directory %o %f"
+                                "xelatex -interaction nonstopmode -output-directory %o %f"
+                                "xelatex -interaction nonstopmode -output-directory %o %f")
+        org-plantuml-jar-path (expand-file-name "~/tools/plantuml.jar")))
 
 
 (use-package! ox-hugo
@@ -24,4 +27,5 @@
 
 (after! org
   (map! :map org-mode-map
-        :n "SPC \\" #'org-insert-subheading))
+        :ni [C-M-return] (lambda (arg) (interactive "P") (org-insert-subheading arg)
+                           (evil-append 0))))
