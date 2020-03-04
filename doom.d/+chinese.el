@@ -15,11 +15,11 @@
   (setq-hook! 'org-mode-hook pangu-spacing-real-insert-separtor t))
 
 
-(use-package! youdao-dictionary
-  :defer 5
-  :config
+(after! youdao-dictionary
+  (set-popup-rule! "*Youdao Dictionary*"
+    :side 'bottom :height 16 :quit t :modeline nil)
   (map! :leader
-        "t c" #'youdao-dictionary-search-at-point-tooltip
+        "t c" #'youdao-dictionary-search-at-point
         "t v" #'youdao-dictionary-play-voice-at-point))
 
 
