@@ -8,6 +8,6 @@
 
 (package! fcitx)
 (package! pangu-spacing)
-(package! cdlatex)
 (package! winum)
+(package! telega)
 (package! youdao-dictionary)
