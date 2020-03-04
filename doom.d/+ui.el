@@ -3,7 +3,7 @@
 
 (setq doom-font (font-spec :family "Liberation Mono" :size 18)
       doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16)
-      doom-unicode-font (font-spec :family "WenQuanYi Micro Hei"))
+      doom-unicode-font (font-spec :family "WenQuanYi Micro Hei" :size 16))
 
 (after! doom-modeline
   (setq doom-modeline-major-mode-icon t))
