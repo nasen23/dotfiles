@@ -66,6 +66,7 @@ when exporting org-mode to html."
     (let ((min (if (= beg end) (point-min) beg))
           (max (if (= beg end) (point-max) end))
           list)
+      (when (> min max) (setq min (prog1 max (setq max min))))
       (setq list
             (mapcar (lambda (r)
                       (regexp-words-count min max r))
