@@ -1,7 +1,7 @@
 ;;; ~/.dotfiles/doom.d/+ui.el -*- lexical-binding: t; -*-
 
 
-(setq doom-font (font-spec :family "Liberation Mono" :size 18)
+(setq doom-font (font-spec :family "LiterationMono NF" :size 18)
       doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16)
       doom-unicode-font (font-spec :family "WenQuanYi Micro Hei" :size 16))
 
@@ -26,3 +26,7 @@
         "7" 'winum-select-window-7
         "8" 'split-window-below
         "9" 'split-window-right))
+
+(use-package! all-the-icons-ivy-rich
+  :after ivy-rich
+  :init (all-the-icons-ivy-rich-mode 1))
