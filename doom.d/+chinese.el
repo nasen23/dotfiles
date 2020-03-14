@@ -15,7 +15,9 @@
   (setq-hook! 'org-mode-hook pangu-spacing-real-insert-separtor t))
 
 
-(after! youdao-dictionary
+(use-package! youdao-dictionary
+  :after org
+  :config
   (set-popup-rule! "*Youdao Dictionary*"
     :side 'bottom :height 16 :quit t :modeline nil)
   (map! :leader
