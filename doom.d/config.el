@@ -28,7 +28,7 @@
               TeX-PDF-mode t)
 
 (after! company
-  (setq company-idle-delay 0.2
+  (setq company-idle-delay 0.1
         company-minimum-prefix-length 2))
 
 ;; http-proxy
