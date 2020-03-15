@@ -4,6 +4,8 @@
 (setq doom-font (font-spec :family "LiterationMono NF" :size 18)
       doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16)
       doom-unicode-font (font-spec :family "WenQuanYi Micro Hei" :size 16))
+;; disable line numbers at all
+(setq display-line-numbers-type nil)
 
 (after! doom-modeline
   (setq doom-modeline-major-mode-icon t))
