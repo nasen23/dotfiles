@@ -121,7 +121,6 @@
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ;
        (java
-        +meghanada
         +lsp) ; the poster child for carpal tunnel syndrome
        (javascript
         +lsp)        ; all(hope(abandon(ye(who(enter(here))))))
