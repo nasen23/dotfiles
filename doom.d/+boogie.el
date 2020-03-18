@@ -1,10 +1,11 @@
 ;;; ~/.dotfiles/doom.d/+boogie.el -*- lexical-binding: t; -*-
 
-(use-package! boogie-friends
-  :mode ("\\.dfy\\'" . dafny-mode)
-  :mode ("\\.smt2\\'" . z3-smt2-mode)
-  :mode ("\\.bpl\\'" . boogie-mode)
-  :config
-  (add-to-list 'company-backends 'boogie-friends-snippets)
+(after! boogie-friends
   (setq flycheck-dafny-executable "/usr/bin/dafny")
+  (set-company-backend! 'dafny-mode
+    'dafny-attributes-backend boogie-friends-ordered-backends
+    'company-yasnippet 'company-capf)
+  (set-pretty-symbols! 'dafny-mode
+    (append '(("in" . ?∈) ("!in" . ?∉) ("!!" . ?‼))
+            boogie-friends-symbols-alist))
   )
