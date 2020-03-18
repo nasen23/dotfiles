@@ -19,6 +19,7 @@
 (load! "+rust")
 (load! "+java")
 (load! "+python")
+(load! "+boogie")
 
 ;; tool
 (load! "+telega")

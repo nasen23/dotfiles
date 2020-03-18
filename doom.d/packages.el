@@ -13,3 +13,4 @@
 (package! youdao-dictionary)
 (package! zeal-at-point)
 (package! all-the-icons-ivy-rich)
+(package! boogie-friends)
