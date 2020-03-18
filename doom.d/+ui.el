@@ -1,9 +1,9 @@
 ;;; ~/.dotfiles/doom.d/+ui.el -*- lexical-binding: t; -*-
 
 
-(setq doom-font (font-spec :family "LiterationMono NF" :size 18)
+(setq doom-font (font-spec :family "Sarasa Mono SC" :size 19)
       doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16)
-      doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 16))
+      doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 19))
 ;; disable line numbers at all
 (setq display-line-numbers-type nil)
 
@@ -12,8 +12,11 @@
 
 (setq doom-theme 'doom-tomorrow-day)
 
-(after! winner
-  (winum-mode))
+;; leave some space on left and right border
+(define-globalized-minor-mode global-fringe-mode fringe-mode
+  (lambda () (fringe-mode '(12 . 12))))
+
+(global-fringe-mode 1)
 
 ;; keymappings
 (after! winum
@@ -28,6 +31,11 @@
         "7" 'winum-select-window-7
         "8" 'split-window-below
         "9" 'split-window-right))
+
+(use-package! nyan-mode
+  :after doom-modeline
+  :config
+  (nyan-mode))
 
 (use-package! all-the-icons-ivy-rich
   :after ivy-rich
