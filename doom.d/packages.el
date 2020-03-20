@@ -14,3 +14,4 @@
 (package! all-the-icons-ivy-rich)
 (package! boogie-friends)
 (package! nyan-mode)
+(package! magic-latex-buffer)

@@ -18,15 +18,13 @@
 (load! "+web")
 (load! "+rust")
 (load! "+java")
+(load! "+latex")
 (load! "+python")
 (load! "+boogie")
 
 ;; tool
 (load! "+telega")
 
-;; latex
-(setq-default TeX-engine 'xetex
-              TeX-PDF-mode t)
 ;; using font cache
 (setq inhibit-compacting-font-caches t)
 
