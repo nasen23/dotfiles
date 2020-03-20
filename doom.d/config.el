@@ -32,6 +32,9 @@
   (setq company-idle-delay 0.1
         company-minimum-prefix-length 2))
 
+;; auto refresh dired buffer
+(add-hook! 'dired-mode-hook 'auto-revert-mode)
+
 ;; http-proxy
 (setq url-proxy-services
    '(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
