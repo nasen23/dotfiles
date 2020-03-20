@@ -6,7 +6,7 @@
 
 (after! org
   (setq org-startup-with-inline-images t
-        org-ellipsis "…"
+        org-ellipsis "⤵"
         org-latex-pdf-process '("xelatex -interaction nonstopmode -output-directory %o %f"
                                 "xelatex -interaction nonstopmode -output-directory %o %f"
                                 "xelatex -interaction nonstopmode -output-directory %o %f")
