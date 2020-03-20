@@ -27,6 +27,8 @@
 ;; latex
 (setq-default TeX-engine 'xetex
               TeX-PDF-mode t)
+;; using font cache
+(setq inhibit-compacting-font-caches t)
 
 (after! company
   (setq company-idle-delay 0.1
