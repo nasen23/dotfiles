@@ -35,6 +35,9 @@
 ;; auto refresh dired buffer
 (add-hook! 'dired-mode-hook 'auto-revert-mode)
 
+(after! ivy
+  (setq all-the-icons-ivy-rich-icon-size 0.9))
+
 ;; http-proxy
 (setq url-proxy-services
    '(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
