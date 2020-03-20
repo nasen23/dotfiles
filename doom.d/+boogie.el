@@ -6,6 +6,7 @@
     'dafny-attributes-backend boogie-friends-ordered-backends
     'company-yasnippet 'company-capf)
   (set-pretty-symbols! 'dafny-mode
-    (append '(("in" . ?∈) ("!in" . ?∉) ("!!" . ?‼))
-            boogie-friends-symbols-alist))
+    :alist (append '(("in" . ?∈) ("!in" . ?∉) ("!!" . ?‼) ("!" . ?¬)
+                     ("forall" . ?∀) ("function" . ?ƒ))
+                   boogie-friends-symbols-alist))
   )
