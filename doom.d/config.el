@@ -25,6 +25,15 @@
 ;; tool
 (load! "+telega")
 
+(defun open-alacritty ()
+  (interactive)
+  (let ((terminal "alacritty"))
+    (start-process terminal nil terminal "--working-directory"
+                   (expand-file-name "./"))))
+
+(map! :leader
+      :nv :desc "Open alacritty" "o t"  #'open-alacritty)
+
 ;; using font cache
 (setq inhibit-compacting-font-caches t)
 
