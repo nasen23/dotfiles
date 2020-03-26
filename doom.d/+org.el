@@ -22,6 +22,18 @@
     "Deploy my already generated markdown files to blog site."
     (interactive)
     (async-shell-command "~/Desktop/blog/deploy.sh"))
+
+  (defun org-insert-clipboard-image ()
+    (interactive)
+    (setq filename
+          (concat
+           (make-temp-name
+            (concat "./images/"
+                    (format-time-string "%Y%m%d_%H%M%S_"))) ".png"))
+    (call-process-shell-command (concat "xclip -selection clipboard -t image/png -o > " filename))
+    (insert (concat "[[" filename "]]"))
+    (org-display-inline-images))
+
   )
 
 (after! org
