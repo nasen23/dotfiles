@@ -1,9 +1,9 @@
 ;;; ~/.dotfiles/doom.d/+ui.el -*- lexical-binding: t; -*-
 
 
-(setq doom-font (font-spec :family "Sarasa Mono SC" :size 19)
+(setq doom-font (font-spec :family "Literation Mono Nerd Font" :size 18)
       doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16)
-      doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 19))
+      doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 17))
 ;; disable line numbers at all
 (setq display-line-numbers-type nil)
 
@@ -31,6 +31,8 @@
         "7" 'winum-select-window-7
         "8" 'split-window-below
         "9" 'split-window-right))
+
+(setq +pretty-code-enabled-modes '(not c-mode not c++-mode))
 
 (use-package! nyan-mode
   :after doom-modeline
