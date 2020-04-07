@@ -44,11 +44,6 @@
 (after! plantuml
   (setq plantuml-jar-path (expand-file-name "~/tools/plantuml.jar")))
 
-(use-package! lsp-ui
-  :hook (lsp-mode . lsp-ui-mode))
-
-(add-hook! 'lsp-ui-mode-hook 'lsp-ui-flycheck-enable)
-
 ;; auto refresh dired buffer
 (add-hook! 'dired-mode-hook 'auto-revert-mode)
 
