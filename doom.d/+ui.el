@@ -1,16 +1,16 @@
 ;;; ~/.dotfiles/doom.d/+ui.el -*- lexical-binding: t; -*-
 
 
-(setq doom-font (font-spec :family "Literation Mono Nerd Font" :size 18)
-      doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16)
-      doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 17))
+(setq doom-font (font-spec :family "Sarasa Mono SC" :size 17)
+      doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16))
+
 ;; disable line numbers at all
 (setq display-line-numbers-type nil)
 
 (after! doom-modeline
   (setq doom-modeline-major-mode-icon t))
 
-(setq doom-theme 'doom-tomorrow-day)
+(setq doom-theme 'doom-one-light)
 
 ;; leave some space on left and right border
 (define-globalized-minor-mode global-fringe-mode fringe-mode
@@ -32,7 +32,7 @@
         "8" 'split-window-below
         "9" 'split-window-right))
 
-(setq +pretty-code-enabled-modes '(not c-mode not c++-mode))
+(setq +pretty-code-enabled-modes '(not c-mode not c++-mode not python-mode))
 
 (use-package! nyan-mode
   :after doom-modeline
