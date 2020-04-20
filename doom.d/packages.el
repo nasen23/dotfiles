@@ -15,3 +15,4 @@
 (package! boogie-friends)
 (package! nyan-mode)
 (package! magic-latex-buffer)
+(package! posframe)
