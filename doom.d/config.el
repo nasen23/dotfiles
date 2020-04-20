@@ -23,6 +23,7 @@
 (load! "+boogie")
 
 ;; tool
+(load! "+mu4e")
 (load! "+telega")
 
 (defun open-alacritty ()
