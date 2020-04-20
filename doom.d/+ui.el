@@ -32,7 +32,10 @@
         "8" 'split-window-below
         "9" 'split-window-right))
 
-(setq +pretty-code-enabled-modes '(not c-mode not c++-mode not python-mode))
+(setq +pretty-code-enabled-modes '(not c-mode
+                                       not c++-mode
+                                       not python-mode
+                                       not rjsx-mode))
 
 (use-package! nyan-mode
   :after doom-modeline
