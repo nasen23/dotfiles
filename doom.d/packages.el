@@ -16,3 +16,4 @@
 (package! nyan-mode)
 (package! magic-latex-buffer)
 (package! posframe)
+(package! multi-vterm)
