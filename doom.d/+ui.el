@@ -10,13 +10,13 @@
 (after! doom-modeline
   (setq doom-modeline-major-mode-icon t))
 
-(setq doom-theme 'doom-one-light)
+(setq doom-theme 'doom-city-lights)
 
 ;; leave some space on left and right border
-(define-globalized-minor-mode global-fringe-mode fringe-mode
-  (lambda () (fringe-mode '(12 . 12))))
+;; (define-globalized-minor-mode global-fringe-mode fringe-mode
+;;   (lambda () (fringe-mode '(12 . 12))))
 
-(global-fringe-mode 1)
+;; (global-fringe-mode 1)
 
 ;; keymappings
 (after! winum
