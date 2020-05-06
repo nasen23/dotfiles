@@ -9,6 +9,7 @@
     ~/.tmux.conf: tmux.conf
     ~/.config/alacritty: config/alacritty
     ~/.config/fish: config/fish
+    ~/.config/dunst: config/dunst
     ~/.zshrc: zshrc
     ~/.doom.d: doom.d
 
