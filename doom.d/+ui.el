@@ -35,7 +35,8 @@
 (setq +pretty-code-enabled-modes '(not c-mode
                                        not c++-mode
                                        not python-mode
-                                       not rjsx-mode))
+                                       not rjsx-mode
+                                       not typescript-mode))
 
 (use-package! nyan-mode
   :after doom-modeline

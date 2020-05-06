@@ -4,4 +4,7 @@
 (setq-default TeX-engine 'xetex
               TeX-PDF-mode t)
 
-(add-hook! 'TeX-mode-hook 'magic-latex-buffer)
+;; (add-hook! 'tex-mode-hook 'magit-latex-buffer)
+
+(map! :map cdlatex-mode-map
+    :i "TAB" #'cdlatex-tab)
