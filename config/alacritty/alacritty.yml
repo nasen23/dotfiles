@@ -86,23 +86,11 @@ scrolling:
   # Specifying `0` will disable faux scrolling.
   # faux_multiplier: 3
 
-  # Scroll to the bottom when new text is written to the terminal.
-  auto_scroll: false
-
-# Spaces per Tab (changes require restart)
-#
-# This setting defines the width of a tab in cells.
-#
-# Some applications, like Emacs, rely on knowing about the width of a tab.
-# To prevent unexpected behavior in these applications, it's also required to
-# change the `it` value in terminfo when altering this setting.
-tabspaces: 8
-
 # Font configuration (changes require restart)
 font:
   # The normal (roman) font face to use.
   normal:
-    family: "Sarasa Mono SC"
+    family: "Fantasque Sans Mono Nerd Font"
     # Style can be specified to pick a specific face.
     style: Regular
 
@@ -120,7 +108,7 @@ font:
   #
 
   # Point size
-  size: 13
+  size: 14
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
@@ -153,38 +141,34 @@ font:
 
 # If `true`, bold text is drawn using the bright color variants.
 draw_bold_text_with_bright_colors: true
+# Colors (Material Theme)
 colors:
   # Default colors
   primary:
-    background: '0x292C3E'
-    foreground: '0xEBEBEB'
-
-  # Cursor colors
-  cursor:
-    text: '0xFF261E'
-    cursor: '0xFF261E'
+    background: '0x1e282d'
+    foreground: '0xc4c7d1'
 
   # Normal colors
   normal:
-    black:   '0x0d0d0d'
-    red:     '0xFF301B'
-    green:   '0xA0E521'
-    yellow:  '0xFFC620'
-    blue:    '0x1BA6FA'
-    magenta: '0x8763B8'
-    cyan:    '0x21DEEF'
-    white:   '0xEBEBEB'
+    black:   '0x666666'
+    red:     '0xeb606b'
+    green:   '0xc3e88d'
+    yellow:  '0xf7eb95'
+    blue:    '0x80cbc4'
+    magenta: '0xff2f90'
+    cyan:    '0xaeddff'
+    white:   '0xffffff'
 
   # Bright colors
   bright:
-    black:   '0x6D7070'
-    red:     '0xFF4352'
-    green:   '0xB8E466'
-    yellow:  '0xFFD750'
-    blue:    '0x1BA6FA'
-    magenta: '0xA578EA'
-    cyan:    '0x73FBF1'
-    white:   '0xFEFEF8'
+    black:   '0xff262b'
+    red:     '0xeb606b'
+    green:   '0xc3e88d'
+    yellow:  '0xf7eb95'
+    blue:    '0x7dc6bf'
+    magenta: '0x6c71c4'
+    cyan:    '0x35434d'
+    white:   '0xffffff'
 
   # Dim colors
   dim:
