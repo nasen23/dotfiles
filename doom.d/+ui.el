@@ -1,7 +1,8 @@
 ;;; ~/.dotfiles/doom.d/+ui.el -*- lexical-binding: t; -*-
 
 
-(setq doom-font (font-spec :family "Sarasa Mono SC" :size 17)
+(setq doom-font (font-spec :family "Hasklug Nerd Font" :size 16 :weight 'semi-light)
+      doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 16)
       doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16))
 
 ;; disable line numbers at all
