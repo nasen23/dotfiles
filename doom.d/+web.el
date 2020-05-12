@@ -14,3 +14,6 @@
 
 (after! js2-mode
   (setq js2-indent-level 2))
+
+(after! typescript-mode
+  (setq typescript-indent-level 2))
