@@ -11,7 +11,7 @@
 (after! doom-modeline
   (setq doom-modeline-major-mode-icon t))
 
-(setq doom-theme 'doom-snazzy)
+(setq doom-theme 'doom-horizon)
 
 ;; leave some space on left and right border
 ;; (define-globalized-minor-mode global-fringe-mode fringe-mode
