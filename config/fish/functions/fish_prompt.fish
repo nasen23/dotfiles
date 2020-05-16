@@ -1,1 +1,1 @@
-/home/nasen/.local/share/omf/themes/fishbone/fish_prompt.fish
+/home/nasen/.local/share/omf/themes/gentoo/fish_prompt.fish
