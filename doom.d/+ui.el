@@ -11,7 +11,7 @@
 (after! doom-modeline
   (setq doom-modeline-major-mode-icon t))
 
-(setq doom-theme 'doom-horizon)
+(setq doom-theme 'doom-city-lights)
 
 ;; leave some space on left and right border
 ;; (define-globalized-minor-mode global-fringe-mode fringe-mode
@@ -34,6 +34,7 @@
         "9" 'split-window-right))
 
 (setq +pretty-code-enabled-modes '(not c-mode
+                                       not js2-mode
                                        not c++-mode
                                        not python-mode
                                        not rjsx-mode
