@@ -20,14 +20,15 @@
 (load! "+java")
 (load! "+latex")
 (load! "+python")
-(load! "+boogie")
+;; (load! "+boogie")
 
 ;; tool
 (load! "+mu4e")
 (load! "+term")
-(load! "+telega")
+;; (load! "+telega")
 
 (defun open-alacritty ()
+  "Open alacritty."
   (interactive)
   (let ((terminal "alacritty"))
     (start-process terminal nil terminal "--working-directory"
@@ -35,6 +36,9 @@
 
 (map! :leader
       :nv :desc "Open alacritty" "o t"  #'open-alacritty)
+
+;; why has doom stopped using this config
+(add-hook! text-mode #'auto-fill-mode)
 
 ;; using font cache
 (setq inhibit-compacting-font-caches t)
