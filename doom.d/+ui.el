@@ -6,7 +6,7 @@
       doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16))
 
 ;; disable line numbers at all
-(setq display-line-numbers-type nil)
+;; (setq display-line-numbers-type nil)
 
 (after! doom-modeline
   (setq doom-modeline-major-mode-icon t))
