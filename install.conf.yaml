@@ -2,16 +2,19 @@
     link:
       relink: true
 
-- clean: ['~']
+- clean: ["~"]
 
 - link:
-    ~/.dotfiles: ''
+    ~/.dotfiles: ""
     ~/.tmux.conf: tmux.conf
     ~/.config/alacritty: config/alacritty
     ~/.config/fish: config/fish
     ~/.config/dunst: config/dunst
-    ~/.zshrc: zshrc
+    ~/.config/i3: config/i3
+    ~/.config/polybar: config/polybar
+    ~/.config/rofi: config/rofi
+    ~/.config/compton.conf: config/compton.conf
     ~/.doom.d: doom.d
 
 - shell:
-  - [git submodule update --init --recursive, Installing submodules]
+    - [git submodule update --init --recursive, Installing submodules]

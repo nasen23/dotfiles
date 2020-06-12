@@ -1,0 +1,8 @@
+rofi.modi: drun,window
+rofi.lines: 8
+rofi.columns: 2
+rofi.width: 40
+rofi.drun-icon-theme: Pop
+rofi.show-icons: true
+rofi.m: -4
+rofi.theme: ~/.config/rofi/onedark
