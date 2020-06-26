@@ -5,13 +5,27 @@
       doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 16)
       doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16))
 
+(when (display-graphic-p)
+  (when (member "Noto Color Emoji" (font-family-list))
+  (set-fontset-font 't 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend)))
+
+
 ;; disable line numbers at all
 ;; (setq display-line-numbers-type nil)
 
 (after! doom-modeline
-  (setq doom-modeline-major-mode-icon t))
+  (setq doom-modeline-icon t
+        doom-modeline-major-mode-icon t
+        doom-modeline-major-mode-color-icon t
+        doom-modeline-buffer-state-icon t
+        doom-modeline-buffer-modification-icon t
+        doom-modeline-enable-word-count t
+        doom-modeline-indent-info t))
 
-(setq doom-theme 'doom-city-lights)
+(use-package! doom-themes
+  :init
+  (setq doom-theme 'doom-gruvbox-light
+        fancy-splash-image "~/.doom.d/banner/colorful.png"))
 
 ;; leave some space on left and right border
 ;; (define-globalized-minor-mode global-fringe-mode fringe-mode
@@ -42,8 +56,10 @@
 
 (use-package! nyan-mode
   :after doom-modeline
-  :config
-  (nyan-mode))
+  :init
+  (setq nyan-animate-nyancat t
+        nyan-wavy-trail t)
+  (nyan-mode t))
 
 (use-package! all-the-icons-ivy-rich
   :after ivy-rich

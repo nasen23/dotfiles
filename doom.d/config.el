@@ -47,6 +47,9 @@
   (setq company-idle-delay 0.1
         company-minimum-prefix-length 2))
 
+(after! lsp-ui
+  (setq lsp-ui-sideline-enable nil))
+
 (after! plantuml
   (setq plantuml-jar-path (expand-file-name "~/tools/plantuml.jar")))
 

@@ -3,8 +3,10 @@
 
 (use-package! fcitx
   :after evil
+  :init
+  (setq fcitx-remote-command "fcitx5-remote")
   :config
-  (when (executable-find "fcitx-remote")
+  (when (executable-find "fcitx5-remote")
     (fcitx-evil-turn-on)))
 
 

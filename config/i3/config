@@ -194,19 +194,16 @@ bindsym $mod+x exec --no-startup-id emacs
 
 bindsym $mod+p exec --no-startup-id rofi-scrot
 
-# flash current window
-bindsym $mod+n exec --no-startup-id flash_window
-
 #*********************************************************************************
 
 #	Startup
 
 #********************************************************************************
 
-exec --no-startup-id fcitx
-exec --no-startup-id variety
-exec --no-startup-id compton
-exec --no-startup-id ~/.config/polybar/launch.sh
+exec_always --no-startup-id fcitx5
+exec_always --no-startup-id variety
+exec_always --no-startup-id compton
+exec_always --no-startup-id ~/.config/polybar/launch.sh
 
 #********************************************************************************
 
