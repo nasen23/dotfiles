@@ -20,7 +20,8 @@
         doom-modeline-buffer-state-icon t
         doom-modeline-buffer-modification-icon t
         doom-modeline-enable-word-count t
-        doom-modeline-indent-info t))
+        doom-modeline-indent-info t
+        doom-modeline-mu4e t))
 
 (use-package! doom-themes
   :init

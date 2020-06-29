@@ -3,7 +3,7 @@
 ;; Place your private configuration here
 
 (setq user-full-name "Sen Na"
-      user-mail-address "nasen2582995949@163.com")
+      user-mail-address "i@nasen.xyz")
 
 
 ;; ui
@@ -23,7 +23,7 @@
 ;; (load! "+boogie")
 
 ;; tool
-;; (load! "+mu4e")
+(load! "+mu4e")
 ;; (load! "+term")
 ;; (load! "+telega")
 
@@ -64,3 +64,10 @@
    '(("no_proxy" . "^\\(localhost\\|10\\..*\\|192\\.168\\..*\\)")
      ("http" . "localhost:8888")
      ("https" . "localhost:8888")))
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(italic ((t (:slant normal)))))

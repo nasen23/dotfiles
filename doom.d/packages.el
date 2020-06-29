@@ -17,3 +17,4 @@
 ;; (package! magic-latex-buffer)
 (package! posframe)
 ;; (package! multi-vterm)
+(package! mu4e-alert)
