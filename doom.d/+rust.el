@@ -4,4 +4,6 @@
   :defer t
   :init
   (setq lsp-rust-server 'rust-analyzer
-        rustic-lsp-server 'rust-analyzer))
+        rustic-lsp-server 'rust-analyzer
+        lsp-rust-analyzer-server-display-inlay-hints t
+        lsp-rust-analyzer-display-chaining-hints t))
