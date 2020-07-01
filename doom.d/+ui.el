@@ -1,7 +1,7 @@
 ;;; ~/.dotfiles/doom.d/+ui.el -*- lexical-binding: t; -*-
 
 
-(setq doom-font (font-spec :family "Hasklug Nerd Font" :size 16 :weight 'semi-light)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 16)
       doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 16)
       doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16))
 
@@ -25,7 +25,7 @@
 
 (use-package! doom-themes
   :init
-  (setq doom-theme 'doom-gruvbox-light
+  (setq doom-theme 'doom-moonlight
         fancy-splash-image "~/.doom.d/banner/colorful.png"))
 
 ;; leave some space on left and right border
