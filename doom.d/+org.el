@@ -6,7 +6,8 @@
 
 (after! org
   (setq org-startup-with-inline-images t
-        org-ellipsis "⤵"
+        org-ellipsis "..."
+        org-superstar-headline-bullets-list '("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
         org-latex-pdf-process '("xelatex -interaction nonstopmode -output-directory %o %f"
                                 "xelatex -interaction nonstopmode -output-directory %o %f"
                                 "xelatex -interaction nonstopmode -output-directory %o %f")
@@ -34,9 +35,8 @@
     (insert (concat "[[" filename "]]"))
     (org-display-inline-images))
 
+  (map! :map org-mode-map
+          :ni [C-M-return] (lambda (arg) (interactive "P") (org-insert-subheading arg)
+                            (evil-append 0)))
   )
 
-(after! org
-  (map! :map org-mode-map
-        :ni [C-M-return] (lambda (arg) (interactive "P") (org-insert-subheading arg)
-                           (evil-append 0))))

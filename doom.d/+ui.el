@@ -7,7 +7,7 @@
 
 (when (display-graphic-p)
   (when (member "Noto Color Emoji" (font-family-list))
-  (set-fontset-font 't 'symbol (font-spec :family "Noto Color Emoji") nil 'prepend)))
+  (set-fontset-font 't 'symbol (font-spec :family "Noto Color Emoji" :size 15) nil 'prepend)))
 
 
 ;; disable line numbers at all

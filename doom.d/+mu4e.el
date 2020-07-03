@@ -25,7 +25,7 @@
       message-send-mail-function 'smtpmail-send-it)
   (setq mail-user-agent 'mu4e-user-agent)
   (setq mu4e-maildir "~/.mail")
-  (setq mu4e-update-interval 600)
+  (setq mu4e-update-interval 2000)
 
   (setq mu4e-view-show-images t)
   (setq message-sendmail-envelope-from 'header)

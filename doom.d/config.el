@@ -17,7 +17,7 @@
 (load! "+org")
 (load! "+web")
 (load! "+rust")
-(load! "+java")
+;; (load! "+java")
 (load! "+latex")
 (load! "+python")
 ;; (load! "+boogie")
@@ -33,6 +33,24 @@
   (let ((terminal "alacritty"))
     (start-process terminal nil terminal "--working-directory"
                    (expand-file-name "./"))))
+
+(defun silicon (beg end)
+  "Use silicon to get a beautiful image of source code."
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end))
+                 (list (point-min) (point-max))))
+  (when (< beg end)
+    (let ((filename (concat
+                     (expand-file-name "~/Pictures/")
+                     "silicon-"
+                     (format-time-string "%Y%m%d_%H%M%S")
+                     ".png")))
+      (shell-command-on-region beg end
+                               (format "silicon -l%s -o%s -f\"%s=16\" --pad-horiz 30 --pad-vert 30"
+                                       (file-name-extension (buffer-file-name))
+                                       filename (font-get (face-attribute 'default :font) :family)))
+      ))
+  )
 
 (map! :leader
       :nv :desc "Open alacritty" "o t"  #'open-alacritty)
