@@ -40,7 +40,6 @@
                             (evil-append 0)))
   )
 
-(add-hook! org-mode #'(mixed-pitch-mode doom/disable-line-numbers olivetti-mode))
+(add-hook! org-mode #'(mixed-pitch-mode doom/disable-line-numbers))
 (add-hook! org-mode (hl-line-mode -1))
-
 (add-hook! org-mode (defun valign () (require 'valign) (valign-mode)))
