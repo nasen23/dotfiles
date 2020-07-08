@@ -192,6 +192,8 @@ bindsym $mod+r mode "resize"
 bindsym $mod+b exec --no-startup-id firefox
 bindsym $mod+x exec --no-startup-id emacs
 
+# start steam with nvidia gpu
+bindsym $mod+z exec --no-startup-id ~/.config/i3/launch_steam.sh
 bindsym $mod+p exec --no-startup-id rofi-scrot
 
 #*********************************************************************************
