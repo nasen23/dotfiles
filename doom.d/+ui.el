@@ -3,12 +3,16 @@
 
 (setq doom-font (font-spec :family "JetBrains Mono" :size 16)
       doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 16)
-      doom-variable-pitch-font (font-spec :family "IBM Plex Sans" :size 16))
+      doom-variable-pitch-font (font-spec :family "Source Han Serif CN" :size 17))
 
-(when (display-graphic-p)
-  (when (member "Noto Color Emoji" (font-family-list))
-  (set-fontset-font 't 'symbol (font-spec :family "Noto Color Emoji" :size 15) nil 'prepend)))
+(set-fontset-font t 'symbol (font-spec :family "Noto Color Emoji" :size 15))
 
+(add-hook! '+doom-dashboard-mode-hook (hl-line-mode -1))
+
+(defun doom/disable-line-numbers ()
+  (interactive)
+  (setq doom--line-number-style nil)
+  (setq display-line-numbers nil))
 
 ;; disable line numbers at all
 ;; (setq display-line-numbers-type nil)
@@ -25,8 +29,17 @@
 
 (use-package! doom-themes
   :init
-  (setq doom-theme 'doom-moonlight
-        fancy-splash-image "~/.doom.d/banner/colorful.png"))
+  (setq doom-theme 'doom-one-light
+        fancy-splash-image "~/.doom.d/banner/colorful.png")
+  :config
+  (custom-set-faces!
+    '(org-block-begin-line :background nil)
+    '(org-block-end-line :background nil)
+    '(outline-1 :height 1.5 :weight bold)
+    '(outline-2 :height 1.3 :weight bold)
+    '(outline-3 :height 1.1 :weight bold)
+    '(outline-4 :weight bold))
+  )
 
 ;; leave some space on left and right border
 ;; (define-globalized-minor-mode global-fringe-mode fringe-mode
@@ -54,6 +67,30 @@
                                        not python-mode
                                        not rjsx-mode
                                        not typescript-mode))
+
+(after! mixed-pitch
+  (pushnew! mixed-pitch-fixed-pitch-faces
+           'org-special-keyword
+           'org-latex-and-related
+           'org-property-value
+           'org-scheduled-custom
+           'org-scheduled-custom-braket
+           'org-ref-cite-face
+           'org-list-dt
+           'org-tag
+           'font-lock-comment-face
+           'markdown-code-face
+           'markdown-comment-face
+           'markdown-footnote-marker-face
+           'markdown-gfm-checkbox-face
+           'markdown-inline-code-face
+           'markdown-language-info-face
+           'markdown-language-info-properties
+           'markdown-language-keyword-face
+           'markdown-language-keyword-properties
+           'markdown-math-face
+           'markdown-markup-face
+           'markdown-pre-face))
 
 (use-package! nyan-mode
   :after doom-modeline

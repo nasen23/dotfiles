@@ -18,3 +18,6 @@
 (package! posframe)
 ;; (package! multi-vterm)
 (package! mu4e-alert)
+(package! olivetti)
+(package! valign :recipe (:host github :repo "casouri/valign"))
+(package! org-present)

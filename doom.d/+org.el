@@ -7,7 +7,7 @@
 (after! org
   (setq org-startup-with-inline-images t
         org-ellipsis "..."
-        org-superstar-headline-bullets-list '("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
+        org-superstar-headline-bullets-list '("•")
         org-latex-pdf-process '("xelatex -interaction nonstopmode -output-directory %o %f"
                                 "xelatex -interaction nonstopmode -output-directory %o %f"
                                 "xelatex -interaction nonstopmode -output-directory %o %f")
@@ -40,3 +40,7 @@
                             (evil-append 0)))
   )
 
+(add-hook! org-mode #'(mixed-pitch-mode doom/disable-line-numbers olivetti-mode))
+(add-hook! org-mode (hl-line-mode -1))
+
+(add-hook! org-mode (defun valign () (require 'valign) (valign-mode)))
