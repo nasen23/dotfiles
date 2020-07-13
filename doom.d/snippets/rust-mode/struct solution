@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: struct solution
+# uuid:
+# key: sol
+# condition: t
+# --
+
+struct Solution;
