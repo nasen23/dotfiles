@@ -26,7 +26,7 @@
   spacing: 0;
   background-color: transparent;
 
-  font: "Knack Nerd Font 14";
+  font: "Noto Sans CJK SC 14";
   text-color: @text;
 }
 
