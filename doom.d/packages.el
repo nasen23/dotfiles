@@ -21,3 +21,4 @@
 ;; (package! olivetti)
 (package! valign :recipe (:host github :repo "casouri/valign"))
 (package! org-present)
+(package! org-roam-server)

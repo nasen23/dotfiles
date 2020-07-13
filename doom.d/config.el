@@ -5,7 +5,6 @@
 (setq user-full-name "Sen Na"
       user-mail-address "i@nasen.xyz")
 
-
 ;; ui
 (load! "+ui")
 
