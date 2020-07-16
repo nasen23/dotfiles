@@ -1,9 +1,9 @@
 ;;; ~/.dotfiles/doom.d/+ui.el -*- lexical-binding: t; -*-
 
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 16)
+(setq doom-font (font-spec :family "VictorMono Nerd Font" :size 16)
       doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 16)
-      doom-variable-pitch-font (font-spec :family "Source Han Serif CN" :size 17))
+      doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC" :size 17))
 
 (set-fontset-font t 'symbol (font-spec :family "Noto Color Emoji" :size 15))
 
