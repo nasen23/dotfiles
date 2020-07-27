@@ -1,7 +1,7 @@
 ;;; ~/.dotfiles/doom.d/+ui.el -*- lexical-binding: t; -*-
 
 
-(setq doom-font (font-spec :family "VictorMono Nerd Font" :size 16)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 16)
       doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 16)
       doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC" :size 17))
 
@@ -29,7 +29,7 @@
 
 (use-package! doom-themes
   :init
-  (setq doom-theme 'doom-one-light
+  (setq doom-theme 'doom-one
         fancy-splash-image "~/.doom.d/banner/colorful.png")
   :config
   (custom-set-faces!
