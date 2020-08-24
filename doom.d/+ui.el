@@ -1,21 +1,11 @@
 ;;; ~/.dotfiles/doom.d/+ui.el -*- lexical-binding: t; -*-
 
 
-(setq doom-font (font-spec :family "JetBrains Mono" :size 16)
+(setq doom-font (font-spec :family "SF Mono Powerline" :size 16)
       doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 16)
       doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC" :size 17))
 
 (set-fontset-font t 'symbol (font-spec :family "Noto Color Emoji" :size 15))
-
-(add-hook! '+doom-dashboard-mode-hook (hl-line-mode -1))
-
-(defun doom/disable-line-numbers ()
-  (interactive)
-  (setq doom--line-number-style nil)
-  (setq display-line-numbers nil))
-
-;; disable line numbers at all
-;; (setq display-line-numbers-type nil)
 
 (after! doom-modeline
   (setq doom-modeline-icon t
@@ -29,7 +19,7 @@
 
 (use-package! doom-themes
   :init
-  (setq doom-theme 'doom-one
+  (setq doom-theme 'doom-solarized-light
         fancy-splash-image "~/.doom.d/banner/colorful.png")
   :config
   (custom-set-faces!
@@ -94,10 +84,17 @@
 
 (use-package! nyan-mode
   :after doom-modeline
-  :init
+  :config
   (setq nyan-animate-nyancat t
         nyan-wavy-trail t)
   (nyan-mode t))
+
+;; (use-package! poke-line
+;;   :after doom-modeline
+;;   :config
+;;   (poke-line-set-pokemon "gengar")
+;;   (poke-line-mode 1))
+
 
 (use-package! all-the-icons-ivy-rich
   :after ivy-rich

@@ -35,7 +35,7 @@
        (popup            ; tame sudden yet inevitable temporary windows
         +all             ; catch all popups that start with an asterix
         +defaults)       ; default popup rules
-       pretty-code       ; replace bits of code with pretty symbols
+       ligatures       ; replace bits of code with pretty symbols
        ;;tabs              ; an tab bar for Emacs
        ;;treemacs          ; a project drawer, like neotree but cooler
        ;;unicode           ; extended unicode support for various languages
@@ -50,7 +50,7 @@
        (evil +everywhere); come to the dark side, we have cookies
        file-templates    ; auto-snippets for empty files
        ;;fold              ; (nigh) universal code folding
-       (format +onsave)  ; automated prettiness
+       format              ; automated prettiness
        ;;lispy             ; vim for lisp, for people who dont like vim
        ;;multiple-cursors  ; editing in many places at once
        ;;objed             ; text object editing for the innocent
@@ -153,7 +153,8 @@
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        (python
-        +lsp)            ; beautiful is better than ugly
+        +lsp
+        +pyright)            ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest              ; Emacs as a REST client
@@ -196,6 +197,3 @@
        ;; config. Use it as a reference for your own modules.
        (default +bindings +smartparens))
 
-(setq package-archives '(("gnu" . "http://elpa.emacs-china.org/gnu/")
-                         ("org" . "http://elpa.emacs-china.org/org/")
-                         ("melpa" . "http://elpa.emacs-china.org/melpa/")))

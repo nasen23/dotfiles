@@ -51,18 +51,23 @@
       ))
   )
 
+(map! :map company-active-map :i "TAB" nil
+      "<tab>" nil)
+
 (map! :leader
       :nv :desc "Open alacritty" "o t"  #'open-alacritty)
 
 ;; why has doom stopped using this config
 (add-hook! text-mode #'auto-fill-mode)
 
+(setq gc-cons-threshold 100000000
+      read-process-output-max (* 1024 1024))
+
 ;; using font cache
 (setq inhibit-compacting-font-caches t)
 
 (after! company
-  (setq company-idle-delay 0.1
-        company-minimum-prefix-length 2))
+  (setq company-idle-delay 0))
 
 (after! lsp-ui
   (setq lsp-ui-sideline-enable nil))
@@ -76,3 +81,5 @@
 (after! ivy
   (setq all-the-icons-ivy-rich-icon-size 0.9))
 
+;; (set-company-backend! 'prog-mode '(:separate company-tabnine company-files company-yasnippet))
+;; (setq +lsp-company-backends '())

@@ -14,6 +14,7 @@
 (package! all-the-icons-ivy-rich)
 ;; (package! boogie-friends)
 (package! nyan-mode)
+;; (package! poke-line)
 ;; (package! magic-latex-buffer)
 (package! posframe)
 ;; (package! multi-vterm)
@@ -22,3 +23,4 @@
 (package! valign :recipe (:host github :repo "casouri/valign"))
 (package! org-present)
 (package! org-roam-server)
+;; (package! company-tabnine)
