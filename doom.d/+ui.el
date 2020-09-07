@@ -1,7 +1,7 @@
 ;;; ~/.dotfiles/doom.d/+ui.el -*- lexical-binding: t; -*-
 
 
-(setq doom-font (font-spec :family "SF Mono Powerline" :size 16)
+(setq doom-font (font-spec :family "Hasklug Nerd Font" :size 16)
       doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 16)
       doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC" :size 17))
 
@@ -60,27 +60,27 @@
 
 (after! mixed-pitch
   (pushnew! mixed-pitch-fixed-pitch-faces
-           'org-special-keyword
-           'org-latex-and-related
-           'org-property-value
-           'org-scheduled-custom
-           'org-scheduled-custom-braket
-           'org-ref-cite-face
-           'org-list-dt
-           'org-tag
-           'font-lock-comment-face
-           'markdown-code-face
-           'markdown-comment-face
-           'markdown-footnote-marker-face
-           'markdown-gfm-checkbox-face
-           'markdown-inline-code-face
-           'markdown-language-info-face
-           'markdown-language-info-properties
-           'markdown-language-keyword-face
-           'markdown-language-keyword-properties
-           'markdown-math-face
-           'markdown-markup-face
-           'markdown-pre-face))
+            'org-special-keyword
+            'org-latex-and-related
+            'org-property-value
+            'org-scheduled-custom
+            'org-scheduled-custom-braket
+            'org-ref-cite-face
+            'org-list-dt
+            'org-tag
+            'font-lock-comment-face
+            'markdown-code-face
+            'markdown-comment-face
+            'markdown-footnote-marker-face
+            'markdown-gfm-checkbox-face
+            'markdown-inline-code-face
+            'markdown-language-info-face
+            'markdown-language-info-properties
+            'markdown-language-keyword-face
+            'markdown-language-keyword-properties
+            'markdown-math-face
+            'markdown-markup-face
+            'markdown-pre-face))
 
 (use-package! nyan-mode
   :after doom-modeline

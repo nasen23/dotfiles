@@ -51,7 +51,7 @@
       ))
   )
 
-(map! :map company-active-map :i "TAB" nil
+(map! :map company-active-map "TAB" nil
       "<tab>" nil)
 
 (map! :leader
