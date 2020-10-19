@@ -2,7 +2,7 @@
 
 
 (setq doom-font (font-spec :family "Hasklug Nerd Font" :size 16)
-      doom-unicode-font (font-spec :family "Sarasa Mono SC" :size 16)
+      doom-unicode-font (font-spec :family "Noto Serif CJK SC")
       doom-variable-pitch-font (font-spec :family "Noto Serif CJK SC" :size 17))
 
 (set-fontset-font t 'symbol (font-spec :family "Noto Color Emoji" :size 15))
@@ -22,6 +22,7 @@
   (setq doom-theme 'doom-solarized-light
         fancy-splash-image "~/.doom.d/banner/colorful.png")
   :config
+  (set-face-italic-p 'italic nil)
   (custom-set-faces!
     '(org-block-begin-line :background nil)
     '(org-block-end-line :background nil)

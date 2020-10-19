@@ -24,4 +24,5 @@
 (package! org-present)
 (package! org-roam-server)
 (package! speed-type)
+(package! fish-mode)
 ;; (package! company-tabnine)
