@@ -14,7 +14,7 @@
 ;; lang
 (load! "+cc")
 (load! "+org")
-(load! "+web")
+;; (load! "+web")
 (load! "+rust")
 ;; (load! "+java")
 (load! "+latex")
@@ -69,8 +69,8 @@
 (after! company
   (setq company-idle-delay 0))
 
-(after! lsp-ui
-  (setq lsp-ui-sideline-enable nil))
+;; (after! lsp-ui
+;;   (setq lsp-ui-sideline-enable nil))
 
 (after! plantuml
   (setq plantuml-jar-path (expand-file-name "~/tools/plantuml.jar")))
@@ -80,6 +80,3 @@
 
 (after! ivy
   (setq all-the-icons-ivy-rich-icon-size 0.9))
-
-;; (set-company-backend! 'prog-mode '(:separate company-tabnine company-files company-yasnippet))
-;; (setq +lsp-company-backends '())
