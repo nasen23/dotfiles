@@ -22,8 +22,9 @@
   (setq doom-theme 'doom-solarized-light
         fancy-splash-image "~/.doom.d/banner/colorful.png")
   :config
-  (set-face-italic-p 'italic nil)
+  (setq doom-themes-enable-italic 'nil)
   (custom-set-faces!
+    '(org-document-title :height 1.6)
     '(org-block-begin-line :background nil)
     '(org-block-end-line :background nil)
     '(outline-1 :height 1.5 :weight bold)

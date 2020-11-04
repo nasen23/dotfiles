@@ -153,8 +153,7 @@
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
        (python
-        +lsp
-        +pyright)            ; beautiful is better than ugly
+        +lsp)            ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        rest              ; Emacs as a REST client
@@ -171,7 +170,7 @@
        ;;vala              ; GObjective-C
 
        :email
-       (mu4e +gmail)       ; WIP
+       ;;(mu4e +gmail)       ; WIP
        ;;notmuch             ; WIP
        ;;(wanderlust +gmail) ; WIP
 

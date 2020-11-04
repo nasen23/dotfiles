@@ -22,7 +22,7 @@
 ;; (load! "+boogie")
 
 ;; tool
-(load! "+mu4e")
+;; (load! "+mu4e")
 ;; (load! "+term")
 ;; (load! "+telega")
 
@@ -60,11 +60,11 @@
 ;; why has doom stopped using this config
 (add-hook! text-mode #'auto-fill-mode)
 
-(setq gc-cons-threshold 100000000
-      read-process-output-max (* 1024 1024))
+;; (setq gc-cons-threshold 100000000
+;;       read-process-output-max (* 1024 1024))
 
 ;; using font cache
-(setq inhibit-compacting-font-caches t)
+;; (setq inhibit-compacting-font-caches t)
 
 (after! company
   (setq company-idle-delay 0))
