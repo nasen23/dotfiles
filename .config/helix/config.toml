@@ -1,0 +1,25 @@
+theme = "catppuccin_latte"
+
+[editor]
+mouse = true
+idle-timeout = 0
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.file-picker]
+hidden = false
+
+[editor.lsp]
+display-messages = true
+display-inlay-hints = true
+
+[keys.insert]
+C-p = "move_line_up"
+C-n = "move_line_down"
+C-e = "goto_line_end_newline"
+C-a = "goto_line_start"
+C-f = "move_char_right"
+C-b = "move_char_left"

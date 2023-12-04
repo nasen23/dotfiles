@@ -1,0 +1,10 @@
+[[language]]
+name = "python"
+auto-format = false
+language-servers = [ "pyright", "ruff-lsp" ]
+[language.formatter]
+command = "black"
+args = [
+"-", # stdin
+"--quiet",
+]
