@@ -2,7 +2,9 @@
 
 ;; Place your private configuration here! Remember, you do not need to run 'doom
 ;; sync' after modifying this file!
-
+(setq package-archives '(("gnu"    . "http://mirrors.bfsu.edu.cn/elpa/gnu/")
+                         ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
+                         ("melpa"  . "http://mirrors.bfsu.edu.cn/elpa/melpa/")))
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets. It is optional.
@@ -21,12 +23,9 @@
 ;; See 'C-h v doom-font' for documentation and more examples of what they
 ;; accept. For example:
 ;;
-(setq doom-font (font-spec :family "Cartograph CF" :size 13))
-;; doom-variable-pitch-font (font-spec :family "Fira Sans" :size 13))
-(defun my-cjk-font()
-  (dolist (charset '(kana han cjk-misc symbol bopomofo))
-    (set-fontset-font t charset (font-spec :family "LXGW Wenkai"))))
-(add-hook 'after-setting-font-hook #'my-cjk-font)
+(setq doom-font (font-spec :family "Sarasa Mono SC" :size 14)
+      doom-variable-pitch-font (font-spec :family "Sarasa UI SC" :size 14))
+
 ;;
 ;; If you or Emacs can't find your font, use 'M-x describe-font' to look them
 ;; up, `M-x eval-region' to execute elisp code, and 'M-x doom/reload-font' to
@@ -36,12 +35,13 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq catppuccin-flavor 'latte)
+(setq catppuccin-flavor 'frappe)
 (setq doom-theme 'catppuccin)
 
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
+(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -90,6 +90,13 @@
 (after! tramp (add-to-list 'tramp-connection-properties
                            (list (regexp-quote "/sshx:*:")
                                  "remote-shell" "/bin/bash")))
+(add-to-list 'tramp-methods
+               '("yadm"
+                 (tramp-login-program "yadm")
+                 (tramp-login-args (("enter")))
+                 (tramp-login-env (("SHELL") ("/bin/sh")))
+                 (tramp-remote-shell "/bin/sh")
+                 (tramp-remote-shell-args ("-c"))))
 
 (after! lsp
   (setq lsp-inlay-hint-enable t))
@@ -105,3 +112,7 @@
 (after! company
   (setq company-idle-delay 0
         company-tooltip-idle-delay 0))
+
+(defun yadm ()
+  (interactive)
+  (magit-status "/yadm::"))

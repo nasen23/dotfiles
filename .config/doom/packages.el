@@ -51,3 +51,4 @@
 
 (package! rime)
 (package! catppuccin-theme)
+(package! hl-line :disable t)
