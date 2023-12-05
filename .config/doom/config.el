@@ -87,9 +87,8 @@
   :bind
   (:map rime-mode-map ("C-`" . 'rime-send-keybinding)))
 
-(after! tramp (add-to-list 'tramp-connection-properties
-                           (list (regexp-quote "/sshx:*:")
-                                 "remote-shell" "/bin/bash"))
+(after! tramp
+  (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
   (add-to-list 'tramp-methods
                '("yadm"
                  (tramp-login-program "yadm")
@@ -120,3 +119,7 @@
 
 (map! :nv "gh" #'evil-beginning-of-line
       :nv "gl" #'evil-end-of-line)
+
+(use-package! lsp-bridge
+  :init
+  (global-lsp-bridge-mode))
