@@ -89,14 +89,15 @@
 
 (after! tramp (add-to-list 'tramp-connection-properties
                            (list (regexp-quote "/sshx:*:")
-                                 "remote-shell" "/bin/bash")))
-(add-to-list 'tramp-methods
+                                 "remote-shell" "/bin/bash"))
+  (add-to-list 'tramp-methods
                '("yadm"
                  (tramp-login-program "yadm")
                  (tramp-login-args (("enter")))
                  (tramp-login-env (("SHELL") ("/bin/sh")))
                  (tramp-remote-shell "/bin/sh")
-                 (tramp-remote-shell-args ("-c"))))
+                 (tramp-remote-shell-args ("-c")))))
+
 
 (after! lsp
   (setq lsp-inlay-hint-enable t))
@@ -116,3 +117,6 @@
 (defun yadm ()
   (interactive)
   (magit-status "/yadm::"))
+
+(map! :nv "gh" #'evil-beginning-of-line
+      :nv "gl" #'evil-end-of-line)
