@@ -52,9 +52,3 @@
 (package! rime)
 (package! catppuccin-theme)
 (package! hl-line :disable t)
-
-(package! lsp-bridge
-  :recipe (:host github
-           :repo "manateelazycat/lsp-bridge"
-           :files ("*.el" "*.py" "acm" "core" "langserver"
-                   "multiserver" "resources")))

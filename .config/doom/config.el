@@ -81,6 +81,8 @@
 ;; they are implemented.
 
 (use-package! rime
+  :init
+  (setq rime-librime-root (concat user-emacs-directory "librime/dist"))
   :custom
   (default-input-method "rime")
   (rime-user-data-dir "~/Library/Rime")
@@ -120,6 +122,10 @@
 (map! :nv "gh" #'evil-beginning-of-line
       :nv "gl" #'evil-end-of-line)
 
-(use-package! lsp-bridge
-  :init
-  (global-lsp-bridge-mode))
+(if (and (modulep! :editor evil) (modulep! :editor meow))
+  (add-hook! 'after-init-hook
+    (defun meow-init-local-var-hooks-disable-evil ()
+      (remove-hook 'doom-after-modules-config-hook 'evil-mode)
+      (evil-mode -1))))
+
+(setq meow-use-clipboard t)
