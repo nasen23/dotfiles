@@ -86,6 +86,7 @@
   :custom
   (default-input-method "rime")
   (rime-user-data-dir "~/Library/Rime")
+  (rime-show-candidate 'posframe)
   :bind
   (:map rime-mode-map ("C-`" . 'rime-send-keybinding)))
 
@@ -129,3 +130,11 @@
       (evil-mode -1))))
 
 (setq meow-use-clipboard t)
+
+(add-to-list 'auto-mode-alist '("\\.co\\'" . prog-mode))
+
+;; preserve toggle-input-method key binding in vterm
+(after! vterm
+  (map! :map vterm-mode-map
+        :ni "C-\\" #'toggle-input-method
+        :n "C-l" #'recenter-top-bottom))
