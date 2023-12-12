@@ -36,6 +36,7 @@
 - [[#completion][COMPLETION]]
   - [[#company][Company]]
   - [[#lsp-eglot][LSP (Eglot)]]
+  - [[#yasnippet][YASnippet]]
 - [[#tools][TOOLS]]
   - [[#diagnostics][Diagnostics]]
   - [[#treesitter][Treesitter]]
@@ -548,6 +549,12 @@
   (global-aggressive-indent-mode 1))
 #+end_src
 
+*** Dtrt Indent (For guessing Indent)
+#+begin_src emacs-lisp
+  (use-package dtrt-indent
+    :hook (prog-mode . dtrt-indent-mode))
+#+end_src
+
 ** Smartparens
 #+begin_src emacs-lisp
   (use-package smartparens
@@ -589,6 +596,7 @@
         :elpaca nil)
 #+end_src
 
+** TODO YASnippet
 
 * TOOLS
 ** Diagnostics
