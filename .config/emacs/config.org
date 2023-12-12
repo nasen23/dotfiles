@@ -1,0 +1,701 @@
+#+TITLE: Emacs Config
+#+AUTHOR: Sen Na
+#+DESCRIPTION: My New Emacs Config From Scratch
+#+STARTUP: showeverything
+#+OPTIONS: toc:2
+
+* TABLE OF CONTENTS :toc:
+- [[#important-programs-to-load-first][IMPORTANT PROGRAMS TO LOAD FIRST]]
+  - [[#elpaca-package-manager][Elpaca Package Manager]]
+  - [[#load-meow][Load Meow]]
+  - [[#basic-key-bindings][Basic Key Bindings]]
+  - [[#turn-off-some-annoyying-things][Turn Off Some Annoyying Things]]
+- [[#fonts][FONTS]]
+  - [[#setting-the-font-face][Setting The Font Face]]
+- [[#graphical-user-interface-tweaks][GRAPHICAL USER INTERFACE TWEAKS]]
+  - [[#disable-menubar-toolbars-and-scrollbars][Disable Menubar, Toolbars and Scrollbars]]
+  - [[#display-line-numbers][Display Line Numbers]]
+  - [[#get-shell-env-loaded][Get Shell Env Loaded]]
+  - [[#theme][Theme]]
+  - [[#icons][Icons]]
+  - [[#modeline][Modeline]]
+- [[#org-mode][ORG MODE]]
+  - [[#toc][Toc]]
+  - [[#org-bullets][Org Bullets]]
+  - [[#tag-expansion][Tag Expansion]]
+- [[#vertico-with-consult][VERTICO (WITH CONSULT)]]
+  - [[#vertico][vertico]]
+  - [[#orderless][orderless]]
+  - [[#marginaliael][Marginalia.el]]
+  - [[#consult][Consult]]
+- [[#editing][EDITING]]
+  - [[#indent][Indent]]
+  - [[#smartparens][Smartparens]]
+  - [[#better-jumper][Better Jumper]]
+  - [[#trim-whitespaces-ws-butler][Trim Whitespaces (ws-butler)]]
+- [[#completion][COMPLETION]]
+  - [[#company][Company]]
+  - [[#lsp-eglot][LSP (Eglot)]]
+- [[#tools][TOOLS]]
+  - [[#diagnostics][Diagnostics]]
+  - [[#treesitter][Treesitter]]
+  - [[#direnv][Direnv]]
+  - [[#formatter][Formatter]]
+  - [[#magit][Magit]]
+  - [[#vterm][Vterm]]
+  - [[#with-editor][With Editor]]
+  - [[#recent-files][Recent Files]]
+- [[#languages][LANGUAGES]]
+  - [[#python][Python]]
+  - [[#emacs-lisp][Emacs Lisp]]
+
+* IMPORTANT PROGRAMS TO LOAD FIRST
+** Elpaca Package Manager
+
+#+begin_src emacs-lisp
+  (setq package-archives '(("gnu"    . "http://mirrors.bfsu.edu.cn/elpa/gnu/")
+			     ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
+			     ("melpa"  . "http://mirrors.bfsu.edu.cn/elpa/melpa/")))
+
+	(defvar elpaca-installer-version 0.6)
+	(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
+	(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
+	(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
+	(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
+				      :ref nil
+				      :files (:defaults "elpaca-test.el" (:exclude "extensions"))
+				      :build (:not elpaca--activate-package)))
+	(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
+	       (build (expand-file-name "elpaca/" elpaca-builds-directory))
+	       (order (cdr elpaca-order))
+	       (default-directory repo))
+	  (add-to-list 'load-path (if (file-exists-p build) build repo))
+	  (unless (file-exists-p repo)
+	    (make-directory repo t)
+	    (when (< emacs-major-version 28) (require 'subr-x))
+	    (condition-case-unless-debug err
+		(if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
+			 ((zerop (call-process "git" nil buffer t "clone"
+					       (plist-get order :repo) repo)))
+			 ((zerop (call-process "git" nil buffer t "checkout"
+					       (or (plist-get order :ref) "--"))))
+			 (emacs (concat invocation-directory invocation-name))
+			 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
+					       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
+			 ((require 'elpaca))
+			 ((elpaca-generate-autoloads "elpaca" repo)))
+		    (progn (message "%s" (buffer-string)) (kill-buffer buffer))
+		  (error "%s" (with-current-buffer buffer (buffer-string))))
+	      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
+	  (unless (require 'elpaca-autoloads nil t)
+	    (require 'elpaca)
+	    (elpaca-generate-autoloads "elpaca" repo)
+	    (load "./elpaca-autoloads")))
+	(add-hook 'after-init-hook #'elpaca-process-queues)
+	(elpaca `(,@elpaca-order))
+
+	;; Install a package via the elpaca macro
+      ;; See the "recipes" section of the manual for more details.
+
+      ;; (elpaca example-package)
+
+      ;; Install use-package support
+      (elpaca elpaca-use-package
+	;; Enable :elpaca use-package keyword.
+	(elpaca-use-package-mode)
+	;; Assume :elpaca t unless otherwise specified.
+	(setq elpaca-use-package-by-default t))
+
+      ;; Block until current queue processed.
+      (elpaca-wait)
+
+      ;;When installing a package which modifies a form used at the top-level
+      ;;(e.g. a package which adds a use-package key word),
+      ;;use `elpaca-wait' to block until that package has been installed/configured.
+      ;;For example:
+      ;;(use-package general :demand t)
+      ;;(elpaca-wait)
+#+end_src
+
+** Load Meow
+
+#+begin_src emacs-lisp
+(use-package meow
+  :demand t
+  :init
+  (setq meow-visit-sanitize-completion nil)
+  :custom
+  (meow-use-cursor-position-hack t)
+  (meow-use-clipboard t)
+  :config
+  (require 'meow)
+  (defun meow-setup ()
+    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+    (meow-motion-overwrite-define-key
+     '("j" . meow-next)
+     '("k" . meow-prev)
+     '("<escape>" . ignore))
+    (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
+    (define-key meow-keypad-state-keymap [control-bracketleft] 'meow-keypad-quit)
+    (meow-leader-define-key
+     ;; Use SPC (0-9) for digit arguments.
+     '("1" . meow-digit-argument)
+     '("2" . meow-digit-argument)
+     '("3" . meow-digit-argument)
+     '("4" . meow-digit-argument)
+     '("5" . meow-digit-argument)
+     '("6" . meow-digit-argument)
+     '("7" . meow-digit-argument)
+     '("8" . meow-digit-argument)
+     '("9" . meow-digit-argument)
+     '("0" . meow-digit-argument)
+     '("/" . meow-keypad-describe-key)
+     '("ff" . find-file)
+     '("fd" . dired)
+     '("fs" . save-buffer)
+     '("wv" . split-window-right)
+     '("ws" . split-window-below)
+     '("wo" . other-window)
+     '("wh" . windmove-left)
+     '("wj" . windmove-down)
+     '("wk" . windmove-up)
+     '("wl" . windmove-right)
+     '("wq" . delete-window)
+     '("bi" . ibuffer)
+     '("bn" . next-buffer)
+     '("bp" . meow-last-buffer)
+     '("bk" . kill-buffer)
+     '("bb" . switch-to-buffer))
+    (meow-normal-define-key
+     '("0" . meow-expand-0)
+     '("9" . meow-expand-9)
+     '("8" . meow-expand-8)
+     '("7" . meow-expand-7)
+     '("6" . meow-expand-6)
+     '("5" . meow-expand-5)
+     '("4" . meow-expand-4)
+     '("3" . meow-expand-3)
+     '("2" . meow-expand-2)
+     '("1" . meow-expand-1)
+     '("-" . negative-argument)
+     '(";" . meow-reverse)
+     '("," . meow-inner-of-thing)
+     '("." . meow-bounds-of-thing)
+     '("[" . meow-beginning-of-thing)
+     '("]" . meow-end-of-thing)
+     '("a" . meow-append)
+     '("A" . meow-open-below)
+     '("b" . meow-back-word)
+     '("B" . meow-back-symbol)
+     '("c" . meow-change)
+     '("d" . delete-char) ;; other wise this just runs C-d, which is mapped to scroll-up-command
+     '("D" . meow-backward-delete)
+     '("e" . meow-next-word)
+     '("E" . meow-next-symbol)
+     '("f" . meow-find)
+     '("g" . meow-cancel-selection)
+     '("G" . meow-grab)
+     '("h" . meow-left)
+     '("H" . meow-left-expand)
+     '("i" . meow-insert)
+     '("I" . meow-open-above)
+     '("j" . meow-next)
+     '("J" . meow-next-expand)
+     '("k" . meow-prev)
+     '("K" . meow-prev-expand)
+     '("l" . meow-right)
+     '("L" . meow-right-expand)
+     '("m" . meow-join)
+     '("n" . meow-search)
+     '("o" . meow-block)
+     '("O" . meow-to-block)
+     '("p" . meow-yank)
+     '("q" . meow-quit)
+     '("Q" . meow-goto-line)
+     '("r" . meow-replace)
+     '("R" . meow-swap-grab)
+     '("s" . meow-kill)
+     '("t" . meow-till)
+     '("u" . meow-undo)
+     '("U" . meow-undo-in-selection)
+     '("v" . meow-visit)
+     '("w" . meow-mark-word)
+     '("W" . meow-mark-symbol)
+     '("x" . meow-line)
+     '("X" . meow-goto-line)
+     '("y" . meow-save)
+     '("Y" . meow-sync-grab)
+     '("z" . meow-pop-selection)
+     '("'" . repeat)
+     '("<escape>" . ignore)
+   '("C-r" . undo-redo)))
+  (meow-setup)
+  (meow-global-mode))
+#+end_src
+
+** Basic Key Bindings
+
+#+begin_src emacs-lisp
+  (global-set-key (kbd "s-x") 'execute-extended-command)
+  (define-key input-decode-map (kbd "C-[") [control-bracketleft])
+  (elpaca nil (progn
+                ;; TODO map RET in normal mode to button-click
+                ;; Ref: https://github.com/emacs-evil/evil/blob/c4f95fd9ec284a8284405f84102bfdb74f0ee22f/evil-commands.el#L846-L876
+                (defun meow--ret ()
+                  (interactive)
+                  (let ((widget (or (get-char-property (point) 'field)
+                                    (get-char-property (point) 'button)
+                                    (get-char-property (point) 'widget-doc))))
+                    (cond
+                     ((and widget
+                           (fboundp 'widget-type)
+                           (fboundp 'widget-button-press)
+                           (or (and (symbolp widget)
+                                    (get widget 'widget-type))
+                               (and (consp widget)
+                                    (get (widget-type widget) 'widget-type))))
+                      (when (fboundp 'widget-button-press)
+                        (widget-button-press (point))))
+                     ((and (fboundp 'button-at)
+                           (fboundp 'push-button)
+                           (button-at (point)))
+                      (push-button)))))
+                (meow-normal-define-key
+                 '("RET" . meow--ret))
+                (define-key meow-normal-state-keymap [control-bracketleft] 'meow-cancel)
+                (meow-leader-define-key
+                 ;; Fi le
+                 '("." . find-file)
+                 '("fc" . (lambda () (interactive) (let ((default-directory user-emacs-directory)) (call-interactively 'find-file)))))
+                (add-hook 'minibuffer-setup-hook (lambda () (local-set-key [control-bracketleft] #'meow-minibuffer-quit)))
+
+                ))
+#+end_src
+
+** Turn Off Some Annoyying Things
+#+begin_src emacs-lisp
+(setq ring-bell-function 'ignore)
+#+end_src
+
+*** LockFile and Backup Files
+#+begin_src emacs-lisp
+  (setq create-lockfiles nil
+        make-backup-files nil)
+#+end_src
+
+* FONTS
+
+** Setting The Font Face
+
+#+begin_src emacs-lisp
+  (set-face-attribute 'default nil
+                      :font "Sarasa Mono SC"
+                      :height 140
+                      :weight 'medium)
+  (add-to-list 'default-frame-alist '(font . "Sarasa Mono SC-14"))
+#+end_src
+
+* GRAPHICAL USER INTERFACE TWEAKS
+
+** Disable Menubar, Toolbars and Scrollbars
+#+begin_src emacs-lisp
+  (unless (eq system-type 'darwin)
+    (menu-bar-mode -1))
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+#+end_src
+
+** Display Line Numbers
+
+#+begin_src emacs-lisp
+  (global-display-line-numbers-mode 1)
+  (global-visual-line-mode t)
+#+end_src
+
+** Get Shell Env Loaded
+#+begin_src emacs-lisp
+  (use-package exec-path-from-shell
+    :config
+    (when (memq window-system '(mac ns x))
+      (exec-path-from-shell-initialize)))
+#+end_src
+
+** Theme
+#+begin_src emacs-lisp
+  (use-package catppuccin-theme
+    :init
+    (setq catppuccin-flavor 'frappe)
+    :config
+    (load-theme 'catppuccin :no-confirm))
+  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+  (add-to-list 'default-frame-alist '(ns-appearance . dark))
+#+end_src
+
+** Icons
+#+begin_src emacs-lisp
+      (use-package nerd-icons)
+      (use-package nerd-icons-completion
+        :config
+        (nerd-icons-completion-mode))
+#+end_src
+
+** Modeline
+#+begin_src emacs-lisp
+      (use-package doom-modeline
+        :ensure t
+        :init (doom-modeline-mode 1))
+
+#+end_src
+
+* ORG MODE
+** Toc
+#+begin_src emacs-lisp
+  (use-package toc-org
+    :hook (org-mode . toc-org-enable))
+#+end_src
+
+** Org Bullets
+#+begin_src emacs-lisp
+  (add-hook 'org-mode-hook 'org-indent-mode)
+  (use-package org-superstar
+    :hook (org-mode . org-superstar-mode))
+#+end_src
+
+** Tag Expansion
+
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook (lambda () (require 'org-tempo)))
+#+end_src
+
+* VERTICO (WITH CONSULT)
+- vertico.el - VERTical Interactive COmpletion
+- orderless
+- marginalia 
+- consult
+
+** vertico
+#+begin_src emacs-lisp
+;; Enable vertico
+(use-package vertico
+  :init
+  (vertico-mode)
+
+  ;; Different scroll margin
+  (setq vertico-scroll-margin 0)
+
+  ;; Show more candidates
+  (setq vertico-count 20)
+
+  ;; Grow and shrink the Vertico minibuffer
+  ;; (setq vertico-resize t)
+
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  (setq vertico-cycle t)
+  )
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :elpaca nil
+  :init
+  (savehist-mode))
+
+;; A few more useful configurations...
+(use-package emacs
+  :elpaca nil
+  :init
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  ;; (setq read-extended-command-predicate
+  ;;       #'command-completion-default-include-p)
+
+  ;; Enable recursive minibuffers
+  (setq enable-recursive-minibuffers t))
+#+end_src
+
+*** Extensions 
+
+**** Directory
+#+begin_src emacs-lisp
+(use-package vertico-directory
+  :after vertico
+  :elpaca nil
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+)
+#+end_src
+
+** orderless
+#+begin_src emacs-lisp
+;; Optionally use the `orderless' completion style.
+(use-package orderless
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
+#+end_src
+
+** Marginalia.el
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :after vertico
+    ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
+    ;; available in the *Completions* buffer, add it to the
+    ;; `completion-list-mode-map'.
+    :bind (:map minibuffer-local-map
+                ("M-A" . marginalia-cycle))
+    :init
+    (marginalia-mode))
+#+end_src
+** Consult
+#+begin_src emacs-lisp
+  ;; Example configuration for Consult
+  (use-package consult
+    :after vertico
+    ;; Replace bindings. Lazily loaded due by `use-package'.
+    ;; Enable automatic preview at point in the *Completions* buffer. This is
+    ;; relevant when you use the default completion UI.
+    :hook (completion-list-mode . consult-preview-at-point-mode)
+
+    ;; The :init configuration is always executed (Not lazy)
+    :init
+
+    ;; Optionally configure the register formatting. This improves the register
+    ;; preview for `consult-register', `consult-register-load',
+    ;; `consult-register-store' and the Emacs built-ins.
+    (setq register-preview-delay 0.5
+          register-preview-function #'consult-register-format)
+
+    ;; Optionally tweak the register preview window.
+    ;; This adds thin lines, sorting and hides the mode line of the window.
+    (advice-add #'register-preview :override #'consult-register-window)
+
+    ;; Use Consult to select xref locations with preview
+    (setq xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)
+
+    ;; Configure other variables and modes in the :config section,
+    ;; after lazily loading the package.
+    :config
+
+    ;; Optionally configure preview. The default value
+    ;; is 'any, such that any key triggers the preview.
+    ;; (setq consult-preview-key 'any)
+    ;; (setq consult-preview-key "M-.")
+    ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+    ;; For some commands and buffer sources it is useful to configure the
+    ;; :preview-key on a per-command basis using the `consult-customize' macro.
+    (consult-customize
+     consult-theme :preview-key '(:debounce 0.2 any)
+     consult-ripgrep consult-git-grep consult-grep
+     consult-bookmark consult-recent-file consult-xref
+     consult--source-bookmark consult--source-file-register
+     consult--source-recent-file consult--source-project-recent-file
+     ;; :preview-key "M-."
+     :preview-key "C-SPC")
+
+    ;; Optionally configure the narrowing key.
+    ;; Both < and C-+ work reasonably well.
+    (setq consult-narrow-key "<") ;; "C-+"
+
+    ;; Optionally make narrowing help available in the minibuffer.
+    ;; You may want to use `embark-prefix-help-command' or which-key instead.
+    ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+    ;; By default `consult-project-function' uses `project-root' from project.el.
+    ;; Optionally configure a different project root function.
+    ;;;; 1. project.el (the default)
+    ;; (setq consult-project-function #'consult--default-project--function)
+    ;;;; 2. vc.el (vc-root-dir)
+    ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+    ;;;; 3. locate-dominating-file
+    ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+    ;;;; 4. projectile.el (projectile-project-root)
+    ;; (autoload 'projectile-project-root "projectile")
+    ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+    ;;;; 5. No project support
+    ;; (setq consult-project-function nil)
+    )
+#+end_src
+
+
+* EDITING
+
+** Indent
+#+begin_src emacs-lisp
+(use-package aggressive-indent
+  :config
+  (global-aggressive-indent-mode 1))
+#+end_src
+
+** Smartparens
+#+begin_src emacs-lisp
+  (use-package smartparens
+    :hook (prog-mode text-mode markdown-mode)
+    :config
+    (require 'smartparens-config))
+#+end_src
+
+** Better Jumper
+#+begin_src emacs-lisp
+(use-package better-jumper
+  :config
+  (better-jumper-mode +1)
+  (meow-normal-define-key
+    '("C-o" . better-jumper-jump-backward)
+    '("<C-i>" . better-jumper-jump-forward)))
+#+end_src
+*** TODO need to setup `better-jumper-set-jump` to be able to use it properly
+
+** Trim Whitespaces (ws-butler)
+#+begin_src emacs-lisp
+(use-package ws-butler
+  :hook (prog-mode . ws-butler-mode))
+#+end_src
+
+* COMPLETION
+
+** Company
+#+begin_src emacs-lisp
+  (use-package company
+    :commands (global-company-mode company-mode)
+    :hook ((after-init . global-company-mode) (prog-mode . company-mode)))
+#+end_src
+
+** LSP (Eglot)
+#+begin_src emacs-lisp
+      (use-package eglot
+        :commands eglot
+        :elpaca nil)
+#+end_src
+
+
+* TOOLS
+** Diagnostics
+#+begin_src emacs-lisp
+  (use-package flymake
+    :commands flymake-mode
+    :hook (prog-mode . flymake-mode)
+    :elpaca nil)
+#+end_src
+
+** Treesitter
+#+begin_src emacs-lisp
+  (use-package tree-sitter
+    :commands tree-sitter-hl-mode
+    :config
+    (global-tree-sitter-mode))
+
+  (use-package tree-sitter-langs
+    :after tree-sitter)
+#+end_src
+
+** Direnv
+#+begin_src emacs-lisp
+      ;; Let's define a `first-file-hook' here
+      (use-package envrc
+        :hook (find-file . envrc-global-mode)
+        :config
+        (advice-add #'org-babel-execute-src-block :around #'envrc-propagate-environment))
+#+end_src
+
+** Formatter
+#+begin_src emacs-lisp
+  (use-package format-all
+    :commands (format-all-mode format-all-region-or-buffer)
+    :config
+    (format-all-ensure-formatter)
+    (setq-default format-all-formatters '(("C" . (clang-format)))))
+#+end_src
+
+** Magit
+#+begin_src emacs-lisp
+  (use-package magit
+    :commands magit)
+#+end_src
+
+** Vterm
+#+begin_src emacs-lisp
+    (use-package vterm
+      :config
+      (defvar-keymap vterm-normal-mode-map
+        "RET" #'vterm-send-return)
+
+      (define-key vterm-normal-mode-map
+                  [remap yank] #'vterm-yank)
+      (define-key vterm-normal-mode-map
+                  [remap xterm-paste] #'vterm-xterm-paste)
+      (define-key vterm-normal-mode-map
+                  [remap yank-pop] #'vterm-yank-pop)
+      (define-key vterm-normal-mode-map
+                  [remap mouse-yank-primary] #'vterm-yank-primary)
+      (define-key vterm-normal-mode-map
+                  [remap self-insert-command] #'vterm--self-insert)
+      (define-key vterm-normal-mode-map
+                  [remap beginning-of-defun] #'vterm-previous-prompt)
+      (define-key vterm-normal-mode-map
+                  [remap end-of-defun] #'vterm-next-prompt)
+
+      (defun meow-vterm-insert-enter ()
+        "Enable vterm default binding in insert and set cursor."
+        (use-local-map vterm-mode-map)
+        (vterm-goto-char (point)))
+
+      (defun meow-vterm-insert-exit ()
+        "Use regular bindings in normal mode."
+        (use-local-map vterm-normal-mode-map))
+
+      (defun meow-vterm-setup-hooks ()
+        "Configure insert mode for vterm."
+        (add-hook 'meow-insert-enter-hook #'meow-vterm-insert-enter nil t)
+        (add-hook 'meow-insert-exit-hook #'meow-vterm-insert-exit nil t))
+
+      (add-hook 'vterm-mode-hook #'meow-vterm-setup-hooks)
+      (add-hook 'vterm-mode-hook #'(lambda () (display-line-numbers-mode -1))))
+#+end_src
+
+** With Editor
+So I could still use emacs when I open $EDITOR in vterm
+#+begin_src emacs-lisp
+  (use-package with-editor
+    :hook (vterm-mode . with-editor-export-editor))
+#+end_src
+
+** Recent Files
+#+begin_src emacs-lisp
+  (recentf-mode 1)
+  (elpaca nil (meow-leader-define-key '("fr" . consult-recent-file)))
+#+end_src
+* LANGUAGES
+** Python
+#+begin_src emacs-lisp
+  (use-package python
+    :elpaca nil
+    :config
+    (add-hook 'python-mode-hook 'eglot-ensure)
+    (add-hook 'python-mode-hook 'tree-sitter-hl-mode))
+#+end_src
+
+** Emacs Lisp
+#+begin_src emacs-lisp
+#+end_src
