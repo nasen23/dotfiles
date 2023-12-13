@@ -34,6 +34,7 @@
   - [[#better-jumper][Better Jumper]]
   - [[#trim-whitespaces-ws-butler][Trim Whitespaces (ws-butler)]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
+  - [[#highlight-todos][Highlight TODOs]]
 - [[#completion][COMPLETION]]
   - [[#company][Company]]
   - [[#lsp-eglot][LSP (Eglot)]]
@@ -334,10 +335,12 @@
 
 ** Icons
 #+begin_src emacs-lisp
-      (use-package nerd-icons)
-      (use-package nerd-icons-completion
-        :config
-        (nerd-icons-completion-mode))
+    (use-package nerd-icons)
+    (use-package nerd-icons-completion
+      :after marginalia
+      :config
+      (nerd-icons-completion-mode)
+      (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 #+end_src
 
 ** Modeline
@@ -526,7 +529,7 @@
     ;; By default `consult-project-function' uses `project-root' from project.el.
     ;; Optionally configure a different project root function.
     ;;;; 1. project.el (the default)
-    ;; (setq consult-project-function #'consult--default-project--function)
+    (setq consult-project-function #'consult--default-project--function)
     ;;;; 2. vc.el (vc-root-dir)
     ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
     ;;;; 3. locate-dominating-file
@@ -538,7 +541,12 @@
     ;; (setq consult-project-function nil)
     )
 #+end_src
-
+*** Define Some Keys
+#+begin_src emacs-lisp
+  (global-set-key (kbd "s-f") #'consult-line)
+  (global-set-key (kbd "C-s") #'consult-line)
+  (elpaca nil (meow-leader-define-key '("SPC" . project-find-file)))
+#+end_src
 
 * EDITING
 
@@ -564,7 +572,7 @@
   (better-jumper-mode +1)
   (meow-normal-define-key
     '("C-o" . better-jumper-jump-backward)
-    '("C-i" . better-jumper-jump-forward)))
+    '("<C-i>" . better-jumper-jump-forward)))
 #+end_src
 *** TODO need to setup `better-jumper-set-jump` to be able to use it properly
 
@@ -578,6 +586,12 @@
 #+begin_src emacs-lisp
   (use-package rainbow-delimiters
     :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+** Highlight TODOs
+#+begin_src emacs-lisp
+  (use-package hl-todo
+    :hook (prog-mode . hl-todo-mode))
 #+end_src
 
 * COMPLETION
@@ -600,10 +614,15 @@
 * TOOLS
 ** Diagnostics
 #+begin_src emacs-lisp
-  (use-package flymake
-    :commands flymake-mode
-    :hook (prog-mode . flymake-mode)
-    :elpaca nil)
+        (use-package flymake
+          :commands flymake-mode
+          :hook (prog-mode . flymake-mode)
+          :elpaca nil)
+
+        (use-package flymake-popon
+          :hook (flymake-mode . flymake-popon-mode)
+          :config
+          (setq flymake-popon-method 'posframe))
 #+end_src
 
 ** Treesitter
