@@ -33,6 +33,7 @@
   - [[#smartparens][Smartparens]]
   - [[#better-jumper][Better Jumper]]
   - [[#trim-whitespaces-ws-butler][Trim Whitespaces (ws-butler)]]
+  - [[#rainbow-delimiters][Rainbow Delimiters]]
 - [[#completion][COMPLETION]]
   - [[#company][Company]]
   - [[#lsp-eglot][LSP (Eglot)]]
@@ -563,7 +564,7 @@
   (better-jumper-mode +1)
   (meow-normal-define-key
     '("C-o" . better-jumper-jump-backward)
-    '("<C-i>" . better-jumper-jump-forward)))
+    '("C-i" . better-jumper-jump-forward)))
 #+end_src
 *** TODO need to setup `better-jumper-set-jump` to be able to use it properly
 
@@ -571,6 +572,12 @@
 #+begin_src emacs-lisp
 (use-package ws-butler
   :hook (prog-mode . ws-butler-mode))
+#+end_src
+
+** Rainbow Delimiters
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
 * COMPLETION
@@ -630,8 +637,11 @@
 
 ** Magit
 #+begin_src emacs-lisp
-  (use-package magit
-    :commands magit)
+    (use-package magit
+      :commands magit)
+
+    (use-package transient
+      :after magit)
 #+end_src
 
 ** Vterm
