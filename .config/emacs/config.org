@@ -33,6 +33,8 @@
   - [[#smartparens][Smartparens]]
   - [[#better-jumper][Better Jumper]]
   - [[#trim-whitespaces-ws-butler][Trim Whitespaces (ws-butler)]]
+  - [[#rainbow-delimiters][Rainbow Delimiters]]
+  - [[#highlight-todos][Highlight TODOs]]
 - [[#completion][COMPLETION]]
   - [[#company][Company]]
   - [[#lsp-eglot][LSP (Eglot)]]
@@ -46,9 +48,12 @@
   - [[#vterm][Vterm]]
   - [[#with-editor][With Editor]]
   - [[#recent-files][Recent Files]]
+  - [[#dired][Dired]]
+  - [[#yadm-over-magit][YADM over Magit]]
 - [[#languages][LANGUAGES]]
   - [[#python][Python]]
   - [[#emacs-lisp][Emacs Lisp]]
+  - [[#yaml][YAML]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
 ** Elpaca Package Manager
@@ -237,40 +242,41 @@
 ** Basic Key Bindings
 
 #+begin_src emacs-lisp
-  (global-set-key (kbd "s-x") 'execute-extended-command)
-  (define-key input-decode-map (kbd "C-[") [control-bracketleft])
-  (elpaca nil (progn
-                ;; TODO map RET in normal mode to button-click
-                ;; Ref: https://github.com/emacs-evil/evil/blob/c4f95fd9ec284a8284405f84102bfdb74f0ee22f/evil-commands.el#L846-L876
-                (defun meow--ret ()
-                  (interactive)
-                  (let ((widget (or (get-char-property (point) 'field)
-                                    (get-char-property (point) 'button)
-                                    (get-char-property (point) 'widget-doc))))
-                    (cond
-                     ((and widget
-                           (fboundp 'widget-type)
-                           (fboundp 'widget-button-press)
-                           (or (and (symbolp widget)
-                                    (get widget 'widget-type))
-                               (and (consp widget)
-                                    (get (widget-type widget) 'widget-type))))
-                      (when (fboundp 'widget-button-press)
-                        (widget-button-press (point))))
-                     ((and (fboundp 'button-at)
-                           (fboundp 'push-button)
-                           (button-at (point)))
-                      (push-button)))))
-                (meow-normal-define-key
-                 '("RET" . meow--ret))
-                (define-key meow-normal-state-keymap [control-bracketleft] 'meow-cancel)
-                (meow-leader-define-key
-                 ;; Fi le
-                 '("." . find-file)
-                 '("fc" . (lambda () (interactive) (let ((default-directory user-emacs-directory)) (call-interactively 'find-file)))))
-                (add-hook 'minibuffer-setup-hook (lambda () (local-set-key [control-bracketleft] #'meow-minibuffer-quit)))
+    (global-set-key (kbd "s-x") 'execute-extended-command)
+    (define-key input-decode-map (kbd "C-[") [control-bracketleft])
+    (elpaca nil (progn
+                  ;; TODO map RET in normal mode to button-click
+                  ;; Ref: https://github.com/emacs-evil/evil/blob/c4f95fd9ec284a8284405f84102bfdb74f0ee22f/evil-commands.el#L846-L876
+                  (defun meow--ret ()
+                    (interactive)
+                    (let ((widget (or (get-char-property (point) 'field)
+                                      (get-char-property (point) 'button)
+                                      (get-char-property (point) 'widget-doc))))
+                      (cond
+                       ((and widget
+                             (fboundp 'widget-type)
+                             (fboundp 'widget-button-press)
+                             (or (and (symbolp widget)
+                                      (get widget 'widget-type))
+                                 (and (consp widget)
+                                      (get (widget-type widget) 'widget-type))))
+                        (when (fboundp 'widget-button-press)
+                          (widget-button-press (point))))
+                       ((and (fboundp 'button-at)
+                             (fboundp 'push-button)
+                             (button-at (point)))
+                        (push-button)))))
+                  (meow-normal-define-key
+                   '("RET" . meow--ret)
+                   '("/" . comment-or-uncomment-region))
+                  (define-key meow-normal-state-keymap [control-bracketleft] 'meow-cancel)
+                  (meow-leader-define-key
+                   ;; Fi le
+                   '("." . find-file)
+                   '("fc" . (lambda () (interactive) (let ((default-directory user-emacs-directory)) (call-interactively 'find-file)))))
+                  (add-hook 'minibuffer-setup-hook (lambda () (local-set-key [control-bracketleft] #'meow-minibuffer-quit)))
 
-                ))
+                  ))
 #+end_src
 
 ** Turn Off Some Annoyying Things
@@ -309,8 +315,8 @@
 ** Display Line Numbers
 
 #+begin_src emacs-lisp
-  (global-display-line-numbers-mode 1)
-  (global-visual-line-mode t)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  ;; (global-visual-line-mode t)
 #+end_src
 
 ** Get Shell Env Loaded
@@ -334,10 +340,12 @@
 
 ** Icons
 #+begin_src emacs-lisp
-      (use-package nerd-icons)
-      (use-package nerd-icons-completion
-        :config
-        (nerd-icons-completion-mode))
+    (use-package nerd-icons)
+    (use-package nerd-icons-completion
+      :after marginalia
+      :config
+      (nerd-icons-completion-mode)
+      (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 #+end_src
 
 ** Modeline
@@ -526,7 +534,7 @@
     ;; By default `consult-project-function' uses `project-root' from project.el.
     ;; Optionally configure a different project root function.
     ;;;; 1. project.el (the default)
-    ;; (setq consult-project-function #'consult--default-project--function)
+    (setq consult-project-function #'consult--default-project--function)
     ;;;; 2. vc.el (vc-root-dir)
     ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
     ;;;; 3. locate-dominating-file
@@ -538,7 +546,11 @@
     ;; (setq consult-project-function nil)
     )
 #+end_src
-
+*** Define Some Keys
+#+begin_src emacs-lisp
+  (global-set-key (kbd "s-f") #'consult-line)
+  (elpaca nil (meow-leader-define-key '("SPC" . project-find-file)))
+#+end_src
 
 * EDITING
 
@@ -580,6 +592,18 @@
   :hook (prog-mode . ws-butler-mode))
 #+end_src
 
+** Rainbow Delimiters
+#+begin_src emacs-lisp
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
+
+** Highlight TODOs
+#+begin_src emacs-lisp
+  (use-package hl-todo
+    :hook (prog-mode . hl-todo-mode))
+#+end_src
+
 * COMPLETION
 
 ** Company
@@ -601,10 +625,17 @@
 * TOOLS
 ** Diagnostics
 #+begin_src emacs-lisp
-  (use-package flymake
-    :commands flymake-mode
-    :hook (prog-mode . flymake-mode)
-    :elpaca nil)
+            (use-package flymake
+              :commands flymake-mode
+              :hook (prog-mode . flymake-mode)
+              :elpaca nil
+              :config
+              (setq flymake-fringe-indicator-position 'right-fringe))
+
+            (use-package flymake-popon
+              :hook (flymake-mode . flymake-popon-mode)
+              :config
+              (setq flymake-popon-method 'posframe))
 #+end_src
 
 ** Treesitter
@@ -638,8 +669,11 @@
 
 ** Magit
 #+begin_src emacs-lisp
-  (use-package magit
-    :commands magit)
+    (use-package magit
+      :commands magit)
+
+    (use-package transient
+      :after magit)
 #+end_src
 
 ** Vterm
@@ -694,6 +728,36 @@ So I could still use emacs when I open $EDITOR in vterm
   (recentf-mode 1)
   (elpaca nil (meow-leader-define-key '("fr" . consult-recent-file)))
 #+end_src
+
+** Dired
+*** Icons
+#+begin_src emacs-lisp
+  (use-package nerd-icons-dired
+    :hook (dired-mode . nerd-icons-dired-mode))
+#+end_src
+
+*** Dirvish
+#+begin_src emacs-lisp
+;;    (use-package dirvish
+;;      :config
+;;      (dirvish-override-dired-mode))
+#+end_src
+
+** YADM over Magit
+#+begin_src emacs-lisp
+    (with-eval-after-load 'tramp
+      (add-to-list 'tramp-methods
+                   '("yadm"
+                     (tramp-login-program "yadm")
+                     (tramp-login-args (("enter")))
+                     (tramp-login-env (("SHELL") ("/bin/sh")))
+                     (tramp-remote-shell "/bin/sh")
+                     (tramp-remote-shell-args ("-c")))))
+
+    (defun yadm ()
+      (interactive)
+      (magit-status "/yadm::"))
+#+end_src
 * LANGUAGES
 ** Python
 #+begin_src emacs-lisp
@@ -706,4 +770,13 @@ So I could still use emacs when I open $EDITOR in vterm
 
 ** Emacs Lisp
 #+begin_src emacs-lisp
+#+end_src
+
+** YAML
+#+begin_src emacs-lisp
+          (use-package yaml-mode
+            :config
+            (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+            (add-hook 'yaml-mode-hook 'display-line-numbers-mode))
+
 #+end_src
