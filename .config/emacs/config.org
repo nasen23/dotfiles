@@ -51,11 +51,13 @@
   - [[#recent-files][Recent Files]]
   - [[#dired][Dired]]
   - [[#yadm-over-magit][YADM over Magit]]
+  - [[#emacs-rime][Emacs Rime]]
 - [[#languages][LANGUAGES]]
   - [[#python][Python]]
   - [[#emacs-lisp][Emacs Lisp]]
   - [[#yaml][YAML]]
   - [[#markdown][Markdown]]
+  - [[#json][JSON]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
 ** Elpaca Package Manager
@@ -128,117 +130,119 @@
 ** Load Meow
 
 #+begin_src emacs-lisp
-(use-package meow
-  :demand t
-  :init
-  (setq meow-visit-sanitize-completion nil)
-  :custom
-  (meow-use-cursor-position-hack t)
-  (meow-use-clipboard t)
-  :config
-  (require 'meow)
-  (defun meow-setup ()
-    (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-    (meow-motion-overwrite-define-key
-     '("j" . meow-next)
-     '("k" . meow-prev)
-     '("<escape>" . ignore))
-    (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
-    (define-key meow-keypad-state-keymap [control-bracketleft] 'meow-keypad-quit)
-    (meow-leader-define-key
-     ;; Use SPC (0-9) for digit arguments.
-     '("1" . meow-digit-argument)
-     '("2" . meow-digit-argument)
-     '("3" . meow-digit-argument)
-     '("4" . meow-digit-argument)
-     '("5" . meow-digit-argument)
-     '("6" . meow-digit-argument)
-     '("7" . meow-digit-argument)
-     '("8" . meow-digit-argument)
-     '("9" . meow-digit-argument)
-     '("0" . meow-digit-argument)
-     '("/" . meow-keypad-describe-key)
-     '("ff" . find-file)
-     '("fd" . dired)
-     '("fs" . save-buffer)
-     '("wv" . split-window-right)
-     '("ws" . split-window-below)
-     '("wo" . other-window)
-     '("wh" . windmove-left)
-     '("wj" . windmove-down)
-     '("wk" . windmove-up)
-     '("wl" . windmove-right)
-     '("wq" . delete-window)
-     '("bi" . ibuffer)
-     '("bn" . next-buffer)
-     '("bp" . meow-last-buffer)
-     '("bk" . kill-buffer)
-     '("bb" . switch-to-buffer))
-    (meow-normal-define-key
-     '("0" . meow-expand-0)
-     '("9" . meow-expand-9)
-     '("8" . meow-expand-8)
-     '("7" . meow-expand-7)
-     '("6" . meow-expand-6)
-     '("5" . meow-expand-5)
-     '("4" . meow-expand-4)
-     '("3" . meow-expand-3)
-     '("2" . meow-expand-2)
-     '("1" . meow-expand-1)
-     '("-" . negative-argument)
-     '(";" . meow-reverse)
-     '("," . meow-inner-of-thing)
-     '("." . meow-bounds-of-thing)
-     '("[" . meow-beginning-of-thing)
-     '("]" . meow-end-of-thing)
-     '("a" . meow-append)
-     '("A" . meow-open-below)
-     '("b" . meow-back-word)
-     '("B" . meow-back-symbol)
-     '("c" . meow-change)
-     '("d" . delete-char) ;; other wise this just runs C-d, which is mapped to scroll-up-command
-     '("D" . meow-backward-delete)
-     '("e" . meow-next-word)
-     '("E" . meow-next-symbol)
-     '("f" . meow-find)
-     '("g" . meow-cancel-selection)
-     '("G" . meow-grab)
-     '("h" . meow-left)
-     '("H" . meow-left-expand)
-     '("i" . meow-insert)
-     '("I" . meow-open-above)
-     '("j" . meow-next)
-     '("J" . meow-next-expand)
-     '("k" . meow-prev)
-     '("K" . meow-prev-expand)
-     '("l" . meow-right)
-     '("L" . meow-right-expand)
-     '("m" . meow-join)
-     '("n" . meow-search)
-     '("o" . meow-block)
-     '("O" . meow-to-block)
-     '("p" . meow-yank)
-     '("q" . meow-quit)
-     '("Q" . meow-goto-line)
-     '("r" . meow-replace)
-     '("R" . meow-swap-grab)
-     '("s" . meow-kill)
-     '("t" . meow-till)
-     '("u" . meow-undo)
-     '("U" . meow-undo-in-selection)
-     '("v" . meow-visit)
-     '("w" . meow-mark-word)
-     '("W" . meow-mark-symbol)
-     '("x" . meow-line)
-     '("X" . meow-goto-line)
-     '("y" . meow-save)
-     '("Y" . meow-sync-grab)
-     '("z" . meow-pop-selection)
-     '("'" . repeat)
-     '("<escape>" . ignore)
-   '("C-r" . undo-redo)))
-  (meow-setup)
-  (meow-global-mode))
+    (use-package meow
+      :demand t
+      :init
+      (setq meow-visit-sanitize-completion nil)
+      :custom
+      (meow-use-cursor-position-hack t)
+      (meow-use-clipboard t)
+      :config
+      (require 'meow)
+      (defun meow-setup ()
+        (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+        (meow-motion-overwrite-define-key
+         '("j" . meow-next)
+         '("k" . meow-prev)
+         '("<escape>" . ignore))
+        (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
+        (define-key meow-keypad-state-keymap [control-bracketleft] 'meow-keypad-quit)
+        (meow-leader-define-key
+         ;; Use SPC (0-9) for digit arguments.
+         '("1" . meow-digit-argument)
+         '("2" . meow-digit-argument)
+         '("3" . meow-digit-argument)
+         '("4" . meow-digit-argument)
+         '("5" . meow-digit-argument)
+         '("6" . meow-digit-argument)
+         '("7" . meow-digit-argument)
+         '("8" . meow-digit-argument)
+         '("9" . meow-digit-argument)
+         '("0" . meow-digit-argument)
+         '("/" . meow-keypad-describe-key)
+         '("ff" . find-file)
+         '("fd" . dired)
+         '("fs" . save-buffer)
+         '("wv" . split-window-right)
+         '("ws" . split-window-below)
+         '("wo" . other-window)
+         '("wh" . windmove-left)
+         '("wj" . windmove-down)
+         '("wk" . windmove-up)
+         '("wl" . windmove-right)
+         '("wq" . delete-window)
+         '("bi" . ibuffer)
+         '("bn" . next-buffer)
+         '("bp" . meow-last-buffer)
+         '("bk" . kill-buffer)
+         '("bb" . switch-to-buffer))
+        (meow-normal-define-key
+         '("0" . meow-expand-0)
+         '("9" . meow-expand-9)
+         '("8" . meow-expand-8)
+         '("7" . meow-expand-7)
+         '("6" . meow-expand-6)
+         '("5" . meow-expand-5)
+         '("4" . meow-expand-4)
+         '("3" . meow-expand-3)
+         '("2" . meow-expand-2)
+         '("1" . meow-expand-1)
+         '("-" . negative-argument)
+         '(";" . meow-reverse)
+         '("," . meow-inner-of-thing)
+         '("." . meow-bounds-of-thing)
+         '("[" . meow-beginning-of-thing)
+         '("]" . meow-end-of-thing)
+         '("a" . meow-append)
+         '("A" . meow-open-below)
+         '("b" . meow-back-word)
+         '("B" . meow-back-symbol)
+         '("c" . meow-change)
+         '("d" . delete-char) ;; other wise this just runs C-d, which is mapped to scroll-up-command
+         '("D" . meow-backward-delete)
+         '("e" . meow-next-word)
+         '("E" . meow-next-symbol)
+         '("f" . meow-find)
+         '("g" . meow-cancel-selection)
+         '("G" . meow-grab)
+         '("h" . meow-left)
+         '("H" . meow-left-expand)
+         '("i" . meow-insert)
+         '("I" . meow-open-above)
+         '("j" . meow-next)
+         '("J" . meow-next-expand)
+         '("k" . meow-prev)
+         '("K" . meow-prev-expand)
+         '("l" . meow-right)
+         '("L" . meow-right-expand)
+         '("m" . meow-join)
+         '("n" . meow-search)
+         '("o" . meow-block)
+         '("O" . meow-to-block)
+         '("p" . meow-yank)
+         '("q" . meow-quit)
+         '("Q" . meow-goto-line)
+         '("r" . meow-replace)
+         '("R" . meow-swap-grab)
+         '("s" . meow-kill)
+         '("t" . meow-till)
+         '("u" . meow-undo)
+         '("U" . meow-undo-in-selection)
+         '("v" . meow-visit)
+         '("w" . meow-mark-word)
+         '("W" . meow-mark-symbol)
+         '("x" . meow-line)
+         '("X" . meow-goto-line)
+         '("y" . meow-save)
+         '("Y" . meow-sync-grab)
+         '("z" . meow-pop-selection)
+         '("'" . repeat)
+         '("<escape>" . ignore)
+       '("C-r" . undo-redo)))
+      (meow-setup)
+      (meow-global-mode)
+      (meow--enable-shims)
+  )
 #+end_src
 
 ** Basic Key Bindings
@@ -283,7 +287,8 @@
 
 ** Turn Off Some Annoyying Things
 #+begin_src emacs-lisp
-(setq ring-bell-function 'ignore)
+  (setq ring-bell-function 'ignore)
+  (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
 *** LockFile and Backup Files
@@ -536,7 +541,7 @@
     ;; By default `consult-project-function' uses `project-root' from project.el.
     ;; Optionally configure a different project root function.
     ;;;; 1. project.el (the default)
-    (setq consult-project-function #'consult--default-project--function)
+    (setq consult-project-function #'consult--default-project-function)
     ;;;; 2. vc.el (vc-root-dir)
     ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
     ;;;; 3. locate-dominating-file
@@ -759,6 +764,12 @@ So I could still use emacs when I open $EDITOR in vterm
 ;;      (dirvish-override-dired-mode))
 #+end_src
 
+*** Dired Rsync
+#+begin_src emacs-lisp
+  (use-package dired-rsync
+    :commands (dired-rsync dired-rsync-transient))
+#+end_src
+
 ** YADM over Magit
 #+begin_src emacs-lisp
     (with-eval-after-load 'tramp
@@ -774,6 +785,29 @@ So I could still use emacs when I open $EDITOR in vterm
       (interactive)
       (magit-status "/yadm::"))
 #+end_src
+
+** Emacs Rime
+#+begin_src emacs-lisp
+                  (use-package rime
+                    :init
+                    (setq rime-librime-root (concat user-emacs-directory "librime/dist"))
+                    :custom
+                    (default-input-method "rime")
+                    (rime-user-data-dir "~/Library/Rime")
+                    (rime-show-candidate 'posframe)
+                    :bind
+                    (:map rime-mode-map ("C-`" . 'rime-send-keybinding)))
+#+end_src
+
+*** Let Meow Play Nice with Input Methods
+#+begin_src emacs-lisp
+        (with-eval-after-load 'meow
+          (defvar-local +meow-input-method-state nil)
+          (add-hook 'meow-insert-enter-hook (lambda () (when +meow-input-method-state (activate-input-method +meow-input-method-state))))
+          (add-hook 'meow-insert-exit-hook (lambda () (setq-local +meow-input-method-state current-input-method) (deactivate-input-method)))
+          )
+#+end_src
+
 * LANGUAGES
 ** Python
 #+begin_src emacs-lisp
@@ -790,10 +824,11 @@ So I could still use emacs when I open $EDITOR in vterm
 
 ** YAML
 #+begin_src emacs-lisp
-          (use-package yaml-mode
-            :config
-            (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
-            (add-hook 'yaml-mode-hook 'display-line-numbers-mode))
+            (use-package yaml-mode
+              :config
+              (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+              (add-hook 'yaml-mode-hook 'display-line-numbers-mode)
+              (add-hook 'yaml-mode-hook 'tree-sitter-hl-mode))
 
 #+end_src
 
@@ -804,4 +839,10 @@ This is quite essential as ~eglot~ uses this to highlight help buffer.
           :mode ("README\\.md\\'" . gfm-mode)
           :init (setq markdown-command "multimarkdown")
           )
+#+end_src
+
+** JSON
+#+begin_src emacs-lisp
+    (use-package json-mode
+      :mode ("\\.json\\'" . json-mode))
 #+end_src
