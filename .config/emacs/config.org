@@ -35,6 +35,7 @@
   - [[#trim-whitespaces-ws-butler][Trim Whitespaces (ws-butler)]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#highlight-todos][Highlight TODOs]]
+  - [[#git-diff-highlights][Git Diff Highlights]]
 - [[#completion][COMPLETION]]
   - [[#company][Company]]
   - [[#lsp-eglot][LSP (Eglot)]]
@@ -54,6 +55,7 @@
   - [[#python][Python]]
   - [[#emacs-lisp][Emacs Lisp]]
   - [[#yaml][YAML]]
+  - [[#markdown][Markdown]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
 ** Elpaca Package Manager
@@ -604,13 +606,21 @@
     :hook (prog-mode . hl-todo-mode))
 #+end_src
 
+** Git Diff Highlights
+#+begin_src emacs-lisp
+    (use-package diff-hl
+      :config
+      (global-diff-hl-mode))
+#+end_src
+
 * COMPLETION
 
 ** Company
 #+begin_src emacs-lisp
   (use-package company
     :commands (global-company-mode company-mode)
-    :hook ((after-init . global-company-mode) (prog-mode . company-mode)))
+    :hook ((after-init . global-company-mode) (prog-mode . company-mode))
+    )
 #+end_src
 
 ** LSP (Eglot)
@@ -620,7 +630,13 @@
         :elpaca nil)
 #+end_src
 
-** TODO YASnippet
+** YASnippet
+#+begin_src emacs-lisp
+    (use-package yasnippet
+      :hook (prog-mode . yas-minor-mode))
+    (use-package yasnippet-snippets
+      :after yasnippet)
+#+end_src
 
 * TOOLS
 ** Diagnostics
@@ -779,4 +795,13 @@ So I could still use emacs when I open $EDITOR in vterm
             (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
             (add-hook 'yaml-mode-hook 'display-line-numbers-mode))
 
+#+end_src
+
+** Markdown
+This is quite essential as ~eglot~ uses this to highlight help buffer.
+#+begin_src emacs-lisp
+        (use-package markdown-mode
+          :mode ("README\\.md\\'" . gfm-mode)
+          :init (setq markdown-command "multimarkdown")
+          )
 #+end_src
