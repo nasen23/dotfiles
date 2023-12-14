@@ -129,7 +129,8 @@
       (remove-hook 'doom-after-modules-config-hook 'evil-mode)
       (evil-mode -1))))
 
-(setq meow-use-clipboard t)
+(setq meow-use-clipboard t
+      meow-use-cursor-position-hack t)
 
 (add-to-list 'auto-mode-alist '("\\.co\\'" . prog-mode))
 
@@ -138,3 +139,7 @@
   (map! :map vterm-mode-map
         :ni "C-\\" #'toggle-input-method
         :n "C-l" #'recenter-top-bottom))
+
+(use-package! kubel
+  :after (vterm)
+  :config (kubel-vterm-setup))

@@ -52,3 +52,5 @@
 (package! rime)
 (package! catppuccin-theme)
 (package! hl-line :disable t)
+(package! kubel)
+;; (package! meow)
