@@ -58,6 +58,7 @@
   - [[#yaml][YAML]]
   - [[#markdown][Markdown]]
   - [[#json][JSON]]
+  - [[#elastic-search][Elastic Search]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
 ** Elpaca Package Manager
@@ -843,6 +844,24 @@ This is quite essential as ~eglot~ uses this to highlight help buffer.
 
 ** JSON
 #+begin_src emacs-lisp
-    (use-package json-mode
-      :mode ("\\.json\\'" . json-mode))
+  (use-package json-mode
+    :mode ("\\.json\\'" . json-mode))
+  (use-package jq-mode
+    :commands jq-interactively
+    :mode ("\\.jq\\'" . jq-mode))
+#+end_src
+
+** Elastic Search
+What??
+#+begin_src emacs-lisp
+  (use-package es-mode
+    :mode ("\\.es\\'" . es-mode)
+    :config
+    (add-hook 'es-mode-hook
+              (lambda ()
+                (make-local-variable 'request-curl-options)
+                (add-to-list 'request-curl-options "--insecure"))))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((elasticsearch . t)))
 #+end_src
