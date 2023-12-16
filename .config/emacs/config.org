@@ -860,8 +860,8 @@ What??
     (add-hook 'es-mode-hook
               (lambda ()
                 (make-local-variable 'request-curl-options)
-                (add-to-list 'request-curl-options "--insecure"))))
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((elasticsearch . t)))
+                (add-to-list 'request-curl-options "--insecure")))
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((elasticsearch . t))))
 #+end_src
