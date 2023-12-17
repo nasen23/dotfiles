@@ -19,6 +19,7 @@
   - [[#theme][Theme]]
   - [[#icons][Icons]]
   - [[#modeline][Modeline]]
+  - [[#ligatures][Ligatures]]
 - [[#org-mode][ORG MODE]]
   - [[#toc][Toc]]
   - [[#org-bullets][Org Bullets]]
@@ -29,15 +30,17 @@
   - [[#marginaliael][Marginalia.el]]
   - [[#consult][Consult]]
 - [[#editing][EDITING]]
+  - [[#basic][Basic]]
   - [[#indent][Indent]]
   - [[#smartparens][Smartparens]]
   - [[#better-jumper][Better Jumper]]
+  - [[#goto-last-changed][Goto Last Changed]]
   - [[#trim-whitespaces-ws-butler][Trim Whitespaces (ws-butler)]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#highlight-todos][Highlight TODOs]]
   - [[#git-diff-highlights][Git Diff Highlights]]
 - [[#completion][COMPLETION]]
-  - [[#company][Company]]
+  - [[#corfu][Corfu]]
   - [[#lsp-eglot][LSP (Eglot)]]
   - [[#yasnippet][YASnippet]]
 - [[#tools][TOOLS]]
@@ -53,12 +56,10 @@
   - [[#yadm-over-magit][YADM over Magit]]
   - [[#emacs-rime][Emacs Rime]]
 - [[#languages][LANGUAGES]]
-  - [[#python][Python]]
-  - [[#emacs-lisp][Emacs Lisp]]
-  - [[#yaml][YAML]]
-  - [[#markdown][Markdown]]
-  - [[#json][JSON]]
-  - [[#elastic-search][Elastic Search]]
+  - [[#programming-languages][Programming languages]]
+  - [[#configuration-languages][Configuration languages]]
+  - [[#text][Text]]
+  - [[#just-tools][Just Tools]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
 ** Elpaca Package Manager
@@ -364,6 +365,52 @@
 
 #+end_src
 
+** Ligatures
+#+begin_src emacs-lisp
+  (use-package composite
+    :elpaca nil
+    :init
+    (defvar composition-ligature-table (make-char-table nil))
+    :hook
+    (((prog-mode conf-mode nxml-mode markdown-mode help-mode shell-mode eshell-mode term-mode vterm-mode)
+      . (lambda () (setq-local composition-function-table composition-ligature-table))))
+    :config
+        (let ((alist
+             '((33  . ".\\(?:\\(==\\|[!=]\\)[!=]?\\)")
+               (35  . ".\\(?:\\(###?\\|_(\\|[(:=?[_{]\\)[#(:=?[_{]?\\)")
+               (36  . ".\\(?:\\(>\\)>?\\)")
+               (37  . ".\\(?:\\(%\\)%?\\)")
+               (38  . ".\\(?:\\(&\\)&?\\)")
+               (42  . ".\\(?:\\(\\*\\*\\|[*>]\\)[*>]?\\)")
+               ;; (42 . ".\\(?:\\(\\*\\*\\|[*/>]\\).?\\)")
+               (43  . ".\\(?:\\([>]\\)>?\\)")
+               ;; (43 . ".\\(?:\\(\\+\\+\\|[+>]\\).?\\)")
+               (45  . ".\\(?:\\(-[->]\\|<<\\|>>\\|[-<>|~]\\)[-<>|~]?\\)")
+               ;; (46 . ".\\(?:\\(\\.[.<]\\|[-.=]\\)[-.<=]?\\)")
+               (46  . ".\\(?:\\(\\.<\\|[-=]\\)[-<=]?\\)")
+               (47  . ".\\(?:\\(//\\|==\\|[=>]\\)[/=>]?\\)")
+               ;; (47 . ".\\(?:\\(//\\|==\\|[*/=>]\\).?\\)")
+               (48  . ".\\(?:x[a-zA-Z]\\)")
+               (58  . ".\\(?:\\(::\\|[:<=>]\\)[:<=>]?\\)")
+               (59  . ".\\(?:\\(;\\);?\\)")
+               (60  . ".\\(?:\\(!--\\|\\$>\\|\\*>\\|\\+>\\|-[-<>|]\\|/>\\|<[-<=]\\|=[<>|]\\|==>?\\||>\\||||?\\|~[>~]\\|[$*+/:<=>|~-]\\)[$*+/:<=>|~-]?\\)")
+               (61  . ".\\(?:\\(!=\\|/=\\|:=\\|<<\\|=[=>]\\|>>\\|[=>]\\)[=<>]?\\)")
+               (62  . ".\\(?:\\(->\\|=>\\|>[-=>]\\|[-:=>]\\)[-:=>]?\\)")
+               (63  . ".\\(?:\\([.:=?]\\)[.:=?]?\\)")
+               (91  . ".\\(?:\\(|\\)[]|]?\\)")
+               ;; (92 . ".\\(?:\\([\\n]\\)[\\]?\\)")
+               (94  . ".\\(?:\\(=\\)=?\\)")
+               (95  . ".\\(?:\\(|_\\|[_]\\)_?\\)")
+               (119 . ".\\(?:\\(ww\\)w?\\)")
+               (123 . ".\\(?:\\(|\\)[|}]?\\)")
+               (124 . ".\\(?:\\(->\\|=>\\||[-=>]\\||||*>\\|[]=>|}-]\\).?\\)")
+               (126 . ".\\(?:\\(~>\\|[-=>@~]\\)[-=>@~]?\\)"))))
+        (dolist (char-regexp alist)
+          (set-char-table-range composition-ligature-table (car char-regexp)
+                                `([,(cdr char-regexp) 0 font-shape-gstring]))))
+      (set-char-table-parent composition-ligature-table composition-function-table))
+#+end_src
+
 * ORG MODE
 ** Toc
 #+begin_src emacs-lisp
@@ -561,12 +608,47 @@
 #+end_src
 
 * EDITING
-
-** Indent
+** Basic
+Basic editing tweaks
 #+begin_src emacs-lisp
-(use-package aggressive-indent
-  :config
-  (global-aggressive-indent-mode 1))
+  (setq kill-do-not-save-duplicates t)
+  (setq require-final-newline t)
+#+end_src
+
+*** Auto Revert
+Builtin package autorevert
+
+#+begin_src emacs-lisp
+  (use-package autorevert
+    :elpaca nil
+    :config
+    (setq auto-revert-verbose t
+          auto-revert-use-notify nil
+          auto-revert-stop-on-user-input nil
+          revert-without-query (list "."))
+    )
+#+end_src
+
+*** Save your last editing place
+Builtin package saveplace
+#+begin_src emacs-lisp
+  (use-package saveplace
+    :elpaca nil
+    :hook (find-file . save-place-mode))
+#+end_src
+** Indent
+Some basic behaviors
+#+begin_src emacs-lisp
+  (setq-default indent-tabs-mode nil
+                tab-width 2)
+
+  (setq-default tab-always-indent nil)
+#+end_src
+
+#+begin_src emacs-lisp
+  ;; (use-package aggressive-indent
+  ;;   :config
+  ;;   (global-aggressive-indent-mode 1))
 #+end_src
 
 *** Dtrt Indent (For guessing Indent)
@@ -583,16 +665,22 @@
     (require 'smartparens-config))
 #+end_src
 
-** Better Jumper
+** DONE Better Jumper
+Not using better jumper for now
 #+begin_src emacs-lisp
-(use-package better-jumper
-  :config
-  (better-jumper-mode +1)
-  (meow-normal-define-key
-    '("C-o" . better-jumper-jump-backward)
-    '("<C-i>" . better-jumper-jump-forward)))
+  ;; (use-package better-jumper
+  ;;   :config
+  ;;   (better-jumper-mode +1)
+  ;;   (meow-normal-define-key
+  ;;     '("C-o" . better-jumper-jump-backward)
+  ;;     '("<C-i>" . better-jumper-jump-forward)))
 #+end_src
 *** TODO need to setup `better-jumper-set-jump` to be able to use it properly
+
+** Goto Last Changed
+
+#+begin_src emacs-lisp
+#+end_src
 
 ** Trim Whitespaces (ws-butler)
 #+begin_src emacs-lisp
@@ -621,19 +709,41 @@
 
 * COMPLETION
 
-** Company
+** Corfu
 #+begin_src emacs-lisp
-  (use-package company
-    :commands (global-company-mode company-mode)
-    :hook ((after-init . global-company-mode) (prog-mode . company-mode))
+  (use-package corfu
+    :custom
+    (corfu-auto t)
+    (corfu-auto-prefix 2)
+    (corfu-preview-current nil)
+    (corfu-auto-delay 0.1)
+    (corfu-popupinfo-delay '(0.2 . 0.1))
+    :bind ("M-/" . completion-at-point)
+    :hook ((elpaca-after-init . global-corfu-mode)
+           (global-corfu-mode . corfu-popupinfo-mode)))
+  (use-package nerd-icons-corfu
+    :after corfu
+    :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+  ;; Extensions
+  (use-package cape
+    :init
+    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+    (add-to-list 'completion-at-point-functions #'cape-file)
+    (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+    (add-to-list 'completion-at-point-functions #'cape-keyword)
+    (add-to-list 'completion-at-point-functions #'cape-abbrev)
+
+    (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
     )
 #+end_src
 
 ** LSP (Eglot)
 #+begin_src emacs-lisp
-      (use-package eglot
-        :commands eglot
-        :elpaca nil)
+  (use-package eglot
+    :commands eglot
+    :elpaca nil
+    :init
+    (setq eglot-send-changes-idle-time 0))
 #+end_src
 
 ** YASnippet
@@ -642,33 +752,35 @@
       :hook (prog-mode . yas-minor-mode))
     (use-package yasnippet-snippets
       :after yasnippet)
+    (use-package yasnippet-capf
+      :init (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 #+end_src
 
 * TOOLS
 ** Diagnostics
 #+begin_src emacs-lisp
-            (use-package flymake
-              :commands flymake-mode
-              :hook (prog-mode . flymake-mode)
-              :elpaca nil
-              :config
-              (setq flymake-fringe-indicator-position 'right-fringe))
+  (use-package flymake
+    :hook (prog-mode . flymake-mode)
+    :elpaca nil
+    :init
+    (setq flymake-no-changes-timeout nil
+          flymake-fringe-indicator-position 'right-fringe)
+    :config
+    (setq elisp-flymake-byte-compile-load-path (append elisp-flymake-byte-compile-load-path load-path)))
 
-            (use-package flymake-popon
-              :hook (flymake-mode . flymake-popon-mode)
-              :config
-              (setq flymake-popon-method 'posframe))
+  (use-package sideline-flymake
+    :hook (flymake-mode . sideline-mode)
+    :init (setq sideline-flymake-display-mode 'point
+                sideline-backends-right '(sideline-flymake)))
 #+end_src
 
 ** Treesitter
 #+begin_src emacs-lisp
-  (use-package tree-sitter
-    :commands tree-sitter-hl-mode
+  (use-package treesit-auto
+    :custom
+    (treesit-auto-install 'prompt)
     :config
-    (global-tree-sitter-mode))
-
-  (use-package tree-sitter-langs
-    :after tree-sitter)
+    (global-treesit-auto-mode))
 #+end_src
 
 ** Direnv
@@ -700,42 +812,44 @@
 
 ** Vterm
 #+begin_src emacs-lisp
-    (use-package vterm
-      :config
-      (defvar-keymap vterm-normal-mode-map
-        "RET" #'vterm-send-return)
+      (use-package vterm
+        :config
+        (defvar-keymap vterm-normal-mode-map
+          "RET" #'vterm-send-return)
 
-      (define-key vterm-normal-mode-map
-                  [remap yank] #'vterm-yank)
-      (define-key vterm-normal-mode-map
-                  [remap xterm-paste] #'vterm-xterm-paste)
-      (define-key vterm-normal-mode-map
-                  [remap yank-pop] #'vterm-yank-pop)
-      (define-key vterm-normal-mode-map
-                  [remap mouse-yank-primary] #'vterm-yank-primary)
-      (define-key vterm-normal-mode-map
-                  [remap self-insert-command] #'vterm--self-insert)
-      (define-key vterm-normal-mode-map
-                  [remap beginning-of-defun] #'vterm-previous-prompt)
-      (define-key vterm-normal-mode-map
-                  [remap end-of-defun] #'vterm-next-prompt)
+        (define-key vterm-normal-mode-map
+                    [remap yank] #'vterm-yank)
+        (define-key vterm-normal-mode-map
+                    [remap xterm-paste] #'vterm-xterm-paste)
+        (define-key vterm-normal-mode-map
+                    [remap yank-pop] #'vterm-yank-pop)
+        (define-key vterm-normal-mode-map
+                    [remap mouse-yank-primary] #'vterm-yank-primary)
+        (define-key vterm-normal-mode-map
+                    [remap self-insert-command] #'vterm--self-insert)
+        (define-key vterm-normal-mode-map
+                    [remap beginning-of-defun] #'vterm-previous-prompt)
+        (define-key vterm-normal-mode-map
+                    [remap end-of-defun] #'vterm-next-prompt)
 
-      (defun meow-vterm-insert-enter ()
-        "Enable vterm default binding in insert and set cursor."
-        (use-local-map vterm-mode-map)
-        (vterm-goto-char (point)))
+        (defun meow-vterm-insert-enter ()
+          "Enable vterm default binding in insert and set cursor."
+          (use-local-map vterm-mode-map)
+          (vterm-goto-char (point)))
 
-      (defun meow-vterm-insert-exit ()
-        "Use regular bindings in normal mode."
-        (use-local-map vterm-normal-mode-map))
+        (defun meow-vterm-insert-exit ()
+          "Use regular bindings in normal mode."
+          (use-local-map vterm-normal-mode-map))
 
-      (defun meow-vterm-setup-hooks ()
-        "Configure insert mode for vterm."
-        (add-hook 'meow-insert-enter-hook #'meow-vterm-insert-enter nil t)
-        (add-hook 'meow-insert-exit-hook #'meow-vterm-insert-exit nil t))
+        (defun meow-vterm-setup-hooks ()
+          "Configure insert mode for vterm."
+          (add-hook 'meow-insert-enter-hook #'meow-vterm-insert-enter nil t)
+          (add-hook 'meow-insert-exit-hook #'meow-vterm-insert-exit nil t))
 
-      (add-hook 'vterm-mode-hook #'meow-vterm-setup-hooks)
-      (add-hook 'vterm-mode-hook #'(lambda () (display-line-numbers-mode -1))))
+        (add-hook 'vterm-mode-hook #'meow-vterm-setup-hooks)
+        (add-hook 'vterm-mode-hook #'(lambda () (display-line-numbers-mode -1))))
+      (use-package multi-vterm
+        :commands multi-vterm)
 #+end_src
 
 ** With Editor
@@ -810,7 +924,8 @@ So I could still use emacs when I open $EDITOR in vterm
 #+end_src
 
 * LANGUAGES
-** Python
+** Programming languages
+*** Python
 #+begin_src emacs-lisp
   (use-package python
     :elpaca nil
@@ -819,11 +934,20 @@ So I could still use emacs when I open $EDITOR in vterm
     (add-hook 'python-mode-hook 'tree-sitter-hl-mode))
 #+end_src
 
-** Emacs Lisp
+*** Emacs Lisp
 #+begin_src emacs-lisp
 #+end_src
 
-** YAML
+*** Rust
+#+begin_src emacs-lisp
+      (use-package rustic
+        :config
+        (setq rustic-lsp-client 'eglot))
+#+end_src
+
+** Configuration languages
+
+*** YAML
 #+begin_src emacs-lisp
             (use-package yaml-mode
               :config
@@ -832,17 +956,7 @@ So I could still use emacs when I open $EDITOR in vterm
               (add-hook 'yaml-mode-hook 'tree-sitter-hl-mode))
 
 #+end_src
-
-** Markdown
-This is quite essential as ~eglot~ uses this to highlight help buffer.
-#+begin_src emacs-lisp
-        (use-package markdown-mode
-          :mode ("README\\.md\\'" . gfm-mode)
-          :init (setq markdown-command "multimarkdown")
-          )
-#+end_src
-
-** JSON
+*** JSON
 #+begin_src emacs-lisp
   (use-package json-mode
     :mode ("\\.json\\'" . json-mode))
@@ -851,7 +965,20 @@ This is quite essential as ~eglot~ uses this to highlight help buffer.
     :mode ("\\.jq\\'" . jq-mode))
 #+end_src
 
-** Elastic Search
+** Text
+
+*** Markdown
+This is quite essential as ~eglot~ uses this to highlight help buffer.
+#+begin_src emacs-lisp
+        (use-package markdown-mode
+          :mode ("README\\.md\\'" . gfm-mode)
+          :init (setq markdown-command "multimarkdown")
+          )
+#+end_src
+
+** Just Tools
+
+*** Elastic Search
 What??
 #+begin_src emacs-lisp
   (use-package es-mode
