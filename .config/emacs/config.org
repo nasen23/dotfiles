@@ -508,15 +508,16 @@
 
 ** orderless
 #+begin_src emacs-lisp
-;; Optionally use the `orderless' completion style.
-(use-package orderless
-  :init
-  ;; Configure a custom style dispatcher (see the Consult wiki)
-  ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq completion-styles '(orderless basic)
-        completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+    ;; Optionally use the `orderless' completion style.
+    (use-package orderless
+      :init
+      ;; Configure a custom style dispatcher (see the Consult wiki)
+      ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+      ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+      (setq completion-styles '(orderless basic)
+            completion-category-defaults nil
+            completion-category-overrides '((file (styles partial-completion)))
+            orderless-component-separator #'orderless-escapable-split-on-space))
 #+end_src
 
 ** Marginalia.el
@@ -607,6 +608,12 @@
   (elpaca nil (meow-leader-define-key '("SPC" . project-find-file)))
 #+end_src
 
+*** Extensions
+#+begin_src emacs-lisp
+  (use-package consult-yasnippet
+    :commands consult-yasnippet)
+#+end_src
+
 * EDITING
 ** Basic
 Basic editing tweaks
@@ -617,7 +624,6 @@ Basic editing tweaks
 
 *** Auto Revert
 Builtin package autorevert
-
 #+begin_src emacs-lisp
   (use-package autorevert
     :elpaca nil
@@ -635,6 +641,13 @@ Builtin package saveplace
   (use-package saveplace
     :elpaca nil
     :hook (find-file . save-place-mode))
+#+end_src
+
+*** So Long Mode
+#+begin_src emacs-lisp
+  (use-package so-long
+    :elpaca nil
+    :hook (after-init . global-so-long-mode))
 #+end_src
 ** Indent
 Some basic behaviors
@@ -711,30 +724,31 @@ Not using better jumper for now
 
 ** Corfu
 #+begin_src emacs-lisp
-  (use-package corfu
-    :custom
-    (corfu-auto t)
-    (corfu-auto-prefix 2)
-    (corfu-preview-current nil)
-    (corfu-auto-delay 0.1)
-    (corfu-popupinfo-delay '(0.2 . 0.1))
-    :bind ("M-/" . completion-at-point)
-    :hook ((elpaca-after-init . global-corfu-mode)
-           (global-corfu-mode . corfu-popupinfo-mode)))
-  (use-package nerd-icons-corfu
-    :after corfu
-    :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
-  ;; Extensions
-  (use-package cape
-    :init
-    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-    (add-to-list 'completion-at-point-functions #'cape-file)
-    (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-    (add-to-list 'completion-at-point-functions #'cape-keyword)
-    (add-to-list 'completion-at-point-functions #'cape-abbrev)
+    (use-package corfu
+      :custom
+      (corfu-auto t)
+      (corfu-auto-prefix 2)
+      (corfu-preview-current nil)
+      (corfu-auto-delay 0.1)
+      (corfu-popupinfo-delay '(0.2 . 0.1))
+      :bind ("M-/" . completion-at-point)
+      :hook ((elpaca-after-init . global-corfu-mode)
+             (global-corfu-mode . corfu-popupinfo-mode)
+             (meow-insert-exit . corfu-quit)))
+    (use-package nerd-icons-corfu
+      :after corfu
+      :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+    ;; Extensions
+    (use-package cape
+      :init
+      (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+      (add-to-list 'completion-at-point-functions #'cape-file)
+      (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+      (add-to-list 'completion-at-point-functions #'cape-keyword)
+      (add-to-list 'completion-at-point-functions #'cape-abbrev)
 
-    (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
-    )
+      (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+      )
 #+end_src
 
 ** LSP (Eglot)
@@ -885,42 +899,48 @@ So I could still use emacs when I open $EDITOR in vterm
     :commands (dired-rsync dired-rsync-transient))
 #+end_src
 
+*** Colorful
+#+begin_src emacs-lisp
+  (use-package diredfl
+    :hook (dired-mode . diredfl-mode))
+#+end_src
+
 ** YADM over Magit
 #+begin_src emacs-lisp
-    (with-eval-after-load 'tramp
-      (add-to-list 'tramp-methods
-                   '("yadm"
-                     (tramp-login-program "yadm")
-                     (tramp-login-args (("enter")))
-                     (tramp-login-env (("SHELL") ("/bin/sh")))
-                     (tramp-remote-shell "/bin/sh")
-                     (tramp-remote-shell-args ("-c")))))
+  (with-eval-after-load 'tramp
+    (add-to-list 'tramp-methods
+                 '("yadm"
+                   (tramp-login-program "yadm")
+                   (tramp-login-args (("enter")))
+                   (tramp-login-env (("SHELL") ("/bin/sh")))
+                   (tramp-remote-shell "/bin/sh")
+                   (tramp-remote-shell-args ("-c")))))
 
-    (defun yadm ()
-      (interactive)
-      (magit-status "/yadm::"))
+  (defun yadm ()
+    (interactive)
+    (magit-status "/yadm::"))
 #+end_src
 
 ** Emacs Rime
 #+begin_src emacs-lisp
-                  (use-package rime
-                    :init
-                    (setq rime-librime-root (concat user-emacs-directory "librime/dist"))
-                    :custom
-                    (default-input-method "rime")
-                    (rime-user-data-dir "~/Library/Rime")
-                    (rime-show-candidate 'posframe)
-                    :bind
-                    (:map rime-mode-map ("C-`" . 'rime-send-keybinding)))
+  (use-package rime
+    :init
+    (setq rime-librime-root (concat user-emacs-directory "librime/dist"))
+    :custom
+    (default-input-method "rime")
+    (rime-user-data-dir "~/Library/Rime")
+    (rime-show-candidate 'posframe)
+    :bind
+    (:map rime-mode-map ("C-`" . 'rime-send-keybinding)))
 #+end_src
 
 *** Let Meow Play Nice with Input Methods
 #+begin_src emacs-lisp
-        (with-eval-after-load 'meow
-          (defvar-local +meow-input-method-state nil)
-          (add-hook 'meow-insert-enter-hook (lambda () (when +meow-input-method-state (activate-input-method +meow-input-method-state))))
-          (add-hook 'meow-insert-exit-hook (lambda () (setq-local +meow-input-method-state current-input-method) (deactivate-input-method)))
-          )
+  (with-eval-after-load 'meow
+    (defvar-local +meow-input-method-state nil)
+    (add-hook 'meow-insert-enter-hook (lambda () (when +meow-input-method-state (activate-input-method +meow-input-method-state))))
+    (add-hook 'meow-insert-exit-hook (lambda () (setq-local +meow-input-method-state current-input-method) (deactivate-input-method)))
+    )
 #+end_src
 
 * LANGUAGES
@@ -940,21 +960,20 @@ So I could still use emacs when I open $EDITOR in vterm
 
 *** Rust
 #+begin_src emacs-lisp
-      (use-package rustic
-        :config
-        (setq rustic-lsp-client 'eglot))
+  (use-package rustic
+    :config
+    (setq rustic-lsp-client 'eglot))
 #+end_src
 
 ** Configuration languages
 
 *** YAML
 #+begin_src emacs-lisp
-            (use-package yaml-mode
-              :config
-              (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
-              (add-hook 'yaml-mode-hook 'display-line-numbers-mode)
-              (add-hook 'yaml-mode-hook 'tree-sitter-hl-mode))
-
+  (use-package yaml-mode
+    :config
+    (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
+    (add-hook 'yaml-mode-hook 'display-line-numbers-mode)
+    (add-hook 'yaml-mode-hook 'tree-sitter-hl-mode))
 #+end_src
 *** JSON
 #+begin_src emacs-lisp
@@ -970,10 +989,10 @@ So I could still use emacs when I open $EDITOR in vterm
 *** Markdown
 This is quite essential as ~eglot~ uses this to highlight help buffer.
 #+begin_src emacs-lisp
-        (use-package markdown-mode
-          :mode ("README\\.md\\'" . gfm-mode)
-          :init (setq markdown-command "multimarkdown")
-          )
+  (use-package markdown-mode
+    :mode ("README\\.md\\'" . gfm-mode)
+    :init (setq markdown-command "multimarkdown")
+    )
 #+end_src
 
 ** Just Tools
