@@ -39,6 +39,7 @@
   - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#highlight-todos][Highlight TODOs]]
   - [[#git-diff-highlights][Git Diff Highlights]]
+  - [[#text-folding][Text Folding]]
 - [[#completion][COMPLETION]]
   - [[#corfu][Corfu]]
   - [[#lsp-eglot][LSP (Eglot)]]
@@ -340,7 +341,7 @@
 #+begin_src emacs-lisp
   (use-package catppuccin-theme
     :init
-    (setq catppuccin-flavor 'frappe)
+    (setq catppuccin-flavor 'latte)
     :config
     (load-theme 'catppuccin :no-confirm))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
@@ -720,6 +721,17 @@ Not using better jumper for now
       (global-diff-hl-mode))
 #+end_src
 
+** Text Folding
+#+begin_src emacs-lisp
+  (use-package hideshow
+    :elpaca nil
+    :commands (hs-toggle-hiding)
+    :hook (prog-mode . hs-minor-mode)
+    :config
+    (meow-normal-define-key '(":" . hs-toggle-hiding))
+    )
+#+end_src
+
 * COMPLETION
 
 ** Corfu
@@ -756,6 +768,7 @@ Not using better jumper for now
   (use-package eglot
     :commands eglot
     :elpaca nil
+    :hook (prog-mode . eglot-ensure)
     :init
     (setq eglot-send-changes-idle-time 0))
 #+end_src
@@ -948,10 +961,7 @@ So I could still use emacs when I open $EDITOR in vterm
 *** Python
 #+begin_src emacs-lisp
   (use-package python
-    :elpaca nil
-    :config
-    (add-hook 'python-mode-hook 'eglot-ensure)
-    (add-hook 'python-mode-hook 'tree-sitter-hl-mode))
+    :elpaca nil)
 #+end_src
 
 *** Emacs Lisp
