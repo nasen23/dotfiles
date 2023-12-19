@@ -325,8 +325,10 @@
 ** Display Line Numbers
 
 #+begin_src emacs-lisp
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  ;; (global-visual-line-mode t)
+  (use-package display-line-numbers
+    :elpaca nil
+    :hook ((prog-mode yaml-mode conf-mode) . display-line-numbers-mode)
+    :init (setq display-line-numbers-width-start t))
 #+end_src
 
 ** Get Shell Env Loaded
@@ -341,7 +343,7 @@
 #+begin_src emacs-lisp
   (use-package catppuccin-theme
     :init
-    (setq catppuccin-flavor 'latte)
+    (setq catppuccin-flavor 'frappe)
     :config
     (load-theme 'catppuccin :no-confirm))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
@@ -716,9 +718,19 @@ Not using better jumper for now
 
 ** Git Diff Highlights
 #+begin_src emacs-lisp
-    (use-package diff-hl
-      :config
-      (global-diff-hl-mode))
+  (use-package diff-hl
+    :custom (diff-hl-draw-borders nil)
+    :custom-face
+    ;; (diff-hl-change ((t (:inherit diff-changed-unspecified :background unspecified))))
+    ;; (diff-hl-insert ((t (:inherit diff-added :background unspecified))))
+    ;; (diff-hl-delete ((t (:inherit diff-removed :background unspecified))))
+    :hook ((elpaca-after-init . global-diff-hl-mode)
+           (elpaca-after-init . global-diff-hl-show-hunk-mouse-mode)
+           (dired-mode . diff-hl-dired-mode))
+    :config
+    (global-diff-hl-mode)
+    (diff-hl-flydiff-mode)
+    (setq-default fringes-outside-margins t))
 #+end_src
 
 ** Text Folding
@@ -980,10 +992,9 @@ So I could still use emacs when I open $EDITOR in vterm
 *** YAML
 #+begin_src emacs-lisp
   (use-package yaml-mode
+    :commands yaml-mode
     :config
-    (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode))
-    (add-hook 'yaml-mode-hook 'display-line-numbers-mode)
-    (add-hook 'yaml-mode-hook 'tree-sitter-hl-mode))
+    (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode)))
 #+end_src
 *** JSON
 #+begin_src emacs-lisp
