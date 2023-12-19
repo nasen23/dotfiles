@@ -458,7 +458,7 @@
 * VERTICO (WITH CONSULT)
 - vertico.el - VERTical Interactive COmpletion
 - orderless
-- marginalia 
+- marginalia
 - consult
 
 ** vertico
@@ -516,7 +516,7 @@
   (setq enable-recursive-minibuffers t))
 #+end_src
 
-*** Extensions 
+*** Extensions
 
 **** Directory
 #+begin_src emacs-lisp
@@ -761,7 +761,8 @@ Not using better jumper for now
     :commands (hs-toggle-hiding)
     :hook (prog-mode . hs-minor-mode)
     :config
-    (meow-normal-define-key '(":" . hs-toggle-hiding))
+    (with-eval-after-load 'meow
+      (meow-normal-define-key '(":" . hs-toggle-hiding)))
     )
 #+end_src
 
