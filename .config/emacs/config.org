@@ -45,7 +45,7 @@
   - [[#text-folding][Text Folding]]
 - [[#completion][COMPLETION]]
   - [[#corfu][Corfu]]
-  - [[#lsp-eglot][LSP (Eglot)]]
+  - [[#lsp-mode][LSP Mode]]
   - [[#yasnippet][YASnippet]]
 - [[#tools][TOOLS]]
   - [[#diagnostics][Diagnostics]]
@@ -866,45 +866,155 @@ Not using better jumper for now
 
 ** Corfu
 #+begin_src emacs-lisp
-    (use-package corfu
-      :custom
-      (corfu-auto t)
-      (corfu-auto-prefix 2)
-      (corfu-preview-current nil)
-      (corfu-auto-delay 0.1)
-      (corfu-popupinfo-delay '(0.2 . 0.1))
-      :bind ("M-/" . completion-at-point)
-      :hook ((elpaca-after-init . global-corfu-mode)
-             (global-corfu-mode . corfu-popupinfo-mode)
-             (meow-insert-exit . corfu-quit)))
-    (use-package nerd-icons-corfu
-      :after corfu
-      :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
-    ;; Extensions
-    (use-package cape
-      :init
-      (add-to-list 'completion-at-point-functions #'cape-dabbrev)
-      (add-to-list 'completion-at-point-functions #'cape-file)
-      (add-to-list 'completion-at-point-functions #'cape-elisp-block)
-      (add-to-list 'completion-at-point-functions #'cape-keyword)
-      (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (use-package corfu
+    :custom
+    (corfu-auto t)
+    (corfu-auto-prefix 2)
+    (corfu-preview-current nil)
+    (corfu-auto-delay 0.1)
+    (corfu-popupinfo-delay '(0.2 . 0.1))
+    :bind ("M-/" . completion-at-point)
+    :hook ((elpaca-after-init . global-corfu-mode)
+           (global-corfu-mode . corfu-popupinfo-mode)
+           (meow-insert-exit . corfu-quit)))
+  (use-package nerd-icons-corfu
+    :after corfu
+    :init (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+  ;; Extensions
+  (use-package cape
+    :init
+    (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+    (add-to-list 'completion-at-point-functions #'cape-file)
+    (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+    (add-to-list 'completion-at-point-functions #'cape-keyword)
+    (add-to-list 'completion-at-point-functions #'cape-abbrev)
 
-      (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
-      )
+    (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+    (advice-add 'eglot-completion-at-point :around #'cape-wrap-noninterruptible)
+    )
 #+end_src
 
-** LSP (Eglot)
+** LSP Mode
 #+begin_src emacs-lisp
-  (use-package eglot
-    :commands eglot
-    :elpaca nil
-    :hook (prog-mode . (lambda () (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode 'snippet-mode)
-                                    (eglot-ensure))))
+  ;; Performance tweaks
+  (setq read-process-output-max (* 1024 1024))
+  (setenv "LSP_USE_PLISTS" "true")
+
+  (use-package lsp-mode
+    :autoload lsp-enable-which-key-integration
+    :commands (lsp-format-buffer lsp-organize-imports)
+    :hook ((prog-mode . (lambda ()
+                          (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode 'snippet-mode)
+                            (lsp-deferred))))
+           (lsp-mode . (lambda ()
+                         (lsp-enable-which-key-integration))))
+    :bind
+    ([remap xref-find-definitions] . lsp-find-definition)
+    ([remap xref-find-references] . lsp-find-references)
     :init
-    (setq eglot-send-changes-idle-time 0)
+    (setq lsp-keymap-prefix "C-c l"
+          lsp-keep-workspace-alive nil
+          lsp-signature-auto-activate nil
+          lsp-modeline-code-actions-enable nil
+          lsp-modeline-diagnostics-enable nil
+          lsp-modeline-workspace-status-enable nil
+
+          lsp-semantic-tokens-enable t
+          lsp-progress-spinner-type 'progress-bar-filled
+
+          lsp-enable-file-watchers nil
+          lsp-enable-folding nil
+          lsp-enable-symbol-highlighting nil
+          lsp-enable-text-document-color nil
+
+          lsp-enable-indentation nil
+          lsp-enable-on-type-formatting nil)
     :config
-    (use-package consult-eglot
-      :commands consult-eglot-symbols))
+    (with-eval-after-load 'nerd-icons
+      (defun my-lsp-icons-get-by-file-ext (file-ext &optional feature)
+        (when (and file-ext
+                   (lsp-icons--enabled-for-feature feature))
+          (nerd-icons-icon-for-extension file-ext)))
+      (advice-add #'lsp-icons-get-by-file-ext :override #'my-lsp-icons-get-by-file-ext)
+
+      (defvar lsp-symbol-alist
+        '((misc          nerd-icons-codicon "nf-cod-symbol_namespace" :face font-lock-warning-face)
+          (document      nerd-icons-codicon "nf-cod-symbol_file" :face font-lock-string-face)
+          (namespace     nerd-icons-codicon "nf-cod-symbol_namespace" :face font-lock-type-face)
+          (string        nerd-icons-codicon "nf-cod-symbol_string" :face font-lock-doc-face)
+          (boolean-data  nerd-icons-codicon "nf-cod-symbol_boolean" :face font-lock-builtin-face)
+          (numeric       nerd-icons-codicon "nf-cod-symbol_numeric" :face font-lock-builtin-face)
+          (method        nerd-icons-codicon "nf-cod-symbol_method" :face font-lock-function-name-face)
+          (field         nerd-icons-codicon "nf-cod-symbol_field" :face font-lock-variable-name-face)
+          (localvariable nerd-icons-codicon "nf-cod-symbol_variable" :face font-lock-variable-name-face)
+          (class         nerd-icons-codicon "nf-cod-symbol_class" :face font-lock-type-face)
+          (interface     nerd-icons-codicon "nf-cod-symbol_interface" :face font-lock-type-face)
+          (property      nerd-icons-codicon "nf-cod-symbol_property" :face font-lock-variable-name-face)
+          (indexer       nerd-icons-codicon "nf-cod-symbol_enum" :face font-lock-builtin-face)
+          (enumerator    nerd-icons-codicon "nf-cod-symbol_enum" :face font-lock-builtin-face)
+          (enumitem      nerd-icons-codicon "nf-cod-symbol_enum_member" :face font-lock-builtin-face)
+          (constant      nerd-icons-codicon "nf-cod-symbol_constant" :face font-lock-constant-face)
+          (structure     nerd-icons-codicon "nf-cod-symbol_structure" :face font-lock-variable-name-face)
+          (event         nerd-icons-codicon "nf-cod-symbol_event" :face font-lock-warning-face)
+          (operator      nerd-icons-codicon "nf-cod-symbol_operator" :face font-lock-comment-delimiter-face)
+          (template      nerd-icons-codicon "nf-cod-symbol_snippet" :face font-lock-type-face)))
+
+      (defun lsp-treemacs-symbol-kind->icon (kind)
+        (cl-case kind
+          (1 'document)
+          (2  'namespace)
+          (3  'namespace)
+          (4  'namespace)
+          (5  'class)
+          (6  'method)
+          (7  'property)
+          (8  'field)
+          (9  'method)
+          (10 'enumerator)
+          (11 'interface)
+          (12 'method )
+          (13 'localvariable)
+          (14 'constant)
+          (15 'string)
+          (16 'numeric)
+          (17 'boolean-data)
+          (18 'boolean-data)
+          (19 'namespace)
+          (20 'indexer)
+          (21 'boolean-data)
+          (22 'enumitem)
+          (23 'structure)
+          (24 'event)
+          (25 'operator)
+          (26 'template)
+          (t 'misc)))
+      (defun my-lsp-icons-get-by-symbol-kind (kind &optional feature)
+        (when (and kind
+                   (lsp-icons--enabled-for-feature feature))
+          (let* ((icon (cdr (assoc (lsp-treemacs-symbol-kind->icon kind) lsp-symbol-alist)))
+                 (args (cdr icon)))
+            (apply (car icon) args))))
+      (advice-add #'lsp-icons-get-by-symbol-kind :override #'my-lsp-icons-get-by-symbol-kind)
+
+      (setq lsp-headerline-arrow (nerd-icons-octicon "nf-oct-chevron_right"
+                                                     :face 'lsp-headerline-breadcrumb-separator-face)))
+    )
+
+  (use-package consult-lsp
+    :after lsp-mode
+    :commands consult-lsp-symbols)
+
+  (use-package lsp-ui
+    :after lsp-mode
+    :hook (lsp-mode . lsp-ui-mode)
+    :bind (([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+           ([remap xref-find-references] . lsp-ui-peek-find-references))
+    :init
+    (setq lsp-ui-sideline-show-diagnostics nil
+          lsp-ui-sideline-ignore-duplicate t
+          lsp-ui-doc-delay 0.1
+          lsp-ui-doc-show-with-cursor (not (display-graphic-p))
+          lsp-ui-imenu-auto-refresh 'after-save))
 #+end_src
 
 ** YASnippet
@@ -1098,6 +1208,10 @@ So I could still use emacs when I open $EDITOR in vterm
     :elpaca nil
     :hook (python-mode . (lambda ()
                            (setq format-all-formatters '(("Python" ruff))))))
+  (use-package lsp-pyright
+    :after lsp-mode
+    :hook (((python-mode python-ts-mode) . (lambda ()
+                                             (require 'lsp-pyright)))))
 #+end_src
 
 *** Emacs Lisp
@@ -1106,9 +1220,7 @@ So I could still use emacs when I open $EDITOR in vterm
 
 *** Rust
 #+begin_src emacs-lisp
-  (use-package rustic
-    :config
-    (setq rustic-lsp-client 'eglot))
+  (use-package rustic)
 #+end_src
 
 ** Configuration languages
