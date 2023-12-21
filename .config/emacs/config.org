@@ -60,6 +60,7 @@
   - [[#yadm-over-magit][YADM over Magit]]
   - [[#emacs-rime][Emacs Rime]]
   - [[#ibuffer][IBuffer]]
+  - [[#zoom-window][Zoom Window]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -1227,6 +1228,20 @@ So I could still use emacs when I open $EDITOR in vterm
       (setq ibuffer-project-root-functions
             `((ibuffer-project-project-root . ,(nerd-icons-octicon "nf-oct-repo" :height 1.2 :face ibuffer-filter-group-name-face))
               (file-remote-p . ,(nerd-icons-codicon "nf-cod-radio_tower" :height 1.2 :face ibuffer-filter-group-name-face))))))
+#+end_src
+
+** Zoom Window
+#+begin_src emacs-lisp
+  (use-package zoom-window
+    :commands zoom-window-zoom
+    :custom
+    (zoom-window-mode-line-color "DarkGreen")
+    :init
+    (zoom-window-setup)
+    :config
+    (with-eval-after-load 'meow
+      (meow-leader-define-key
+       '("ww" . zoom-window-zoom))))
 #+end_src
 
 * LANGUAGES
