@@ -142,6 +142,12 @@
       :demand t
       :init
       (setq meow-visit-sanitize-completion nil)
+      (setq meow-replace-state-name-list
+            '((normal . "N")
+              (beacon . "B")
+              (insert . "I")
+              (motion . "M")
+              (keypad . "K")))
       :custom
       (meow-use-cursor-position-hack t)
       (meow-use-clipboard t)
@@ -332,7 +338,7 @@
 #+begin_src emacs-lisp
   (use-package display-line-numbers
     :elpaca nil
-    :hook ((prog-mode yaml-mode conf-mode) . display-line-numbers-mode)
+    :hook ((prog-mode yaml-mode yaml-ts-mode conf-mode) . display-line-numbers-mode)
     :init (setq display-line-numbers-width-start t))
 #+end_src
 
@@ -906,8 +912,9 @@ Not using better jumper for now
     :autoload lsp-enable-which-key-integration
     :commands (lsp-format-buffer lsp-organize-imports)
     :hook ((prog-mode . (lambda ()
-                          (unless (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode 'snippet-mode)
-                            (lsp-deferred))))
+                          (unless (or (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode 'snippet-mode)
+                                      (eq major-mode 'prog-mode))) ;; just bare prog mode
+                             (lsp-deferred)))
            (lsp-mode . (lambda ()
                          (lsp-enable-which-key-integration))))
     :bind
@@ -926,14 +933,17 @@ Not using better jumper for now
 
           lsp-enable-file-watchers nil
           lsp-enable-folding nil
-          lsp-enable-symbol-highlighting nil
+          lsp-enable-symbol-highlighting t
           lsp-enable-text-document-color nil
 
           lsp-enable-indentation nil
           lsp-enable-on-type-formatting nil
 
           ;; disable headerline as it's a bit annoyying
-          lsp-headerline-breadcrumb-enable nil)
+          lsp-headerline-breadcrumb-enable nil
+
+          ;; disable that anoyying warning
+          lsp-warn-no-matched-clients nil)
     :config
     (with-eval-after-load 'nerd-icons
       (defun my-lsp-icons-get-by-file-ext (file-ext &optional feature)
@@ -1019,7 +1029,8 @@ Not using better jumper for now
           lsp-ui-sideline-ignore-duplicate t
           lsp-ui-doc-delay 0.1
           lsp-ui-doc-show-with-cursor (not (display-graphic-p))
-          lsp-ui-imenu-auto-refresh 'after-save))
+          lsp-ui-imenu-auto-refresh 'after-save
+          lsp-ui-imenu-buffer-position 'left))
 #+end_src
 
 ** YASnippet
@@ -1137,6 +1148,7 @@ So I could still use emacs when I open $EDITOR in vterm
 
 ** Recent Files
 #+begin_src emacs-lisp
+  (setq recentf-max-saved-items 100)
   (recentf-mode 1)
   (elpaca nil (meow-leader-define-key '("fr" . consult-recent-file)))
 #+end_src
