@@ -59,6 +59,7 @@
   - [[#dired][Dired]]
   - [[#yadm-over-magit][YADM over Magit]]
   - [[#emacs-rime][Emacs Rime]]
+  - [[#ibuffer][IBuffer]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -1198,6 +1199,34 @@ So I could still use emacs when I open $EDITOR in vterm
     (add-hook 'meow-insert-enter-hook (lambda () (when +meow-input-method-state (activate-input-method +meow-input-method-state))))
     (add-hook 'meow-insert-exit-hook (lambda () (setq-local +meow-input-method-state current-input-method) (deactivate-input-method)))
     )
+#+end_src
+
+** IBuffer
+#+begin_src emacs-lisp
+  (use-package ibuffer
+    :elpaca nil
+    :commands ibuffer
+    :init (setq ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold))))
+
+  (use-package nerd-icons-ibuffer
+    :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
+
+  (use-package ibuffer-project
+    :hook (ibuffer . (lambda ()
+                       (setq ibuffer-filter-groups (ibuffer-project-generate-filter-groups))
+                       (unless (eq ibuffer-sorting-mode 'project-file-relative)
+                         (ibuffer-do-sort-by-project-file-relative))))
+    :init (setq ibuffer-project-use-cache t)
+    (with-eval-after-load 'nerd-icons
+      (defun my-ibuffer-project-group-name (root type)
+        "Return group name for project ROOT and TYPE."
+        (if (and (stringp type) (> (length type) 0))
+            (format "%s %s" type root)
+          (format "%s" root)))
+      (advice-add #'ibuffer-project-group-name :override #'my-ibuffer-project-group-name)
+      (setq ibuffer-project-root-functions
+            `((ibuffer-project-project-root . ,(nerd-icons-octicon "nf-oct-repo" :height 1.2 :face ibuffer-filter-group-name-face))
+              (file-remote-p . ,(nerd-icons-codicon "nf-cod-radio_tower" :height 1.2 :face ibuffer-filter-group-name-face))))))
 #+end_src
 
 * LANGUAGES
