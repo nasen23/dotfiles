@@ -930,7 +930,10 @@ Not using better jumper for now
           lsp-enable-text-document-color nil
 
           lsp-enable-indentation nil
-          lsp-enable-on-type-formatting nil)
+          lsp-enable-on-type-formatting nil
+
+          ;; disable headerline as it's a bit annoyying
+          lsp-headerline-breadcrumb-enable nil)
     :config
     (with-eval-after-load 'nerd-icons
       (defun my-lsp-icons-get-by-file-ext (file-ext &optional feature)
