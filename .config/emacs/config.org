@@ -11,17 +11,21 @@
   - [[#basic-key-bindings][Basic Key Bindings]]
   - [[#turn-off-some-annoyying-things][Turn Off Some Annoyying Things]]
 - [[#fonts][FONTS]]
-  - [[#setting-the-font-face][Setting The Font Face]]
-  - [[#emoji][Emoji]]
-- [[#graphical-user-interface-tweaks][GRAPHICAL USER INTERFACE TWEAKS]]
   - [[#basic][Basic]]
+  - [[#setting-the-font-face][Setting The Font Face]]
+  - [[#unicode][Unicode]]
+  - [[#emoji-][Emoji 🥹]]
+  - [[#modeline][Modeline]]
+  - [[#mixed-pitch][Mixed Pitch]]
+- [[#graphical-user-interface-tweaks][GRAPHICAL USER INTERFACE TWEAKS]]
+  - [[#basic-1][Basic]]
   - [[#disable-menubar-toolbars-and-scrollbars][Disable Menubar, Toolbars and Scrollbars]]
   - [[#display-line-numbers][Display Line Numbers]]
   - [[#window-divider-mode][Window Divider Mode]]
   - [[#get-shell-env-loaded][Get Shell Env Loaded]]
   - [[#theme][Theme]]
   - [[#icons][Icons]]
-  - [[#modeline][Modeline]]
+  - [[#modeline-1][Modeline]]
   - [[#which-key][Which Key]]
   - [[#ligatures][Ligatures]]
 - [[#org-mode][ORG MODE]]
@@ -35,7 +39,7 @@
   - [[#consult][Consult]]
   - [[#embark][Embark]]
 - [[#editing][EDITING]]
-  - [[#basic-1][Basic]]
+  - [[#basic-2][Basic]]
   - [[#indent][Indent]]
   - [[#smartparens][Smartparens]]
   - [[#better-jumper][Better Jumper]]
@@ -72,7 +76,6 @@
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
 ** Elpaca Package Manager
-
 #+begin_src emacs-lisp
   (setq package-archives '(("gnu"    . "http://mirrors.bfsu.edu.cn/elpa/gnu/")
 			     ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
@@ -141,125 +144,126 @@
 ** Load Meow
 
 #+begin_src emacs-lisp
-    (use-package meow
-      :demand t
-      :init
-      (setq meow-visit-sanitize-completion nil)
-      (setq meow-replace-state-name-list
-            '((normal . "N")
-              (beacon . "B")
-              (insert . "I")
-              (motion . "M")
-              (keypad . "K")))
-      :custom
-      (meow-use-cursor-position-hack t)
-      (meow-use-clipboard t)
-      :config
-      (require 'meow)
-      (defun meow-setup ()
-        (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
-        (meow-motion-overwrite-define-key
-         '("j" . meow-next)
-         '("k" . meow-prev)
-         '("<escape>" . ignore))
-        (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
-        (define-key meow-keypad-state-keymap [control-bracketleft] 'meow-keypad-quit)
-        (meow-leader-define-key
-         ;; Use SPC (0-9) for digit arguments.
-         '("1" . meow-digit-argument)
-         '("2" . meow-digit-argument)
-         '("3" . meow-digit-argument)
-         '("4" . meow-digit-argument)
-         '("5" . meow-digit-argument)
-         '("6" . meow-digit-argument)
-         '("7" . meow-digit-argument)
-         '("8" . meow-digit-argument)
-         '("9" . meow-digit-argument)
-         '("0" . meow-digit-argument)
-         '("/" . meow-keypad-describe-key)
-         '("ff" . find-file)
-         '("fd" . dired)
-         '("fs" . save-buffer)
-         '("wv" . split-window-right)
-         '("ws" . split-window-below)
-         '("wo" . other-window)
-         '("wh" . windmove-left)
-         '("wj" . windmove-down)
-         '("wk" . windmove-up)
-         '("wl" . windmove-right)
-         '("wq" . delete-window)
-         '("bi" . ibuffer)
-         '("bn" . next-buffer)
-         '("bp" . previous-buffer)
-         '("bk" . kill-buffer)
-         '("bb" . switch-to-buffer))
-        (meow-normal-define-key
-         '("0" . meow-expand-0)
-         '("9" . meow-expand-9)
-         '("8" . meow-expand-8)
-         '("7" . meow-expand-7)
-         '("6" . meow-expand-6)
-         '("5" . meow-expand-5)
-         '("4" . meow-expand-4)
-         '("3" . meow-expand-3)
-         '("2" . meow-expand-2)
-         '("1" . meow-expand-1)
-         '("-" . negative-argument)
-         '(";" . meow-reverse)
-         '("," . meow-inner-of-thing)
-         '("." . meow-bounds-of-thing)
-         '("[" . meow-beginning-of-thing)
-         '("]" . meow-end-of-thing)
-         '("a" . meow-append)
-         '("A" . meow-open-below)
-         '("b" . meow-back-word)
-         '("B" . meow-back-symbol)
-         '("c" . meow-change)
-         '("d" . delete-char) ;; other wise this just runs C-d, which is mapped to scroll-up-command
-         '("D" . meow-backward-delete)
-         '("e" . meow-next-word)
-         '("E" . meow-next-symbol)
-         '("f" . meow-find)
-         '("g" . meow-cancel-selection)
-         '("G" . meow-grab)
-         '("h" . meow-left)
-         '("H" . meow-left-expand)
-         '("i" . meow-insert)
-         '("I" . meow-open-above)
-         '("j" . meow-next)
-         '("J" . meow-next-expand)
-         '("k" . meow-prev)
-         '("K" . meow-prev-expand)
-         '("l" . meow-right)
-         '("L" . meow-right-expand)
-         '("m" . meow-join)
-         '("n" . meow-search)
-         '("o" . meow-block)
-         '("O" . meow-to-block)
-         '("p" . meow-yank)
-         '("q" . meow-quit)
-         '("Q" . meow-goto-line)
-         '("r" . meow-replace)
-         '("R" . meow-swap-grab)
-         '("s" . meow-kill)
-         '("t" . meow-till)
-         '("u" . meow-undo)
-         '("U" . meow-undo-in-selection)
-         '("v" . meow-visit)
-         '("w" . meow-mark-word)
-         '("W" . meow-mark-symbol)
-         '("x" . meow-line)
-         '("X" . meow-goto-line)
-         '("y" . meow-save)
-         '("Y" . meow-sync-grab)
-         '("z" . meow-pop-selection)
-         '("'" . repeat)
-         '("<escape>" . ignore)
+  (use-package meow
+    :demand t
+    :init
+    (setq meow-visit-sanitize-completion nil)
+    :custom
+    (meow-use-cursor-position-hack t)
+    (meow-use-clipboard t)
+    :config
+    (require 'meow)
+    (setq meow-replace-state-name-list
+          '((normal . "N")
+            (beacon . "B")
+            (insert . "I")
+            (motion . "M")
+            (keypad . "K")))
+
+    (defun meow-setup ()
+      (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+      (meow-motion-overwrite-define-key
+       '("j" . meow-next)
+       '("k" . meow-prev)
+       '("<escape>" . ignore))
+      (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
+      (define-key meow-keypad-state-keymap [control-bracketleft] 'meow-keypad-quit)
+      (meow-leader-define-key
+       ;; Use SPC (0-9) for digit arguments.
+       '("1" . meow-digit-argument)
+       '("2" . meow-digit-argument)
+       '("3" . meow-digit-argument)
+       '("4" . meow-digit-argument)
+       '("5" . meow-digit-argument)
+       '("6" . meow-digit-argument)
+       '("7" . meow-digit-argument)
+       '("8" . meow-digit-argument)
+       '("9" . meow-digit-argument)
+       '("0" . meow-digit-argument)
+       '("/" . meow-keypad-describe-key)
+       '("ff" . find-file)
+       '("fd" . dired)
+       '("fs" . save-buffer)
+       '("wv" . split-window-right)
+       '("ws" . split-window-below)
+       '("wo" . other-window)
+       '("wh" . windmove-left)
+       '("wj" . windmove-down)
+       '("wk" . windmove-up)
+       '("wl" . windmove-right)
+       '("wq" . delete-window)
+       '("bi" . ibuffer)
+       '("bn" . next-buffer)
+       '("bp" . previous-buffer)
+       '("bk" . kill-buffer)
+       '("bb" . switch-to-buffer))
+      (meow-normal-define-key
+       '("0" . meow-expand-0)
+       '("9" . meow-expand-9)
+       '("8" . meow-expand-8)
+       '("7" . meow-expand-7)
+       '("6" . meow-expand-6)
+       '("5" . meow-expand-5)
+       '("4" . meow-expand-4)
+       '("3" . meow-expand-3)
+       '("2" . meow-expand-2)
+       '("1" . meow-expand-1)
+       '("-" . negative-argument)
+       '(";" . meow-reverse)
+       '("," . meow-inner-of-thing)
+       '("." . meow-bounds-of-thing)
+       '("[" . meow-beginning-of-thing)
+       '("]" . meow-end-of-thing)
+       '("a" . meow-append)
+       '("A" . meow-open-below)
+       '("b" . meow-back-word)
+       '("B" . meow-back-symbol)
+       '("c" . meow-change)
+       '("d" . delete-char) ;; other wise this just runs C-d, which is mapped to scroll-up-command
+       '("D" . meow-backward-delete)
+       '("e" . meow-next-word)
+       '("E" . meow-next-symbol)
+       '("f" . meow-find)
+       '("g" . meow-cancel-selection)
+       '("G" . meow-grab)
+       '("h" . meow-left)
+       '("H" . meow-left-expand)
+       '("i" . meow-insert)
+       '("I" . meow-open-above)
+       '("j" . meow-next)
+       '("J" . meow-next-expand)
+       '("k" . meow-prev)
+       '("K" . meow-prev-expand)
+       '("l" . meow-right)
+       '("L" . meow-right-expand)
+       '("m" . meow-join)
+       '("n" . meow-search)
+       '("o" . meow-block)
+       '("O" . meow-to-block)
+       '("p" . meow-yank)
+       '("q" . meow-quit)
+       '("Q" . meow-goto-line)
+       '("r" . meow-replace)
+       '("R" . meow-swap-grab)
+       '("s" . meow-kill)
+       '("t" . meow-till)
+       '("u" . meow-undo)
+       '("U" . meow-undo-in-selection)
+       '("v" . meow-visit)
+       '("w" . meow-mark-word)
+       '("W" . meow-mark-symbol)
+       '("x" . meow-line)
+       '("X" . meow-goto-line)
+       '("y" . meow-save)
+       '("Y" . meow-sync-grab)
+       '("z" . meow-pop-selection)
+       '("'" . repeat)
+       '("<escape>" . ignore)
        '("C-r" . undo-redo)))
-      (meow-setup)
-      (meow-global-mode)
-      (meow--enable-shims)
-  )
+    (meow-setup)
+    (meow-global-mode)
+    (meow--enable-shims)
+    )
 #+end_src
 
 ** Basic Key Bindings
@@ -315,20 +319,58 @@
 #+end_src
 
 * FONTS
+** Basic
+#+begin_src emacs-lisp
+  (defun font-installed-p (font-name)
+    "Check if font with FONT-NAME is available."
+    (find-font (font-spec :name font-name)))
+#+end_src
 
 ** Setting The Font Face
-
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
                       :font "Sarasa Mono SC"
                       :height 140
                       :weight 'medium)
-  (add-to-list 'default-frame-alist '(font . "Sarasa Mono SC-14"))
+  (set-face-attribute 'fixed-pitch nil
+                      :font "Sarasa Mono SC"
+                      :height 140
+                      :weight 'medium)
+  (set-face-attribute 'variable-pitch nil
+                      :font "苹方-简"
+                      :height 160)  
 #+end_src
 
-** Emoji
+** Unicode
+#+begin_src emacs-lisp
+  (cl-loop for font in '("Segoe UI Symbol" "Symbola" "Symbol")
+           when (font-installed-p font)
+           return (if (< emacs-major-version 27)
+                      (set-fontset-font "fontset-default" 'unicode font nil 'prepend)
+                    (set-fontset-font t 'symbol (font-spec :family font) nil 'prepend)))
+#+end_src
+
+** Emoji 🥹
 #+begin_src emacs-lisp
   (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 13) nil 'prepend)
+#+end_src
+
+** Modeline
+#+begin_src emacs-lisp
+  ;; Set mode-line font
+  (cl-loop for font in '("SF Pro Text" "Helvetica")
+           when (font-installed-p font)
+           return (progn
+                    (set-face-attribute 'mode-line nil :family font :weight 'regular :height 140)
+                    (when (facep 'mode-line-active)
+                      (set-face-attribute 'mode-line-active nil :family font :weight 'regular :height 140))
+                    (set-face-attribute 'mode-line-inactive nil :family font :weight 'regular :height 140)))
+#+end_src
+
+** Mixed Pitch
+#+begin_src emacs-lisp
+  (use-package mixed-pitch
+    :hook (text-mode . mixed-pitch-mode))
 #+end_src
 
 * GRAPHICAL USER INTERFACE TWEAKS
@@ -1310,7 +1352,9 @@ So I could still use emacs when I open $EDITOR in vterm
       (`(t . _)
        (treemacs-git-mode 'simple))))
   (use-package treemacs-nerd-icons
-    :after treemacs
+    :custom-face
+    (treemacs-nerd-icons-root-face ((t (:inherit nerd-icons-green :height 1.3))))
+    (treemacs-nerd-icons-file-face ((t (:inherit nerd-icons-dsilver))))
     :config (treemacs-load-theme "nerd-icons"))
 
   (use-package treemacs-magit
