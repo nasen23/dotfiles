@@ -12,7 +12,9 @@
   - [[#turn-off-some-annoyying-things][Turn Off Some Annoyying Things]]
 - [[#fonts][FONTS]]
   - [[#setting-the-font-face][Setting The Font Face]]
+  - [[#emoji][Emoji]]
 - [[#graphical-user-interface-tweaks][GRAPHICAL USER INTERFACE TWEAKS]]
+  - [[#basic][Basic]]
   - [[#disable-menubar-toolbars-and-scrollbars][Disable Menubar, Toolbars and Scrollbars]]
   - [[#display-line-numbers][Display Line Numbers]]
   - [[#window-divider-mode][Window Divider Mode]]
@@ -33,7 +35,7 @@
   - [[#consult][Consult]]
   - [[#embark][Embark]]
 - [[#editing][EDITING]]
-  - [[#basic][Basic]]
+  - [[#basic-1][Basic]]
   - [[#indent][Indent]]
   - [[#smartparens][Smartparens]]
   - [[#better-jumper][Better Jumper]]
@@ -61,6 +63,7 @@
   - [[#emacs-rime][Emacs Rime]]
   - [[#ibuffer][IBuffer]]
   - [[#zoom-window][Zoom Window]]
+  - [[#treemacs][Treemacs]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -323,8 +326,20 @@
   (add-to-list 'default-frame-alist '(font . "Sarasa Mono SC-14"))
 #+end_src
 
-* GRAPHICAL USER INTERFACE TWEAKS
+** Emoji
+#+begin_src emacs-lisp
+  (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 13) nil 'prepend)
+#+end_src
 
+* GRAPHICAL USER INTERFACE TWEAKS
+** Basic
+#+begin_src emacs-lisp
+  (setq-default cursor-in-non-selected-windows nil)
+  (setq scroll-step 1
+        scroll-margin 0
+        scroll-conservatively 100000
+        auto-window-vscroll nil)
+#+end_src
 ** Disable Menubar, Toolbars and Scrollbars
 #+begin_src emacs-lisp
   (unless (eq system-type 'darwin)
@@ -371,12 +386,9 @@
 
 ** Icons
 #+begin_src emacs-lisp
-    (use-package nerd-icons)
-    (use-package nerd-icons-completion
-      :after marginalia
-      :config
-      (nerd-icons-completion-mode)
-      (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+  (use-package nerd-icons)
+  (use-package nerd-icons-completion
+    :hook (vertico-mode . nerd-icons-completion-mode))
 #+end_src
 
 ** Modeline
@@ -485,22 +497,8 @@
 #+begin_src emacs-lisp
   ;; Enable vertico
   (use-package vertico
-    :init
-    (vertico-mode)
-
-    ;; Different scroll margin
-    (setq vertico-scroll-margin 0)
-
-    ;; Show more candidates
-    (setq vertico-count 20)
-
-    ;; Grow and shrink the Vertico minibuffer
-    ;; (setq vertico-resize t)
-
-    ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
-    (setq vertico-cycle t)
-    )
-
+    :hook ((elpaca-after-init . vertico-mode)
+           (rfn-eshadow-update-overlay . vertico-directory-tidy)))
   ;; Persist history over Emacs restarts. Vertico sorts by history position.
   (use-package savehist
     :elpaca nil
@@ -535,13 +533,13 @@
     ;; Enable recursive minibuffers
     (setq enable-recursive-minibuffers t))
 
-  (use-package vertico-posframe
-    :hook (vertico-mode . vertico-posframe-mode)
-    :init (setq vertico-posframe-poshandler
-                #'posframe-poshandler-frame-center-near-bottom
-                vertico-posframe-parameters
-                '((left-fringe  . 8)
-                  (right-fringe . 8))))
+  ;; (use-package vertico-posframe
+  ;;   :hook (vertico-mode . vertico-posframe-mode)
+  ;;   :init (setq vertico-posframe-poshandler
+  ;;               #'posframe-poshandler-frame-center-near-bottom
+  ;;               vertico-posframe-parameters
+  ;;               '((left-fringe  . 8)
+  ;;                 (right-fringe . 8))))
 #+end_src
 
 *** Extensions
@@ -951,7 +949,10 @@ Not using better jumper for now
           lsp-headerline-breadcrumb-enable nil
 
           ;; disable that anoyying warning
-          lsp-warn-no-matched-clients nil)
+          lsp-warn-no-matched-clients nil
+
+          ;; disable auto prompting for server installation
+          lsp-enable-suggest-server-download nil)
     :config
     (with-eval-after-load 'nerd-icons
       (defun my-lsp-icons-get-by-file-ext (file-ext &optional feature)
@@ -1098,11 +1099,25 @@ Not using better jumper for now
 
 ** Magit
 #+begin_src emacs-lisp
-    (use-package magit
-      :commands magit)
+  (use-package magit
+    :commands magit
+    :config
+    (setq magit-display-buffer-function
+      (lambda (buffer)
+        (display-buffer
+         buffer (if (and (derived-mode-p 'magit-mode)
+                         (memq (with-current-buffer buffer major-mode)
+                               '(magit-process-mode
+                                 magit-revision-mode
+                                 magit-diff-mode
+                                 magit-stash-mode
+                                 magit-status-mode)))
+                    nil
+                  '(display-buffer-same-window)))))
+    (setq magit-diff-refine-hunk t))
 
-    (use-package transient
-      :after magit)
+  (use-package transient
+    :after magit)
 #+end_src
 
 ** Vterm
@@ -1265,6 +1280,49 @@ So I could still use emacs when I open $EDITOR in vterm
     (with-eval-after-load 'meow
       (meow-leader-define-key
        '("ww" . zoom-window-zoom))))
+#+end_src
+
+** Treemacs
+#+begin_src emacs-lisp
+  (use-package hydra)
+  ;; A tree layout file explorer
+  (use-package treemacs
+    :commands (treemacs-follow-mode
+               treemacs-filewatch-mode
+               treemacs-git-mode)
+    :init
+    (with-eval-after-load 'meow
+      (meow-leader-define-key
+       '("e" . treemacs)))
+    :config
+    (setq treemacs-collapse-dirs           (if treemacs-python-executable 3 0)
+          treemacs-missing-project-action  'remove
+          treemacs-sorting                 'alphabetic-asc
+          treemacs-follow-after-init       t
+          treemacs-width                   30)
+
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (pcase (cons (not (null (executable-find "git")))
+                 (not (null (executable-find "python3"))))
+      (`(t . t)
+       (treemacs-git-mode 'deferred))
+      (`(t . _)
+       (treemacs-git-mode 'simple))))
+  (use-package treemacs-nerd-icons
+    :after treemacs
+    :config (treemacs-load-theme "nerd-icons"))
+
+  (use-package treemacs-magit
+    :after treemacs
+    :hook ((magit-post-commit
+            git-commit-post-finish
+            magit-post-stage
+            magit-post-unstage)
+           . treemacs-magit--schedule-update))
+  (use-package treemacs-tab-bar
+    :after treemacs
+    :config (treemacs-set-scope-type 'Tabs))
 #+end_src
 
 * LANGUAGES
