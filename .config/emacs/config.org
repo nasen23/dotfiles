@@ -159,7 +159,6 @@
             (insert . "I")
             (motion . "M")
             (keypad . "K")))
-
     (defun meow-setup ()
       (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
       (meow-motion-overwrite-define-key
@@ -1332,6 +1331,10 @@ So I could still use emacs when I open $EDITOR in vterm
     :commands (treemacs-follow-mode
                treemacs-filewatch-mode
                treemacs-git-mode)
+    :hook ((treemacs-mode . variable-pitch-mode)
+           (treemacs-mode . (lambda () (setq-local meow-cursor-type-motion nil)
+                              (setq cursor-type nil))))
+    :custom-face (treemacs-root-face ((t (:height 1.3))))
     :init
     (with-eval-after-load 'meow
       (meow-leader-define-key
