@@ -350,6 +350,12 @@
         make-backup-files nil)
 #+end_src
 
+*** Create Backup Files in a Good Place
+#+begin_src emacs-lisp
+  (setq backup-directory-alist
+        `(("." . ,(concat user-emacs-directory "backups"))))
+#+end_src
+
 * FONTS
 ** Basic
 #+begin_src emacs-lisp
