@@ -69,6 +69,7 @@
   - [[#ibuffer][IBuffer]]
   - [[#zoom-window][Zoom Window]]
   - [[#treemacs][Treemacs]]
+  - [[#wakatime][Wakatime]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -1534,6 +1535,14 @@ So I could still use emacs when I open $EDITOR in vterm
     (use-package treemacs-tab-bar
       :demand t
       :config (treemacs-set-scope-type 'Tabs)))
+#+end_src
+
+** Wakatime
+Track my programming time.
+#+begin_src emacs-lisp
+  (use-package wakatime-mode
+    :config
+    (global-wakatime-mode))
 #+end_src
 
 * LANGUAGES
