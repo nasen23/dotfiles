@@ -261,8 +261,7 @@
        '("C-r" . undo-redo)))
     (meow-setup)
     (meow-global-mode)
-    (meow--enable-shims)
-    )
+    (meow--enable-shims))
 #+end_src
 
 ** Basic Key Bindings
@@ -337,7 +336,7 @@
                       :weight 'medium)
   (set-face-attribute 'variable-pitch nil
                       :font "苹方-简"
-                      :height 160)  
+                      :height 150)  
 #+end_src
 
 ** Unicode
@@ -357,13 +356,15 @@
 ** Modeline
 #+begin_src emacs-lisp
   ;; Set mode-line font
-  (cl-loop for font in '("SF Pro Text" "Helvetica")
-           when (font-installed-p font)
-           return (progn
-                    (set-face-attribute 'mode-line nil :family font :weight 'regular :height 140)
-                    (when (facep 'mode-line-active)
-                      (set-face-attribute 'mode-line-active nil :family font :weight 'regular :height 140))
-                    (set-face-attribute 'mode-line-inactive nil :family font :weight 'regular :height 140)))
+  ;; Should be done after loading doom-modeline
+  (with-eval-after-load 'doom-modeline
+    (cl-loop for font in '("苹方-简" "SF Pro Text" "Helvetica")
+             when (font-installed-p font)
+             return (progn
+                      (set-face-attribute 'mode-line nil :family font :weight 'regular :height 140)
+                      (when (facep 'mode-line-active)
+                        (set-face-attribute 'mode-line-active nil :family font :weight 'regular :height 140))
+                      (set-face-attribute 'mode-line-inactive nil :family font :weight 'regular :height 140))))
 #+end_src
 
 ** Mixed Pitch
@@ -436,7 +437,10 @@
 #+begin_src emacs-lisp
   (use-package doom-modeline
     :hook (elpaca-after-init . doom-modeline-mode)
-    :init (setq doom-modeline-minor-modes nil))
+    :custom-face
+    (mode-line ((t (:weight light))))
+    :init (setq doom-modeline-minor-modes nil
+                doom-modeline-height 25))
 #+end_src
 
 *** Hide Modeline in Some Modes
@@ -1331,14 +1335,16 @@ So I could still use emacs when I open $EDITOR in vterm
     :commands (treemacs-follow-mode
                treemacs-filewatch-mode
                treemacs-git-mode)
-    :hook ((treemacs-mode . variable-pitch-mode)
-           (treemacs-mode . (lambda () (setq-local meow-cursor-type-motion nil)
-                              (setq cursor-type nil))))
+    :hook (treemacs-mode . variable-pitch-mode)
     :custom-face (treemacs-root-face ((t (:height 1.3))))
     :init
     (with-eval-after-load 'meow
       (meow-leader-define-key
-       '("e" . treemacs)))
+       '("e" . treemacs))
+      (defun meow--update-cursor-custom-treemacs ()
+        (meow--set-cursor-type nil))
+      (add-to-list 'meow-update-cursor-functions-alist
+                   '((lambda () (eq major-mode 'treemacs-mode)) . meow--update-cursor-custom-treemacs)))
     :config
     (setq treemacs-collapse-dirs           (if treemacs-python-executable 3 0)
           treemacs-missing-project-action  'remove
