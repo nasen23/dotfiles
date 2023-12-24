@@ -70,6 +70,7 @@
   - [[#zoom-window][Zoom Window]]
   - [[#treemacs][Treemacs]]
   - [[#wakatime][Wakatime]]
+  - [[#leetcode][LeetCode]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -1024,6 +1025,8 @@ Not using better jumper for now
     (corfu-preview-current nil)
     (corfu-auto-delay 0.1)
     (corfu-popupinfo-delay '(0.2 . 0.1))
+    ;; NOTE: Settings this to `insert' will automatically expand snippets, which is not what I want
+    (corfu-on-exact-match nil)
     :bind ("M-/" . completion-at-point)
     :hook ((after-init . global-corfu-mode)
            (global-corfu-mode . corfu-popupinfo-mode)
@@ -1188,12 +1191,12 @@ Not using better jumper for now
 
 ** YASnippet
 #+begin_src emacs-lisp
-    (use-package yasnippet
-      :hook (after-init . yas-global-mode))
-    (use-package yasnippet-snippets
-      :after yasnippet)
-    (use-package yasnippet-capf
-      :init (add-to-list 'completion-at-point-functions #'yasnippet-capf))
+  (use-package yasnippet
+    :diminish yas-minor-mode
+    :hook (after-init . yas-global-mode))
+  (use-package yasnippet-snippets)
+  (use-package yasnippet-capf
+    :init (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 #+end_src
 
 * TOOLS
@@ -1543,6 +1546,15 @@ Track my programming time.
   (use-package wakatime-mode
     :config
     (global-wakatime-mode))
+#+end_src
+
+** LeetCode
+#+begin_src emacs-lisp
+  (use-package leetcode
+    :commands leetcode
+    :hook (leetcode-solution-mode . (lambda () (flymake-mode -1)))
+    :init (setq leetcode-save-solutions t
+                leetcode-directory "~/Documents/leetcode"))
 #+end_src
 
 * LANGUAGES
