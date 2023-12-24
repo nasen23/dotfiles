@@ -869,12 +869,8 @@ Builtin package autorevert
 #+begin_src emacs-lisp
   (use-package autorevert
     :ensure nil
-    :config
-    (setq auto-revert-verbose t
-          auto-revert-use-notify nil
-          auto-revert-stop-on-user-input nil
-          revert-without-query (list "."))
-    )
+    :diminish
+    :hook (after-init . global-auto-revert-mode))
 #+end_src
 
 *** Save your last editing place
