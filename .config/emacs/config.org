@@ -410,11 +410,34 @@
 * GRAPHICAL USER INTERFACE TWEAKS
 ** Basic
 #+begin_src emacs-lisp
+  ;; Optimization
+  (setq idle-update-delay 0.1)
+
   (setq-default cursor-in-non-selected-windows nil)
+  (setq highlight-nonselected-windows nil)
   (setq scroll-step 1
         scroll-margin 0
         scroll-conservatively 100000
         auto-window-vscroll nil)
+
+  (setq fast-but-imprecise-scrolling t)
+  (setq redisplay-skip-fontification-on-input t)
+
+  ;; Inhibit resizing frames
+  (setq frame-inhibit-implied-resize t
+        frame-resize-pixelwise t)
+
+  ;; Initial frame
+  (setq initial-frame-alist '((top . 0.5)
+                              (left . 0.5)
+                              (width . 0.628)
+                              (height . 0.8)
+                              (fullscreen)))
+
+  ;; MacOS
+  (when (featurep 'ns)
+    (setq ns-use-thin-smoothing t)
+    (setq ns-pop-up-frames nil))
 #+end_src
 ** Disable Menubar, Toolbars and Scrollbars
 #+begin_src emacs-lisp
