@@ -1059,6 +1059,9 @@ Not using better jumper for now
                              (lsp-deferred)))
            (lsp-mode . (lambda ()
                          (lsp-enable-which-key-integration))))
+    :custom-face
+    (lsp-inlay-hint-type-face ((t (:height 120))))
+    (lsp-inlay-hint-parameter-face ((t (:height 120))))
     :bind
     ([remap xref-find-definitions] . lsp-find-definition)
     ([remap xref-find-references] . lsp-find-references)
@@ -1081,6 +1084,8 @@ Not using better jumper for now
           lsp-enable-on-type-formatting nil
 
           lsp-signature-function #'lsp-signature-posframe
+
+          lsp-inlay-hint-enable t
 
           ;; disable headerline as it's a bit annoyying
           lsp-headerline-breadcrumb-enable nil
