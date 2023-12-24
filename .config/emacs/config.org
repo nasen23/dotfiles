@@ -1080,6 +1080,8 @@ Not using better jumper for now
           lsp-enable-indentation nil
           lsp-enable-on-type-formatting nil
 
+          lsp-signature-function #'lsp-signature-posframe
+
           ;; disable headerline as it's a bit annoyying
           lsp-headerline-breadcrumb-enable nil
 
