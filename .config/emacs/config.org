@@ -6,19 +6,20 @@
 
 * TABLE OF CONTENTS :toc:
 - [[#important-programs-to-load-first][IMPORTANT PROGRAMS TO LOAD FIRST]]
-  - [[#elpaca-package-manager][Elpaca Package Manager]]
+  - [[#basic][Basic]]
+  - [[#packageel][Package.el]]
   - [[#load-meow][Load Meow]]
   - [[#basic-key-bindings][Basic Key Bindings]]
   - [[#turn-off-some-annoyying-things][Turn Off Some Annoyying Things]]
 - [[#fonts][FONTS]]
-  - [[#basic][Basic]]
+  - [[#basic-1][Basic]]
   - [[#setting-the-font-face][Setting The Font Face]]
   - [[#unicode][Unicode]]
   - [[#emoji-][Emoji 🥹]]
   - [[#modeline][Modeline]]
   - [[#mixed-pitch][Mixed Pitch]]
 - [[#graphical-user-interface-tweaks][GRAPHICAL USER INTERFACE TWEAKS]]
-  - [[#basic-1][Basic]]
+  - [[#basic-2][Basic]]
   - [[#disable-menubar-toolbars-and-scrollbars][Disable Menubar, Toolbars and Scrollbars]]
   - [[#display-line-numbers][Display Line Numbers]]
   - [[#window-divider-mode][Window Divider Mode]]
@@ -28,18 +29,18 @@
   - [[#modeline-1][Modeline]]
   - [[#which-key][Which Key]]
   - [[#ligatures][Ligatures]]
+  - [[#child-frame][Child Frame]]
 - [[#org-mode][ORG MODE]]
   - [[#toc][Toc]]
   - [[#org-bullets][Org Bullets]]
   - [[#tag-expansion][Tag Expansion]]
 - [[#vertico-with-consult][VERTICO (WITH CONSULT)]]
   - [[#vertico][vertico]]
-  - [[#orderless][orderless]]
   - [[#marginaliael][Marginalia.el]]
   - [[#consult][Consult]]
   - [[#embark][Embark]]
 - [[#editing][EDITING]]
-  - [[#basic-2][Basic]]
+  - [[#basic-3][Basic]]
   - [[#indent][Indent]]
   - [[#smartparens][Smartparens]]
   - [[#better-jumper][Better Jumper]]
@@ -75,70 +76,102 @@
   - [[#just-tools][Just Tools]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
-** Elpaca Package Manager
+** Basic
 #+begin_src emacs-lisp
+  (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+
+  ;; savehist
+  (use-package savehist
+    :hook (after-init . savehist-mode)
+    :init (setq enable-recursive-minibuffers t ; Allow commands in minibuffers
+                history-length 1000
+                savehist-additional-variables '(mark-ring
+                                                global-mark-ring
+                                                search-ring
+                                                regexp-search-ring
+                                                extended-command-history)
+                savehist-autosave-interval 300))
+#+end_src
+** Package.el
+*** Basic
+#+begin_src emacs-lisp
+  ;; HACK: DO NOT save package-selected-packages to `custom-file'.
+  ;; https://github.com/jwiegley/use-package/issues/383#issuecomment-247801751
+  (defun my-package--save-selected-packages (&optional value)
+    "Set `package-selected-packages' to VALUE but don't save to option `custom-file'."
+    (when value
+      (setq package-selected-packages value))
+    (unless after-init-time
+      (add-hook 'after-init-hook #'my-package--save-selected-packages)))
+  (advice-add 'package--save-selected-packages :override #'my-package--save-selected-packages)
+
   (setq package-archives '(("gnu"    . "http://mirrors.bfsu.edu.cn/elpa/gnu/")
-			     ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
-			     ("melpa"  . "http://mirrors.bfsu.edu.cn/elpa/melpa/")))
+                           ("nongnu" . "http://mirrors.bfsu.edu.cn/elpa/nongnu/")
+                           ("melpa"  . "http://mirrors.bfsu.edu.cn/elpa/melpa/")))
 
-	(defvar elpaca-installer-version 0.6)
-	(defvar elpaca-directory (expand-file-name "elpaca/" user-emacs-directory))
-	(defvar elpaca-builds-directory (expand-file-name "builds/" elpaca-directory))
-	(defvar elpaca-repos-directory (expand-file-name "repos/" elpaca-directory))
-	(defvar elpaca-order '(elpaca :repo "https://github.com/progfolio/elpaca.git"
-				      :ref nil
-				      :files (:defaults "elpaca-test.el" (:exclude "extensions"))
-				      :build (:not elpaca--activate-package)))
-	(let* ((repo  (expand-file-name "elpaca/" elpaca-repos-directory))
-	       (build (expand-file-name "elpaca/" elpaca-builds-directory))
-	       (order (cdr elpaca-order))
-	       (default-directory repo))
-	  (add-to-list 'load-path (if (file-exists-p build) build repo))
-	  (unless (file-exists-p repo)
-	    (make-directory repo t)
-	    (when (< emacs-major-version 28) (require 'subr-x))
-	    (condition-case-unless-debug err
-		(if-let ((buffer (pop-to-buffer-same-window "*elpaca-bootstrap*"))
-			 ((zerop (call-process "git" nil buffer t "clone"
-					       (plist-get order :repo) repo)))
-			 ((zerop (call-process "git" nil buffer t "checkout"
-					       (or (plist-get order :ref) "--"))))
-			 (emacs (concat invocation-directory invocation-name))
-			 ((zerop (call-process emacs nil buffer nil "-Q" "-L" "." "--batch"
-					       "--eval" "(byte-recompile-directory \".\" 0 'force)")))
-			 ((require 'elpaca))
-			 ((elpaca-generate-autoloads "elpaca" repo)))
-		    (progn (message "%s" (buffer-string)) (kill-buffer buffer))
-		  (error "%s" (with-current-buffer buffer (buffer-string))))
-	      ((error) (warn "%s" err) (delete-directory repo 'recursive))))
-	  (unless (require 'elpaca-autoloads nil t)
-	    (require 'elpaca)
-	    (elpaca-generate-autoloads "elpaca" repo)
-	    (load "./elpaca-autoloads")))
-	(add-hook 'after-init-hook #'elpaca-process-queues)
-	(elpaca `(,@elpaca-order))
+  (unless (bound-and-true-p package--initialized)
+    (setq pacakge-enable-at-startup nil)
+    (package-initialize))
 
-	;; Install a package via the elpaca macro
-      ;; See the "recipes" section of the manual for more details.
+  ;; use-package
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
 
-      ;; (elpaca example-package)
+  (setq use-package-always-ensure t
+        use-package-always-defer t
+        use-package-expand-minimally t
+        use-package-enable-imenu-support t)
 
-      ;; Install use-package support
-      (elpaca elpaca-use-package
-	;; Enable :elpaca use-package keyword.
-	(elpaca-use-package-mode)
-	;; Assume :elpaca t unless otherwise specified.
-	(setq elpaca-use-package-by-default t))
+  (use-package diminish :ensure t)
 
-      ;; Block until current queue processed.
-      (elpaca-wait)
+  (use-package gnu-elpa-keyring-update)
+#+end_src
 
-      ;;When installing a package which modifies a form used at the top-level
-      ;;(e.g. a package which adds a use-package key word),
-      ;;use `elpaca-wait' to block until that package has been installed/configured.
-      ;;For example:
-      ;;(use-package general :demand t)
-      ;;(elpaca-wait)
+*** Paradox
+#+begin_src emacs-lisp
+  ;; A modern Packages Menu
+  (use-package paradox
+    :custom-face
+    (paradox-archive-face ((t (:inherit font-lock-doc-face))))
+    (paradox-description-face ((t (:inherit completions-annotations))))
+    :hook (emacs-startup . paradox-enable)
+    :init (setq paradox-execute-asynchronously t
+                paradox-github-token t
+                paradox-display-star-count nil
+                paradox-status-face-alist ;
+                '(("built-in"   . font-lock-builtin-face)
+                  ("available"  . success)
+                  ("new"        . (success bold))
+                  ("held"       . font-lock-constant-face)
+                  ("disabled"   . font-lock-warning-face)
+                  ("avail-obso" . font-lock-comment-face)
+                  ("installed"  . font-lock-comment-face)
+                  ("dependency" . font-lock-comment-face)
+                  ("incompat"   . font-lock-comment-face)
+                  ("deleted"    . font-lock-comment-face)
+                  ("unsigned"   . font-lock-warning-face)))
+    :config
+    (add-hook 'paradox-after-execute-functions
+              (lambda (_)
+                "Display `page-break-lines' in \"*Paradox Report*\" buffer."
+                (when (fboundp 'page-break-lines-mode)
+                  (let ((buf (get-buffer "*Paradox Report*"))
+                        (inhibit-read-only t))
+                    (when (buffer-live-p buf)
+                      (with-current-buffer buf
+                        (page-break-lines-mode 1))))))
+              t))
+#+end_src
+
+*** Auto Package Update
+#+begin_src emacs-lisp
+  (unless (fboundp 'package-upgrade-all)
+    (use-package auto-package-update
+      :init
+      (setq auto-package-update-delete-old-versions t
+            auto-package-update-hide-results t)
+      (defalias 'package-upgrade-all #'auto-package-update-now)))
 #+end_src
 
 ** Load Meow
@@ -154,11 +187,11 @@
     :config
     (require 'meow)
     (setq meow-replace-state-name-list
-          '((normal . "N")
-            (beacon . "B")
-            (insert . "I")
-            (motion . "M")
-            (keypad . "K")))
+          '((normal . "Normal")
+            (beacon . "Beacon")
+            (insert . "Insert")
+            (motion . "Motion")
+            (keypad . "Keypad")))
     (defun meow-setup ()
       (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
       (meow-motion-overwrite-define-key
@@ -267,41 +300,41 @@
 ** Basic Key Bindings
 
 #+begin_src emacs-lisp
-    (global-set-key (kbd "s-x") 'execute-extended-command)
-    (define-key input-decode-map (kbd "C-[") [control-bracketleft])
-    (elpaca nil (progn
-                  ;; TODO map RET in normal mode to button-click
-                  ;; Ref: https://github.com/emacs-evil/evil/blob/c4f95fd9ec284a8284405f84102bfdb74f0ee22f/evil-commands.el#L846-L876
-                  (defun meow--ret ()
-                    (interactive)
-                    (let ((widget (or (get-char-property (point) 'field)
-                                      (get-char-property (point) 'button)
-                                      (get-char-property (point) 'widget-doc))))
-                      (cond
-                       ((and widget
-                             (fboundp 'widget-type)
-                             (fboundp 'widget-button-press)
-                             (or (and (symbolp widget)
-                                      (get widget 'widget-type))
-                                 (and (consp widget)
-                                      (get (widget-type widget) 'widget-type))))
-                        (when (fboundp 'widget-button-press)
-                          (widget-button-press (point))))
-                       ((and (fboundp 'button-at)
-                             (fboundp 'push-button)
-                             (button-at (point)))
-                        (push-button)))))
-                  (meow-normal-define-key
-                   '("RET" . meow--ret)
-                   '("/" . comment-or-uncomment-region))
-                  (define-key meow-normal-state-keymap [control-bracketleft] 'meow-cancel)
-                  (meow-leader-define-key
-                   ;; Fi le
-                   '("." . find-file)
-                   '("fc" . (lambda () (interactive) (let ((default-directory user-emacs-directory)) (call-interactively 'find-file)))))
-                  (add-hook 'minibuffer-setup-hook (lambda () (local-set-key [control-bracketleft] #'meow-minibuffer-quit)))
+  (global-set-key (kbd "s-x") 'execute-extended-command)
+  (define-key input-decode-map (kbd "C-[") [control-bracketleft])
+  (with-eval-after-load 'meow
+    ;; TODO map RET in normal mode to button-click
+    ;; Ref: https://github.com/emacs-evil/evil/blob/c4f95fd9ec284a8284405f84102bfdb74f0ee22f/evil-commands.el#L846-L876
+    (defun meow--ret ()
+      (interactive)
+      (let ((widget (or (get-char-property (point) 'field)
+                        (get-char-property (point) 'button)
+                        (get-char-property (point) 'widget-doc))))
+        (cond
+         ((and widget
+               (fboundp 'widget-type)
+               (fboundp 'widget-button-press)
+               (or (and (symbolp widget)
+                        (get widget 'widget-type))
+                   (and (consp widget)
+                        (get (widget-type widget) 'widget-type))))
+          (when (fboundp 'widget-button-press)
+            (widget-button-press (point))))
+         ((and (fboundp 'button-at)
+               (fboundp 'push-button)
+               (button-at (point)))
+          (push-button)))))
+    (meow-normal-define-key
+     '("RET" . meow--ret)
+     '("/" . comment-or-uncomment-region))
+    (define-key meow-normal-state-keymap [control-bracketleft] 'meow-cancel)
+    (meow-leader-define-key
+     ;; Fi le
+     '("." . find-file)
+     '("fc" . (lambda () (interactive) (let ((default-directory user-emacs-directory)) (call-interactively 'find-file)))))
+    (add-hook 'minibuffer-setup-hook (lambda () (local-set-key [control-bracketleft] #'meow-minibuffer-quit)))
 
-                  ))
+    )
 #+end_src
 
 ** Turn Off Some Annoyying Things
@@ -310,7 +343,7 @@
   (defalias 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
-*** LockFile and Backup Files
+*** Disable LockFile and Backup Files
 #+begin_src emacs-lisp
   (setq create-lockfiles nil
         make-backup-files nil)
@@ -336,7 +369,7 @@
                       :weight 'medium)
   (set-face-attribute 'variable-pitch nil
                       :font "苹方-简"
-                      :height 150)  
+                      :height 150)
 #+end_src
 
 ** Unicode
@@ -370,7 +403,7 @@
 ** Mixed Pitch
 #+begin_src emacs-lisp
   (use-package mixed-pitch
-    :hook (text-mode . mixed-pitch-mode))
+    :hook ((org-mode markdown-mode) . mixed-pitch-mode))
 #+end_src
 
 * GRAPHICAL USER INTERFACE TWEAKS
@@ -394,8 +427,8 @@
 
 #+begin_src emacs-lisp
   (use-package display-line-numbers
-    :elpaca nil
-    :hook ((prog-mode yaml-mode yaml-ts-mode conf-mode) . display-line-numbers-mode)
+    :ensure nil
+    :hook ((prog-mode yaml-mode yaml-ts-mode conf-mode toml-ts-mode) . display-line-numbers-mode)
     :init (setq display-line-numbers-width-start t))
 #+end_src
 
@@ -409,18 +442,17 @@
 
 ** Get Shell Env Loaded
 #+begin_src emacs-lisp
-  (use-package exec-path-from-shell
-    :config
-    (when (memq window-system '(mac ns x))
-      (exec-path-from-shell-initialize)))
+  (when (display-graphic-p)
+    (use-package exec-path-from-shell
+      :init (exec-path-from-shell-initialize)))
 #+end_src
 
 ** Theme
 #+begin_src emacs-lisp
   (use-package catppuccin-theme
+    :ensure t
     :init
     (setq catppuccin-flavor 'frappe)
-    :config
     (load-theme 'catppuccin :no-confirm))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
@@ -436,7 +468,7 @@
 ** Modeline
 #+begin_src emacs-lisp
   (use-package doom-modeline
-    :hook (elpaca-after-init . doom-modeline-mode)
+    :hook (after-init . doom-modeline-mode)
     :custom-face
     (mode-line ((t (:weight light))))
     :init (setq doom-modeline-minor-modes nil
@@ -460,7 +492,7 @@
 #+begin_src emacs-lisp
   (use-package which-key
     :bind ("C-h M-m" . which-key-show-major-mode)
-    :hook (elpaca-after-init . which-key-mode)
+    :hook (after-init . which-key-mode)
     :init (setq which-key-max-description-length 30
                 which-key-lighter nil
                 which-key-show-remaining-keys t))
@@ -469,7 +501,7 @@
 ** Ligatures
 #+begin_src emacs-lisp
   (use-package composite
-    :elpaca nil
+    :ensure nil
     :init
     (defvar composition-ligature-table (make-char-table nil))
     :hook
@@ -512,6 +544,32 @@
       (set-char-table-parent composition-ligature-table composition-function-table))
 #+end_src
 
+** Child Frame
+#+begin_src emacs-lisp
+  (use-package posframe
+    :hook (after-load-theme . posframe-delete-all)
+    :init
+    (defface posframe-border
+      `((t (:inherit region)))
+      "Face used by the `posframe' border."
+      :group 'posframe)
+    (defvar posframe-border-width 2
+      "Default posframe border width.")
+    :config
+    (with-no-warnings
+      (defun my-posframe--prettify-frame (&rest _)
+        (set-face-background 'fringe nil posframe--frame))
+      (advice-add #'posframe--create-posframe :after #'my-posframe--prettify-frame)
+
+      (defun posframe-poshandler-frame-center-near-bottom (info)
+        (cons (/ (- (plist-get info :parent-frame-width)
+                    (plist-get info :posframe-width))
+                 2)
+              (/ (+ (plist-get info :parent-frame-height)
+                    (* 2 (plist-get info :font-height)))
+                 2)))))
+#+end_src
+
 * ORG MODE
 ** Toc
 #+begin_src emacs-lisp
@@ -540,98 +598,126 @@
 
 ** vertico
 #+begin_src emacs-lisp
-  ;; Enable vertico
-  (use-package vertico
-    :hook ((elpaca-after-init . vertico-mode)
-           (rfn-eshadow-update-overlay . vertico-directory-tidy)))
-  ;; Persist history over Emacs restarts. Vertico sorts by history position.
-  (use-package savehist
-    :elpaca nil
-    :init
-    (savehist-mode))
-
   ;; A few more useful configurations...
   (use-package emacs
-    :elpaca nil
     :init
-    ;; Add prompt indicator to `completing-read-multiple'.
-    ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-    (defun crm-indicator (args)
-      (cons (format "[CRM%s] %s"
-                    (replace-regexp-in-string
-                     "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
-                     crm-separator)
-                    (car args))
-            (cdr args)))
-    (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+    ;; TAB cycle if there are only few candidates
+    (setq completion-cycle-threshold 3)
 
-    ;; Do not allow the cursor in the minibuffer prompt
-    (setq minibuffer-prompt-properties
-          '(read-only t cursor-intangible t face minibuffer-prompt))
-    (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+    ;; Only list the commands of the current modes
+    (when (boundp 'read-extended-command-predicate)
+      (setq read-extended-command-predicate
+            #'command-completion-default-include-p))
 
-    ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
-    ;; Vertico commands are hidden in normal buffers.
-    ;; (setq read-extended-command-predicate
-    ;;       #'command-completion-default-include-p)
+    ;; Enable indentation+completion using the TAB key.
+    ;; `completion-at-point' is often bound to M-TAB.
+    (setq tab-always-indent 'complete))
 
-    ;; Enable recursive minibuffers
-    (setq enable-recursive-minibuffers t))
+  ;; Optionally use the `orderless' completion style.
+  (use-package orderless
+    :custom
+    (completion-styles '(orderless basic))
+    (completion-category-overrides '((file (styles basic partial-completion))))
+    (orderless-component-separator #'orderless-escapable-split-on-space))
 
-  ;; (use-package vertico-posframe
-  ;;   :hook (vertico-mode . vertico-posframe-mode)
-  ;;   :init (setq vertico-posframe-poshandler
-  ;;               #'posframe-poshandler-frame-center-near-bottom
-  ;;               vertico-posframe-parameters
-  ;;               '((left-fringe  . 8)
-  ;;                 (right-fringe . 8))))
-#+end_src
+  (use-package vertico
+    :bind (:map vertico-map
+           ("RET" . vertico-directory-enter)
+           ("DEL" . vertico-directory-delete-char)
+           ("M-DEL" . vertico-directory-delete-word))
+    :hook ((after-init . vertico-mode)
+           (rfn-eshadow-update-overlay . vertico-directory-tidy)))
 
-*** Extensions
+  ;; (when (display-graphic-p)
+  ;;   (use-package vertico-posframe
+  ;;     :hook (vertico-mode . vertico-posframe-mode)
+  ;;     :init (setq vertico-posframe-poshandler
+  ;;                 #'posframe-poshandler-frame-center-near-bottom
+  ;;                 vertico-posframe-parameters
+  ;;                 '((left-fringe  . 8)
+  ;;                   (right-fringe . 8)))))
 
-**** Directory
-#+begin_src emacs-lisp
-(use-package vertico-directory
-  :after vertico
-  :elpaca nil
-  :bind (:map vertico-map
-              ("RET" . vertico-directory-enter)
-              ("DEL" . vertico-directory-delete-char)
-              ("M-DEL" . vertico-directory-delete-word))
-)
-#+end_src
-
-** orderless
-#+begin_src emacs-lisp
-    ;; Optionally use the `orderless' completion style.
-    (use-package orderless
-      :init
-      ;; Configure a custom style dispatcher (see the Consult wiki)
-      ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
-      ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-      (setq completion-styles '(orderless basic)
-            completion-category-defaults nil
-            completion-category-overrides '((file (styles partial-completion)))
-            orderless-component-separator #'orderless-escapable-split-on-space))
+  (use-package nerd-icons-completion
+    :hook (vertico-mode . nerd-icons-completion-mode))
 #+end_src
 
 ** Marginalia.el
 #+begin_src emacs-lisp
   (use-package marginalia
-    :after vertico
-    ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
-    ;; available in the *Completions* buffer, add it to the
-    ;; `completion-list-mode-map'.
-    :bind (:map minibuffer-local-map
-                ("M-A" . marginalia-cycle))
-    :init
-    (marginalia-mode))
+    :hook (after-init . marginalia-mode))
 #+end_src
 ** Consult
 #+begin_src emacs-lisp
   ;; Example configuration for Consult
   (use-package consult
-    :after vertico
+    :bind (;; C-c bindings in `mode-specific-map'
+           ("C-c M-x" . consult-mode-command)
+           ("C-c h"   . consult-history)
+           ("C-c k"   . consult-kmacro)
+           ("C-c m"   . consult-man)
+           ("C-c i"   . consult-info)
+           ("C-c r"   . consult-ripgrep)
+
+           ([remap Info-search]        . consult-info)
+           ([remap imenu]              . consult-imenu)
+           ([remap isearch-forward]    . consult-line)
+           ([remap recentf-open-files] . consult-recent-file)
+
+
+           ;; C-x bindings in `ctl-x-map'
+           ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+           ("C-x b"   . consult-buffer)              ;; orig. switch-to-buffer
+           ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+           ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+           ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+           ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+           ;; Custom M-# bindings for fast register access
+           ("M-#"   . consult-register-load)
+           ("M-'"   . consult-register-store)        ;; orig. abbrev-prefix-mark (unrelated)
+           ("C-M-#" . consult-register)
+           ;; Other custom bindings
+           ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+           ;; M-g bindings in `goto-map'
+           ("M-g e" . consult-compile-error)
+           ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+           ("M-g g" . consult-goto-line)             ;; orig. goto-line
+           ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+           ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+           ("M-g m" . consult-mark)
+           ("M-g k" . consult-global-mark)
+           ("M-g i" . consult-imenu)
+           ("M-g I" . consult-imenu-multi)
+           ;; M-s bindings in `search-map'
+           ("M-s d" . consult-find)
+           ("M-s D" . consult-locate)
+           ("M-s g" . consult-grep)
+           ("M-s G" . consult-git-grep)
+           ("M-s r" . consult-ripgrep)
+           ("M-s l" . consult-line)
+           ("M-s L" . consult-line-multi)
+           ("M-s k" . consult-keep-lines)
+           ("M-s u" . consult-focus-lines)
+           ;; Isearch integration
+           ("M-s e" . consult-isearch-history)
+           :map isearch-mode-map
+           ("M-e"   . consult-isearch-history)       ;; orig. isearch-edit-string
+           ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+           ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+           ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+
+           ;; Minibuffer history
+           :map minibuffer-local-map
+           ("C-s" . (lambda ()
+                      "Insert the selected region or current symbol at point."
+                      (interactive)
+                      (insert (save-excursion
+                                (set-buffer (window-buffer (minibuffer-selected-window)))
+                                (or (and transient-mark-mode mark-active (/= (point) (mark))
+                                         (buffer-substring-no-properties (point) (mark)))
+                                    (thing-at-point 'symbol t)
+                                    "")))))
+           ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+           ("M-r" . consult-history))                ;; orig. previous-matching-history-element
     ;; Replace bindings. Lazily loaded due by `use-package'.
     ;; Enable automatic preview at point in the *Completions* buffer. This is
     ;; relevant when you use the default completion UI.
@@ -657,22 +743,16 @@
     ;; Configure other variables and modes in the :config section,
     ;; after lazily loading the package.
     :config
-
     ;; Optionally configure preview. The default value
     ;; is 'any, such that any key triggers the preview.
     ;; (setq consult-preview-key 'any)
-    ;; (setq consult-preview-key "M-.")
+    (setq consult-preview-key "M-.")
     ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
     ;; For some commands and buffer sources it is useful to configure the
     ;; :preview-key on a per-command basis using the `consult-customize' macro.
     (consult-customize
-     consult-theme :preview-key '(:debounce 0.2 any)
-     consult-ripgrep consult-git-grep consult-grep
-     consult-bookmark consult-recent-file consult-xref
-     consult--source-bookmark consult--source-file-register
-     consult--source-recent-file consult--source-project-recent-file
-     ;; :preview-key "M-."
-     :preview-key "C-SPC")
+     consult-goto-line
+     consult-theme :preview-key '(:debounce 0.4 any))
 
     ;; Optionally configure the narrowing key.
     ;; Both < and C-+ work reasonably well.
@@ -680,27 +760,11 @@
 
     ;; Optionally make narrowing help available in the minibuffer.
     ;; You may want to use `embark-prefix-help-command' or which-key instead.
-    ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
-
-    ;; By default `consult-project-function' uses `project-root' from project.el.
-    ;; Optionally configure a different project root function.
-    ;;;; 1. project.el (the default)
-    (setq consult-project-function #'consult--default-project-function)
-    ;;;; 2. vc.el (vc-root-dir)
-    ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-    ;;;; 3. locate-dominating-file
-    ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-    ;;;; 4. projectile.el (projectile-project-root)
-    ;; (autoload 'projectile-project-root "projectile")
-    ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
-    ;;;; 5. No project support
-    ;; (setq consult-project-function nil)
-    )
+    (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help))
 #+end_src
 *** Define Some Keys
 #+begin_src emacs-lisp
-  (global-set-key (kbd "s-f") #'consult-line)
-  (elpaca nil (meow-leader-define-key '("SPC" . project-find-file)))
+  (with-eval-after-load 'meow (meow-leader-define-key '("SPC" . project-find-file)))
 #+end_src
 
 *** Extensions
@@ -802,7 +866,7 @@ Basic editing tweaks
 Builtin package autorevert
 #+begin_src emacs-lisp
   (use-package autorevert
-    :elpaca nil
+    :ensure nil
     :config
     (setq auto-revert-verbose t
           auto-revert-use-notify nil
@@ -815,14 +879,14 @@ Builtin package autorevert
 Builtin package saveplace
 #+begin_src emacs-lisp
   (use-package saveplace
-    :elpaca nil
+    :ensure nil
     :hook (find-file . save-place-mode))
 #+end_src
 
 *** So Long Mode
 #+begin_src emacs-lisp
   (use-package so-long
-    :elpaca nil
+    :ensure nil
     :hook (after-init . global-so-long-mode))
 #+end_src
 ** Indent
@@ -897,8 +961,8 @@ Not using better jumper for now
     ;; (diff-hl-change ((t (:inherit diff-changed-unspecified :background unspecified))))
     ;; (diff-hl-insert ((t (:inherit diff-added :background unspecified))))
     ;; (diff-hl-delete ((t (:inherit diff-removed :background unspecified))))
-    :hook ((elpaca-after-init . global-diff-hl-mode)
-           (elpaca-after-init . global-diff-hl-show-hunk-mouse-mode)
+    :hook ((after-init . global-diff-hl-mode)
+           (after-init . global-diff-hl-show-hunk-mouse-mode)
            (dired-mode . diff-hl-dired-mode))
     :config
     (global-diff-hl-mode)
@@ -912,7 +976,7 @@ Not using better jumper for now
 ** Text Folding
 #+begin_src emacs-lisp
   (use-package hideshow
-    :elpaca nil
+    :ensure nil
     :commands (hs-toggle-hiding)
     :hook (prog-mode . hs-minor-mode)
     :config
@@ -933,7 +997,7 @@ Not using better jumper for now
     (corfu-auto-delay 0.1)
     (corfu-popupinfo-delay '(0.2 . 0.1))
     :bind ("M-/" . completion-at-point)
-    :hook ((elpaca-after-init . global-corfu-mode)
+    :hook ((after-init . global-corfu-mode)
            (global-corfu-mode . corfu-popupinfo-mode)
            (meow-insert-exit . corfu-quit)))
   (use-package nerd-icons-corfu
@@ -974,7 +1038,6 @@ Not using better jumper for now
     :init
     (setq lsp-keymap-prefix "C-c l"
           lsp-keep-workspace-alive nil
-          lsp-signature-auto-activate nil
           lsp-modeline-code-actions-enable nil
           lsp-modeline-diagnostics-enable nil
           lsp-modeline-workspace-status-enable nil
@@ -1081,16 +1144,17 @@ Not using better jumper for now
     :init
     (setq lsp-ui-sideline-show-diagnostics nil
           lsp-ui-sideline-ignore-duplicate t
+          lsp-ui-doc-enable nil
           lsp-ui-doc-delay 0.1
-          lsp-ui-doc-show-with-cursor (not (display-graphic-p))
+          lsp-ui-doc-show-with-cursor t
           lsp-ui-imenu-auto-refresh 'after-save
-          lsp-ui-imenu-buffer-position 'left))
+          lsp-ui-imenu-buffer-position 'right))
 #+end_src
 
 ** YASnippet
 #+begin_src emacs-lisp
     (use-package yasnippet
-      :hook (elpaca-after-init . yas-global-mode))
+      :hook (after-init . yas-global-mode))
     (use-package yasnippet-snippets
       :after yasnippet)
     (use-package yasnippet-capf
@@ -1102,7 +1166,7 @@ Not using better jumper for now
 #+begin_src emacs-lisp
   (use-package flymake
     :hook (prog-mode . flymake-mode)
-    :elpaca nil
+    :ensure nil
     :init
     (setq flymake-no-changes-timeout nil
           flymake-fringe-indicator-position 'right-fringe)
@@ -1218,7 +1282,7 @@ So I could still use emacs when I open $EDITOR in vterm
 #+begin_src emacs-lisp
   (setq recentf-max-saved-items 100)
   (recentf-mode 1)
-  (elpaca nil (meow-leader-define-key '("fr" . consult-recent-file)))
+  (with-eval-after-load 'meow (meow-leader-define-key '("fr" . consult-recent-file)))
 #+end_src
 
 ** Dired
@@ -1288,7 +1352,7 @@ So I could still use emacs when I open $EDITOR in vterm
 ** IBuffer
 #+begin_src emacs-lisp
   (use-package ibuffer
-    :elpaca nil
+    :ensure nil
     :commands ibuffer
     :init (setq ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold))))
 
@@ -1354,28 +1418,32 @@ So I could still use emacs when I open $EDITOR in vterm
 
     (treemacs-follow-mode t)
     (treemacs-filewatch-mode t)
+    (treemacs-project-follow-mode t)
     (pcase (cons (not (null (executable-find "git")))
                  (not (null (executable-find "python3"))))
       (`(t . t)
        (treemacs-git-mode 'deferred))
       (`(t . _)
-       (treemacs-git-mode 'simple))))
-  (use-package treemacs-nerd-icons
-    :custom-face
-    (treemacs-nerd-icons-root-face ((t (:inherit nerd-icons-green :height 1.3))))
-    (treemacs-nerd-icons-file-face ((t (:inherit nerd-icons-dsilver))))
-    :config (treemacs-load-theme "nerd-icons"))
+       (treemacs-git-mode 'simple)))
 
-  (use-package treemacs-magit
-    :after treemacs
-    :hook ((magit-post-commit
-            git-commit-post-finish
-            magit-post-stage
-            magit-post-unstage)
-           . treemacs-magit--schedule-update))
-  (use-package treemacs-tab-bar
-    :after treemacs
-    :config (treemacs-set-scope-type 'Tabs))
+    (use-package treemacs-nerd-icons
+      :demand t
+      :custom-face
+      (treemacs-nerd-icons-root-face ((t (:inherit nerd-icons-green :height 1.3))))
+      (treemacs-nerd-icons-file-face ((t (:inherit nerd-icons-dsilver))))
+      :config (treemacs-load-theme "nerd-icons"))
+
+    (use-package treemacs-magit
+      :after treemacs
+      :hook ((magit-post-commit
+              git-commit-post-finish
+              magit-post-stage
+              magit-post-unstage)
+             . treemacs-magit--schedule-update))
+
+    (use-package treemacs-tab-bar
+      :demand t
+      :config (treemacs-set-scope-type 'Tabs)))
 #+end_src
 
 * LANGUAGES
@@ -1383,7 +1451,7 @@ So I could still use emacs when I open $EDITOR in vterm
 *** Python
 #+begin_src emacs-lisp
   (use-package python
-    :elpaca nil
+    :ensure nil
     :hook (python-mode . (lambda ()
                            (setq format-all-formatters '(("Python" ruff))))))
   (use-package lsp-pyright
