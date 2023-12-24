@@ -1252,44 +1252,45 @@ Walk through git revisions of a file
 
 ** Vterm
 #+begin_src emacs-lisp
-      (use-package vterm
-        :config
-        (defvar-keymap vterm-normal-mode-map
-          "RET" #'vterm-send-return)
+  (use-package vterm
+    :init (setq vterm-max-scrollback 20000)
+    :config
+    (defvar-keymap vterm-normal-mode-map
+      "RET" #'vterm-send-return)
 
-        (define-key vterm-normal-mode-map
-                    [remap yank] #'vterm-yank)
-        (define-key vterm-normal-mode-map
-                    [remap xterm-paste] #'vterm-xterm-paste)
-        (define-key vterm-normal-mode-map
-                    [remap yank-pop] #'vterm-yank-pop)
-        (define-key vterm-normal-mode-map
-                    [remap mouse-yank-primary] #'vterm-yank-primary)
-        (define-key vterm-normal-mode-map
-                    [remap self-insert-command] #'vterm--self-insert)
-        (define-key vterm-normal-mode-map
-                    [remap beginning-of-defun] #'vterm-previous-prompt)
-        (define-key vterm-normal-mode-map
-                    [remap end-of-defun] #'vterm-next-prompt)
+    (define-key vterm-normal-mode-map
+                [remap yank] #'vterm-yank)
+    (define-key vterm-normal-mode-map
+                [remap xterm-paste] #'vterm-xterm-paste)
+    (define-key vterm-normal-mode-map
+                [remap yank-pop] #'vterm-yank-pop)
+    (define-key vterm-normal-mode-map
+                [remap mouse-yank-primary] #'vterm-yank-primary)
+    (define-key vterm-normal-mode-map
+                [remap self-insert-command] #'vterm--self-insert)
+    (define-key vterm-normal-mode-map
+                [remap beginning-of-defun] #'vterm-previous-prompt)
+    (define-key vterm-normal-mode-map
+                [remap end-of-defun] #'vterm-next-prompt)
 
-        (defun meow-vterm-insert-enter ()
-          "Enable vterm default binding in insert and set cursor."
-          (use-local-map vterm-mode-map)
-          (vterm-goto-char (point)))
+    (defun meow-vterm-insert-enter ()
+      "Enable vterm default binding in insert and set cursor."
+      (use-local-map vterm-mode-map)
+      (vterm-goto-char (point)))
 
-        (defun meow-vterm-insert-exit ()
-          "Use regular bindings in normal mode."
-          (use-local-map vterm-normal-mode-map))
+    (defun meow-vterm-insert-exit ()
+      "Use regular bindings in normal mode."
+      (use-local-map vterm-normal-mode-map))
 
-        (defun meow-vterm-setup-hooks ()
-          "Configure insert mode for vterm."
-          (add-hook 'meow-insert-enter-hook #'meow-vterm-insert-enter nil t)
-          (add-hook 'meow-insert-exit-hook #'meow-vterm-insert-exit nil t))
+    (defun meow-vterm-setup-hooks ()
+      "Configure insert mode for vterm."
+      (add-hook 'meow-insert-enter-hook #'meow-vterm-insert-enter nil t)
+      (add-hook 'meow-insert-exit-hook #'meow-vterm-insert-exit nil t))
 
-        (add-hook 'vterm-mode-hook #'meow-vterm-setup-hooks)
-        (add-hook 'vterm-mode-hook #'(lambda () (display-line-numbers-mode -1))))
-      (use-package multi-vterm
-        :commands multi-vterm)
+    (add-hook 'vterm-mode-hook #'meow-vterm-setup-hooks)
+    (add-hook 'vterm-mode-hook #'(lambda () (display-line-numbers-mode -1))))
+  (use-package multi-vterm
+    :commands multi-vterm)
 #+end_src
 
 ** With Editor
