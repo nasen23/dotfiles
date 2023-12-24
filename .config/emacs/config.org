@@ -79,6 +79,7 @@
 ** Basic
 #+begin_src emacs-lisp
   (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (and (file-readable-p custom-file) (load custom-file))
 
   ;; savehist
   (use-package savehist
@@ -471,8 +472,9 @@
     :hook (after-init . doom-modeline-mode)
     :custom-face
     (mode-line ((t (:weight light))))
+    (mode-line-active ((t (:weight light))))
     :init (setq doom-modeline-minor-modes nil
-                doom-modeline-height 25))
+                doom-modeline-height 27))
 #+end_src
 
 *** Hide Modeline in Some Modes
