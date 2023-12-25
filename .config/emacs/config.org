@@ -489,8 +489,8 @@
     :init
     (setq catppuccin-flavor 'latte)
     (load-theme 'catppuccin :no-confirm))
-  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-  (add-to-list 'default-frame-alist '(ns-appearance . dark))
+  (unless (eq catppuccin-flavor 'latte)
+    (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 #+end_src
 
 *** Rose pine
