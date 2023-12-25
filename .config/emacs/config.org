@@ -379,9 +379,13 @@
                       :height 140
                       :weight 'medium)
   (set-face-attribute 'variable-pitch nil
-                      :font "苹方-简"
+                      :font "Sarasa UI SC"
                       :height 150)
 #+end_src
+
+I can eat glass, it does not hurt me.
+我能吞下玻璃而不伤身体。
+私はガラスを食べられます。それは私を傷つけません。
 
 ** Unicode
 #+begin_src emacs-lisp
@@ -402,7 +406,7 @@
   ;; Set mode-line font
   ;; Should be done after loading doom-modeline
   (with-eval-after-load 'doom-modeline
-    (cl-loop for font in '("苹方-简" "SF Pro Text" "Helvetica")
+    (cl-loop for font in '("Sarasa UI SC" "苹方-简" "SF Pro Text" "Helvetica")
              when (font-installed-p font)
              return (progn
                       (set-face-attribute 'mode-line nil :family font :weight 'regular :height 140)
