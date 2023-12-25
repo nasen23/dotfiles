@@ -24,7 +24,7 @@ zinit light-mode for \
     zdharma-continuum/z-a-bin-gem-node
 
 zinit light z-shell/F-Sy-H
-fast-theme CONFIG:catppuccin-frappe > /dev/null
+fast-theme CONFIG:catppuccin-latte > /dev/null
 
 ### End of Zinit's installer chunk
 
