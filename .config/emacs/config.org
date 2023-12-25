@@ -71,6 +71,7 @@
   - [[#treemacs][Treemacs]]
   - [[#wakatime][Wakatime]]
   - [[#leetcode][LeetCode]]
+  - [[#kubernetes-client][Kubernetes Client]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -1294,7 +1295,8 @@ Walk through git revisions of a file
 ** Vterm
 #+begin_src emacs-lisp
   (use-package vterm
-    :init (setq vterm-max-scrollback 20000)
+    :init (setq vterm-max-scrollback 20000
+                vterm-timer-delay 0.01)
     :config
     (defvar-keymap vterm-normal-mode-map
       "RET" #'vterm-send-return)
@@ -1558,6 +1560,19 @@ Track my programming time.
                 leetcode-directory "~/Documents/leetcode"))
 #+end_src
 
+** Kubernetes Client
+#+begin_src emacs-lisp
+  (use-package kubel
+    :after (vterm)
+    :config (kubel-vterm-setup))
+  (defun kubel--kubernetes-resources-list ()
+    "Get list of resources from cache or from fetching the api resource."
+    (if (not (bound-and-true-p kubel--kubernetes-resources-list-cached))
+        (setq kubel--kubernetes-resources-list-cached
+              (kubel--fetch-api-resource-list))
+      kubel--kubernetes-resources-list-cached))
+#+end_src
+
 * LANGUAGES
 ** Programming languages
 *** Python
@@ -1589,6 +1604,9 @@ Track my programming time.
     :commands yaml-mode
     :config
     (add-to-list 'auto-mode-alist '("\\.ya?ml\\'" . yaml-mode)))
+
+  (use-package yaml-pro
+    :hook ((yaml-mode yaml-ts-mode) . yaml-pro-mode))
 #+end_src
 *** JSON
 #+begin_src emacs-lisp
