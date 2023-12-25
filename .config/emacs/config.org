@@ -8,6 +8,7 @@
 - [[#important-programs-to-load-first][IMPORTANT PROGRAMS TO LOAD FIRST]]
   - [[#basic][Basic]]
   - [[#packageel][Package.el]]
+  -  [[#useful-functions][Useful functions]]
   - [[#load-meow][Load Meow]]
   - [[#basic-key-bindings][Basic Key Bindings]]
   - [[#turn-off-some-annoyying-things][Turn Off Some Annoyying Things]]
@@ -178,6 +179,15 @@
       (defalias 'package-upgrade-all #'auto-package-update-now)))
 #+end_src
 
+**  Useful functions
+#+begin_src emacs-lisp
+  ;; quit window and kill buffer
+  (defun quit-window-kill-buffer ()
+    "Quit current window and kill its buffer."
+    (interactive)
+    (quit-window 'kill))
+#+end_src
+
 ** Load Meow
 
 #+begin_src emacs-lisp
@@ -278,7 +288,7 @@
        '("o" . meow-block)
        '("O" . meow-to-block)
        '("p" . meow-yank)
-       '("q" . meow-quit)
+       '("q" . quit-window-kill-buffer)
        '("Q" . meow-goto-line)
        '("r" . meow-replace)
        '("R" . meow-swap-grab)
