@@ -482,15 +482,18 @@
 #+end_src
 
 ** Theme
+*** Catppuccin
 #+begin_src emacs-lisp
   (use-package catppuccin-theme
     :ensure t
     :init
-    (setq catppuccin-flavor 'frappe)
+    (setq catppuccin-flavor 'latte)
     (load-theme 'catppuccin :no-confirm))
   (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
   (add-to-list 'default-frame-alist '(ns-appearance . dark))
 #+end_src
+
+*** Rose pine
 
 ** Icons
 #+begin_src emacs-lisp
