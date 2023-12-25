@@ -183,7 +183,8 @@
   (use-package meow
     :demand t
     :init
-    (setq meow-visit-sanitize-completion nil)
+    (setq meow-visit-sanitize-completion nil
+          meow-expand-hint-remove-delay 0)
     :custom
     (meow-use-cursor-position-hack t)
     (meow-use-clipboard t)
