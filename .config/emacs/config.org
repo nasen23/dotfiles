@@ -31,6 +31,7 @@
   - [[#which-key][Which Key]]
   - [[#ligatures][Ligatures]]
   - [[#child-frame][Child Frame]]
+  - [[#highlight-indent][Highlight Indent]]
 - [[#org-mode][ORG MODE]]
   - [[#toc][Toc]]
   - [[#org-bullets][Org Bullets]]
@@ -624,6 +625,13 @@ I can eat glass, it does not hurt me.
                  2)))))
 #+end_src
 
+** Highlight Indent
+#+begin_src emacs-lisp
+  (use-package highlight-indent-guides
+    :init (setq highlight-indent-guides-method 'character)
+    :hook ((yaml-mode yaml-ts-mode python-mode python-ts-mode) . highlight-indent-guides-mode))
+#+end_src
+
 * ORG MODE
 ** Toc
 #+begin_src emacs-lisp
@@ -849,7 +857,6 @@ I can eat glass, it does not hurt me.
   (use-package embark
     :bind (("s-." . embark-act)
            ("C-s-." . embark-act)
-           ("M-." . embark-dwim)
            ("M-s-." . xref-find-definitions)
            ([remap describe-bindings] . embark-bindings))
     :init
@@ -1027,12 +1034,10 @@ Not using better jumper for now
 #+begin_src emacs-lisp
   (use-package hideshow
     :ensure nil
-    :commands (hs-toggle-hiding)
     :hook (prog-mode . hs-minor-mode)
     :config
     (with-eval-after-load 'meow
-      (meow-normal-define-key '(":" . hs-toggle-hiding)))
-    )
+      (meow-normal-define-key '(":" . hs-toggle-hiding))))
 #+end_src
 
 * COMPLETION
@@ -1634,6 +1639,12 @@ Track my programming time.
   (use-package jq-mode
     :commands jq-interactively
     :mode ("\\.jq\\'" . jq-mode))
+#+end_src
+
+*** Tabular
+#+begin_src emacs-lisp
+  (use-package csv-mode
+    :mode (".tsv" ".csv" ".tabular" ".vcf"))
 #+end_src
 
 ** Text
