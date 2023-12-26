@@ -1031,13 +1031,18 @@ Not using better jumper for now
 #+end_src
 
 ** Text Folding
+*** Hide Show
 #+begin_src emacs-lisp
   (use-package hideshow
     :ensure nil
-    :hook (prog-mode . hs-minor-mode)
-    :config
-    (with-eval-after-load 'meow
-      (meow-normal-define-key '(":" . hs-toggle-hiding))))
+    :hook (prog-mode . hs-minor-mode))
+#+end_src
+
+*** yafolding
+Indent-based folding that should just work
+#+begin_src emacs-lisp
+  (use-package yafolding
+    :hook (prog-mode . yafolding-mode))
 #+end_src
 
 * COMPLETION
