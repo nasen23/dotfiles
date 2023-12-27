@@ -32,6 +32,8 @@
   - [[#ligatures][Ligatures]]
   - [[#child-frame][Child Frame]]
   - [[#highlight-indent][Highlight Indent]]
+  - [[#tabs][Tabs]]
+  - [[#display-hex-colors][Display Hex Colors]]
 - [[#org-mode][ORG MODE]]
   - [[#toc][Toc]]
   - [[#org-bullets][Org Bullets]]
@@ -678,6 +680,34 @@ I can eat glass, it does not hurt me.
                                         dictionary dictionary_comprehension
                                         parenthesized_expression subscript)))
     :hook ((python-mode yaml-mode) . indent-bars-mode))
+#+end_src
+
+** Tabs
+#+begin_src emacs-lisp
+  ;; NOTE: not using tabs now
+  ;; (use-package centaur-tabs
+  ;;   :init
+  ;;   (centaur-tabs-mode)
+  ;;   (centaur-tabs-change-fonts "Sarasa UI SC" 140)
+  ;;   :custom
+  ;;   (centaur-tabs-set-icons t)
+  ;;   (centaur-tabs-icon-type 'nerd-icons)
+  ;;   (centaur-tabs-gray-out-icons 'buffer)
+  ;;   (centaur-tabs-set-bar 'left)
+  ;;   (x-underline-at-descent-line t)
+  ;;   (centaur-tabs-set-modified-marker t)
+  ;;   (centaur-tabs-style "alternate")
+  ;;   :custom-face
+  ;;   (centaur-tabs-active-bar-face ((t (:background ,(catppuccin-get-color 'mauve)))))
+  ;;   :hook
+  ;;   ((dired-mode . centaur-tabs-local-mode)))
+#+end_src
+
+** Display Hex Colors
+
+#+begin_src emacs-lisp
+  (use-package rainbow-mode
+    :hook (prog-mode . rainbow-mode))
 #+end_src
 
 * ORG MODE
