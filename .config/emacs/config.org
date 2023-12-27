@@ -1261,7 +1261,8 @@ Indent-based folding that should just work
   (use-package lsp-ui
     :after lsp-mode
     :hook (lsp-mode . lsp-ui-mode)
-    :bind (([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+    :bind (:map lsp-ui-mode-map
+           ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
            ([remap xref-find-references] . lsp-ui-peek-find-references))
     :init
     (setq lsp-ui-sideline-show-diagnostics nil
