@@ -627,8 +627,21 @@ I can eat glass, it does not hurt me.
 
 ** Highlight Indent
 #+begin_src emacs-lisp
+  (defun my-highlight-indent-guides--bitmap-line (width height crep zrep)
+    "Defines a solid guide line, two pixels wide.
+  Use WIDTH, HEIGHT, CREP, and ZREP as described in
+  `highlight-indent-guides-bitmap-function'."
+    (let* ((left (/ (- width 2) 2))
+           (right (- width left 2))
+           (row (append (make-list left zrep) (make-list 1 crep) (make-list right zrep)))
+           rows)
+      (dotimes (i height rows)
+        (setq rows (cons row rows)))))
+
   (use-package highlight-indent-guides
-    :init (setq highlight-indent-guides-method 'character)
+    :init (setq highlight-indent-guides-method 'bitmap
+                highlight-indent-guides-responsive 'stack
+                highlight-indent-guides-bitmap-function #'my-highlight-indent-guides--bitmap-line)
     :hook ((yaml-mode yaml-ts-mode python-mode python-ts-mode) . highlight-indent-guides-mode))
 #+end_src
 
@@ -1042,7 +1055,11 @@ Not using better jumper for now
 Indent-based folding that should just work
 #+begin_src emacs-lisp
   (use-package yafolding
-    :hook (prog-mode . yafolding-mode))
+    :hook (prog-mode . yafolding-mode)
+    ;; :custom
+    ;; (yafolding-ellipsis-content "")
+    :custom-face
+    (yafolding-ellipsis-face ((t (:inherit shadow)))))
 #+end_src
 
 * COMPLETION
@@ -1091,15 +1108,16 @@ Indent-based folding that should just work
     :hook ((prog-mode . (lambda ()
                           (unless (or (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode 'snippet-mode)
                                       (eq major-mode 'prog-mode))) ;; just bare prog mode
-                             (lsp-deferred)))
+                          (lsp-deferred)))
            (lsp-mode . (lambda ()
                          (lsp-enable-which-key-integration))))
     :custom-face
     (lsp-inlay-hint-type-face ((t (:height 120))))
     (lsp-inlay-hint-parameter-face ((t (:height 120))))
-    :bind
-    ([remap xref-find-definitions] . lsp-find-definition)
-    ([remap xref-find-references] . lsp-find-references)
+    :bind (:map lsp-mode-map
+                ("C-c C-d" . lsp-describe-thing-at-point)
+                ([remap xref-find-definitions] . lsp-find-definition)
+                ([remap xref-find-references] . lsp-find-references))
     :init
     (setq lsp-keymap-prefix "C-c l"
           lsp-keep-workspace-alive nil
