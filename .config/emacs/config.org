@@ -98,6 +98,29 @@
                                                 extended-command-history)
                 savehist-autosave-interval 300))
 #+end_src
+
+*** About emacs-mac
+#+begin_src emacs-lisp
+  (when (eq window-system 'mac)
+    ;; NOTE: a workaround for a bug in emacs-mac
+    (tool-bar-mode 1)
+    (tool-bar-mode 0)
+
+    ;; cmd default key bindings are not there
+    (global-set-key (kbd "s-f") 'isearch-forward)
+    (global-set-key (kbd "s-v") 'yank)
+    (global-set-key (kbd "s-c") 'kill-ring-save)
+    (global-set-key (kbd "s-s") 'save-buffer)
+    (global-set-key (kbd "s-l") 'goto-line)
+    (global-set-key (kbd "s-w") 'delete-window)
+    (global-set-key (kbd "s-z") 'undo)
+    (global-set-key (kbd "s-q") 'save-buffers-kill-emacs)
+    (global-set-key (kbd "s-=") 'text-scale-increase)
+    (global-set-key (kbd "s--") 'text-scale-decrease)
+    (setq mac-option-modifier 'meta)
+    (setq mac-command-modifier 'super))
+#+end_src
+
 ** Package.el
 *** Basic
 #+begin_src emacs-lisp
@@ -123,6 +146,11 @@
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
+
+  ;; vc-use-package
+  ;; NOTE: change this when you use a recent enough Emacs (>= 2023-05-16)
+  (unless (package-installed-p 'vc-use-package)
+    (package-vc-install "https://github.com/slotThe/vc-use-package"))
 
   (setq use-package-always-ensure t
         use-package-always-defer t
@@ -443,7 +471,7 @@ I can eat glass, it does not hurt me.
   (setq-default cursor-in-non-selected-windows nil)
   (setq highlight-nonselected-windows nil)
   (setq scroll-step 1
-        scroll-margin 8
+        scroll-margin 0
         scroll-conservatively 100000
         auto-window-vscroll nil)
 
@@ -638,11 +666,18 @@ I can eat glass, it does not hurt me.
       (dotimes (i height rows)
         (setq rows (cons row rows)))))
 
-  (use-package highlight-indent-guides
-    :init (setq highlight-indent-guides-method 'bitmap
-                highlight-indent-guides-responsive 'stack
-                highlight-indent-guides-bitmap-function #'my-highlight-indent-guides--bitmap-line)
-    :hook ((yaml-mode yaml-ts-mode python-mode python-ts-mode) . highlight-indent-guides-mode))
+  (use-package indent-bars
+    :vc (:fetcher github :repo jdtsmith/indent-bars)
+    :custom
+    (indent-bars-prefer-character t)
+    (indent-bars-treesit-support t)
+    (indent-bars-no-descend-string t)
+    (indent-bars-treesit-ignore-blank-lines-types '("module"))
+    (indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
+                                        list list_comprehension
+                                        dictionary dictionary_comprehension
+                                        parenthesized_expression subscript)))
+    :hook ((python-mode yaml-mode) . indent-bars-mode))
 #+end_src
 
 * ORG MODE
@@ -1055,7 +1090,7 @@ Not using better jumper for now
 Indent-based folding that should just work
 #+begin_src emacs-lisp
   (use-package yafolding
-    :hook (prog-mode . yafolding-mode)
+    :hook ((prog-mode yaml-mode) . yafolding-mode)
     ;; :custom
     ;; (yafolding-ellipsis-content "")
     :custom-face
@@ -1414,7 +1449,7 @@ So I could still use emacs when I open $EDITOR in vterm
 *** Dired Rsync
 #+begin_src emacs-lisp
   (use-package dired-rsync
-    :commands (dired-rsync dired-rsync-transient))
+    :commands dired-rsync)
 #+end_src
 
 *** Colorful
