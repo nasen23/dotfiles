@@ -687,18 +687,27 @@ I can eat glass, it does not hurt me.
   ;; NOTE: not using tabs now
   ;; (use-package centaur-tabs
   ;;   :init
+  ;;   (setq centaur-tabs-set-icons t
+  ;;         centaur-tabs-gray-out-icons 'buffer
+  ;;         centaur-tabs-set-bar 'left
+  ;;         centaur-tabs-set-modified-marker t
+  ;;         centaur-tabs-close-button "✕"
+  ;;         centaur-tabs-modified-marker "•"
+  ;;         centaur-tabs-icon-type 'nerd-icons
+  ;;         ;; Scrolling (with the mouse wheel) past the end of the tab list
+  ;;         ;; replaces the tab list with that of another Doom workspace. This
+  ;;         ;; prevents that.
+  ;;         centaur-tabs-cycle-scope 'tabs
+  ;;         centaur-tabs-show-new-tab-button nil)
   ;;   (centaur-tabs-mode)
   ;;   (centaur-tabs-change-fonts "Sarasa UI SC" 140)
-  ;;   :custom
-  ;;   (centaur-tabs-set-icons t)
-  ;;   (centaur-tabs-icon-type 'nerd-icons)
-  ;;   (centaur-tabs-gray-out-icons 'buffer)
-  ;;   (centaur-tabs-set-bar 'left)
-  ;;   (x-underline-at-descent-line t)
-  ;;   (centaur-tabs-set-modified-marker t)
-  ;;   (centaur-tabs-style "alternate")
   ;;   :custom-face
   ;;   (centaur-tabs-active-bar-face ((t (:background ,(catppuccin-get-color 'mauve)))))
+  ;;   (centaur-tabs-selected ((t (:background ,(catppuccin-get-color 'base)))))
+  ;;   (centaur-tabs-close-selected ((t (:background ,(catppuccin-get-color 'base)))))
+  ;;   (centaur-tabs-selected-modified ((t (:background ,(catppuccin-get-color 'base)))))
+  ;;   (centaur-tabs-name-mouse-face ((t (:background ,(catppuccin-get-color 'base)))))
+  ;;   (centaur-tabs-close-mouse-face ((t (:background ,(catppuccin-get-color 'base)))))
   ;;   :hook
   ;;   ((dired-mode . centaur-tabs-local-mode)))
 #+end_src
