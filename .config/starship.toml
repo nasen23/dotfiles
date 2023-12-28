@@ -8,8 +8,8 @@ style = "bold lavender"
 [character]
 # Note the use of Catppuccin color 'maroon'
 success_symbol = "[[🐱](green) ❯](maroon)"
-error_symbol = "[❯](red)"
-vicmd_symbol = "[❮](green)"
+error_symbol = "[🙀 ❯](red)"
+vicmd_symbol = "[😾 ❮](green)"
 
 
 [palettes.catppuccin_frappe]
