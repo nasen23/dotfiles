@@ -534,13 +534,22 @@ I can eat glass, it does not hurt me.
   (use-package catppuccin-theme
     :ensure t
     :init
-    (setq catppuccin-flavor 'latte)
-    (load-theme 'catppuccin :no-confirm))
-  (unless (eq catppuccin-flavor 'latte)
-    (add-to-list 'default-frame-alist '(ns-appearance . dark)))
+    (setq catppuccin-flavor 'latte))
 #+end_src
 
 *** Rose pine
+#+begin_src emacs-lisp
+  ;; (use-package rose-pine-emacs
+  ;;   :ensure t
+  ;;   :vc (:fetcher github :repo Caelie/rose-pine-emacs :rev master))
+#+end_src
+
+*** And I use...
+#+begin_src emacs-lisp
+  (load-theme 'catppuccin :no-confirm)
+  (unless (eq catppuccin-flavor 'latte)
+    (add-to-list 'default-frame-alist '(ns-appearance . dark)))
+#+end_src
 
 ** Icons
 #+begin_src emacs-lisp
