@@ -2,7 +2,7 @@ local wezterm = require("wezterm")
 local act = wezterm.action
 local co = wezterm.color.parse
 
-local color_scheme = "Catppuccin Frappe"
+local color_scheme = "Catppuccin Latte"
 local scheme = wezterm.color.get_builtin_schemes()[color_scheme]
 
 local ssh_domains = {}
@@ -54,7 +54,7 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
 	if tab.is_active then
 		bg = co(scheme.background)
 	else
-		bg = co(scheme.background):lighten(0.1)
+		bg = co(scheme.background):darken(0.1)
 	end
 	local index = tab.tab_index
 	local text = " " .. index + 1 .. ": " .. title .. " "
@@ -87,7 +87,7 @@ local config = {
 	cursor_blink_rate = 500,
 	cursor_thickness = 4,
 
-	-- use_fancy_tab_bar = false,
+	use_fancy_tab_bar = false,
 	-- hide_tab_bar_if_only_one_tab = true,
 	-- tab_bar_at_bottom = true,
 	show_new_tab_button_in_tab_bar = false,
@@ -98,10 +98,10 @@ local config = {
 		top = 0,
 		bottom = 0,
 	},
-	window_decorations = "RESIZE",
-	window_background_opacity = 1.0,
+	-- window_decorations = "RESIZE|TITLE|MACOS_FORCE_ENABLE_SHADOW",
+	-- window_background_opacity = 0.99,
 	-- force_reverse_video_cursor = true,
-	macos_window_background_blur = 12,
+	-- macos_window_background_blur = 12,
 	-- inactive_pane_hsb = {
 	-- 	saturation = 1.0,
 	-- 	brightness = 0.7,
