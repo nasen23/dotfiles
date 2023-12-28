@@ -447,15 +447,6 @@ I can eat glass, it does not hurt me.
 ** Modeline
 #+begin_src emacs-lisp
   ;; Set mode-line font
-  ;; Should be done after loading doom-modeline
-  (with-eval-after-load 'doom-modeline
-    (cl-loop for font in '("Sarasa UI SC" "苹方-简" "SF Pro Text" "Helvetica")
-             when (font-installed-p font)
-             return (progn
-                      (set-face-attribute 'mode-line nil :family font :weight 'regular :height 140)
-                      (when (facep 'mode-line-active)
-                        (set-face-attribute 'mode-line-active nil :family font :weight 'regular :height 140))
-                      (set-face-attribute 'mode-line-inactive nil :family font :weight 'regular :height 140))))
 #+end_src
 
 ** Mixed Pitch
@@ -559,14 +550,39 @@ I can eat glass, it does not hurt me.
 #+end_src
 
 ** Modeline
+Using native modeline for now
 #+begin_src emacs-lisp
-  (use-package doom-modeline
-    :hook (after-init . doom-modeline-mode)
-    :custom-face
-    (mode-line ((t (:weight light))))
-    (mode-line-active ((t (:weight light))))
-    :init (setq doom-modeline-minor-modes nil
-                doom-modeline-height 27))
+  ;; (use-package doom-modeline
+  ;;   ;; :hook (after-init . doom-modeline-mode)
+  ;;   :custom-face
+  ;;   (mode-line ((t (:weight light))))
+  ;;   (mode-line-active ((t (:weight light))))
+  ;;   :init (setq doom-modeline-minor-modes nil
+  ;;               doom-modeline-height 27))
+
+  ;; Using my own `mode-line-format'
+  ;; (setq-default mode-line-format '("%e" mode-line-front-space
+  ;;                         (:propertize
+  ;;                          ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote)
+  ;;                          display
+  ;;                          (min-width
+  ;;                           (5.0)))
+  ;;                         mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position
+  ;;                         (vc-mode vc-mode)
+  ;;                         "  " mode-line-modes mode-line-misc-info mode-line-end-spaces
+  ;;                         (#("  " 0 2
+  ;;                            (display
+  ;;                             (raise 0.3)))
+  ;;                          #(" " 0 1
+  ;;                            (display
+  ;;                             (raise -0.3))))))
+  (cl-loop for font in '("Sarasa UI SC" "苹方-简" "SF Pro Text" "Helvetica")
+           when (font-installed-p font)
+           return (progn
+                    (set-face-attribute 'mode-line nil :family font :weight 'regular :height 140)
+                    (when (facep 'mode-line-active)
+                      (set-face-attribute 'mode-line-active nil :family font :weight 'regular :height 140))
+                    (set-face-attribute 'mode-line-inactive nil :family font :weight 'regular :height 140)))
 #+end_src
 
 *** Hide Modeline in Some Modes
@@ -725,6 +741,7 @@ I can eat glass, it does not hurt me.
 
 #+begin_src emacs-lisp
   (use-package rainbow-mode
+    :diminish
     :hook (prog-mode . rainbow-mode))
 #+end_src
 
@@ -1060,12 +1077,14 @@ Some basic behaviors
 *** Dtrt Indent (For guessing Indent)
 #+begin_src emacs-lisp
   (use-package dtrt-indent
+    :diminish
     :hook (prog-mode . dtrt-indent-mode))
 #+end_src
 
 ** Smartparens
 #+begin_src emacs-lisp
   (use-package smartparens
+    :diminish
     :hook (prog-mode text-mode markdown-mode)
     :config
     (require 'smartparens-config))
@@ -1090,8 +1109,9 @@ Not using better jumper for now
 
 ** Trim Whitespaces (ws-butler)
 #+begin_src emacs-lisp
-(use-package ws-butler
-  :hook (prog-mode . ws-butler-mode))
+  (use-package ws-butler
+    :diminish ws-butler-mode
+    :hook (prog-mode . ws-butler-mode))
 #+end_src
 
 ** Rainbow Delimiters
@@ -1131,6 +1151,7 @@ Not using better jumper for now
 #+begin_src emacs-lisp
   (use-package hideshow
     :ensure nil
+    :diminish hs-minor-mode
     :hook (prog-mode . hs-minor-mode))
 #+end_src
 
@@ -1221,7 +1242,7 @@ Indent-based folding that should just work
 
           lsp-signature-function #'lsp-signature-posframe
 
-          lsp-inlay-hint-enable t
+          lsp-inlay-hint-enable nil
 
           ;; disable headerline as it's a bit annoyying
           lsp-headerline-breadcrumb-enable nil
@@ -1345,6 +1366,7 @@ Indent-based folding that should just work
     (setq elisp-flymake-byte-compile-load-path (append elisp-flymake-byte-compile-load-path load-path)))
 
   (use-package sideline-flymake
+    :diminish sideline-mode
     :hook (flymake-mode . sideline-mode)
     :init (setq sideline-flymake-display-mode 'point
                 sideline-backends-right '(sideline-flymake)))
