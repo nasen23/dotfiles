@@ -226,7 +226,8 @@
     :demand t
     :init
     (setq meow-visit-sanitize-completion nil
-          meow-expand-hint-remove-delay 0)
+          meow-expand-hint-remove-delay 0
+          meow-cursor-type-region-cursor 'hbar)
     :custom
     (meow-use-cursor-position-hack t)
     (meow-use-clipboard t)
@@ -403,6 +404,11 @@
         `(("." . ,(concat user-emacs-directory "backups"))))
 #+end_src
 
+*** What's slowing down tramp
+#+begin_src emacs-lisp
+  (setq vc-handled-backends '(Git)) ;; I don't think I use something other than git
+#+end_src
+
 * FONTS
 ** Basic
 #+begin_src emacs-lisp
@@ -561,21 +567,15 @@ Using native modeline for now
   ;;               doom-modeline-height 27))
 
   ;; Using my own `mode-line-format'
-  ;; (setq-default mode-line-format '("%e" mode-line-front-space
-  ;;                         (:propertize
-  ;;                          ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote)
-  ;;                          display
-  ;;                          (min-width
-  ;;                           (5.0)))
-  ;;                         mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position
-  ;;                         (vc-mode vc-mode)
-  ;;                         "  " mode-line-modes mode-line-misc-info mode-line-end-spaces
-  ;;                         (#("  " 0 2
-  ;;                            (display
-  ;;                             (raise 0.3)))
-  ;;                          #(" " 0 1
-  ;;                            (display
-  ;;                             (raise -0.3))))))
+  (setq-default mode-line-format '("%e" mode-line-front-space
+                                   (:propertize
+                                    ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote)
+                                    display
+                                    (min-width
+                                     (5.0)))
+                                   mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position
+                                   (vc-mode vc-mode)
+                                   "  " mode-line-modes mode-line-misc-info mode-line-end-spaces))
   (cl-loop for font in '("Sarasa UI SC" "苹方-简" "SF Pro Text" "Helvetica")
            when (font-installed-p font)
            return (progn
@@ -1050,7 +1050,7 @@ Builtin package saveplace
 #+begin_src emacs-lisp
   (use-package saveplace
     :ensure nil
-    :hook (find-file . save-place-mode))
+    :hook (after-init . save-place-mode))
 #+end_src
 
 *** So Long Mode
@@ -1105,6 +1105,8 @@ Not using better jumper for now
 ** Goto Last Changed
 
 #+begin_src emacs-lisp
+  (use-package goto-chg
+    :bind ("C-," . goto-last-change))
 #+end_src
 
 ** Trim Whitespaces (ws-butler)
@@ -1545,11 +1547,14 @@ So I could still use emacs when I open $EDITOR in vterm
     (use-package diredfl
       :hook (dired-mode . diredfl-mode))
 
-    (use-package nerd-icons-dired
-      :diminish
-      :custom-face
-      (nerd-icons-dired-dir-face ((t (:inherit nerd-icons-dsilver :foreground unspecified))))
-      :hook (dired-mode . nerd-icons-dired-mode))
+    ;; TODO: I found out that this package would slow down accessing a large remote directory
+    ;; because it will call `file-directory-p' on every file
+    ;; Try to find a way around this maybe?
+    ;; (use-package nerd-icons-dired
+    ;;   :diminish
+    ;;   :custom-face
+    ;;   (nerd-icons-dired-dir-face ((t (:inherit nerd-icons-dsilver :foreground unspecified))))
+    ;;   :hook (dired-mode . nerd-icons-dired-mode))
 
     (use-package dired-aux :ensure nil)
     (use-package dired-x
@@ -1816,7 +1821,7 @@ Track my programming time.
 *** JSON
 #+begin_src emacs-lisp
   (use-package json-mode
-    :mode ("\\.json\\'" . json-mode))
+    :mode ("\\.jsonl?\\'"))
   (use-package jq-mode
     :commands jq-interactively
     :mode ("\\.jq\\'" . jq-mode))
