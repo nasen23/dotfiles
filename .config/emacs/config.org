@@ -407,6 +407,51 @@
 *** What's slowing down tramp
 #+begin_src emacs-lisp
   (setq vc-handled-backends '(Git)) ;; I don't think I use something other than git
+
+  ;; (with-eval-after-load 'tramp
+  ;;   (defun my/tramp-check-for-regexp (proc regexp)
+  ;;     "Check, whether REGEXP is contained in process buffer of PROC.
+  ;; Erase echoed commands if exists."
+  ;;     (with-current-buffer (process-buffer proc)
+  ;;       (if (> (point-max) 1000)
+  ;;           (progn
+  ;;             (goto-char (point-max))
+  ;;             (ignore-errors (re-search-backward regexp (- (point-max) 1000) t)))
+  ;;         (progn
+  ;;           (goto-char (point-min))
+
+  ;;           ;; Check whether we need to remove echo output.
+  ;;           (when (and (tramp-get-connection-property proc "check-remote-echo" nil)
+  ;;                      (re-search-forward tramp-echoed-echo-mark-regexp nil t))
+  ;;             (let ((begin (match-beginning 0)))
+  ;;               (when (re-search-forward tramp-echoed-echo-mark-regexp nil t)
+  ;;                 ;; Discard echo from remote output.
+  ;;                 (tramp-set-connection-property proc "check-remote-echo" nil)
+  ;;                 (tramp-message proc 5 "echo-mark found")
+  ;;                 (forward-line 1)
+  ;;                 (delete-region begin (point))
+  ;;                 (goto-char (point-min)))))
+
+  ;;           (when (or (not (tramp-get-connection-property proc "check-remote-echo" nil))
+  ;;                     ;; Sometimes, the echo string is suppressed on the remote side.
+  ;;                     (not (string-equal
+  ;;                           (tramp-compat-funcall
+  ;;                            'substring-no-properties tramp-echo-mark-marker
+  ;;                            0 (min tramp-echo-mark-marker-length (1- (point-max))))
+  ;;                           (tramp-compat-funcall
+  ;;                            'buffer-substring-no-properties
+  ;;                            (point-min)
+  ;;                            (min (+ (point-min) tramp-echo-mark-marker-length)
+  ;;                                 (point-max))))))
+  ;;             ;; No echo to be handled, now we can look for the regexp.
+  ;;             ;; Sometimes, lines are much to long, and we run into a "Stack
+  ;;             ;; overflow in regexp matcher".  For example, //DIRED// lines of
+  ;;             ;; directory listings with some thousand files.  Therefore, we
+  ;;             ;; look from the end.
+  ;;             (goto-char (point-max))
+  ;;             (ignore-errors (re-search-backward regexp nil t)))))))
+  ;;     (advice-add #'tramp-check-for-regexp :override #'ns/tramp-check-for-regexp))
+
 #+end_src
 
 * FONTS
@@ -429,7 +474,8 @@
                       :weight 'medium)
   (set-face-attribute 'variable-pitch nil
                       :font "Sarasa UI SC"
-                      :height 150)
+                      :height 150
+                      :weight 'medium)
 #+end_src
 
 I can eat glass, it does not hurt me.
@@ -832,10 +878,10 @@ Using native modeline for now
            ("C-c m"   . consult-man)
            ("C-c i"   . consult-info)
            ("C-c r"   . consult-ripgrep)
+           ("s-f" . consult-line)
 
            ([remap Info-search]        . consult-info)
            ([remap imenu]              . consult-imenu)
-           ([remap isearch-forward]    . consult-line)
            ([remap recentf-open-files] . consult-recent-file)
 
 
@@ -1773,14 +1819,20 @@ Track my programming time.
 ** Kubernetes Client
 #+begin_src emacs-lisp
   (use-package kubel
-    :after (vterm)
-    :config (kubel-vterm-setup))
-  (defun kubel--kubernetes-resources-list ()
-    "Get list of resources from cache or from fetching the api resource."
-    (if (not (bound-and-true-p kubel--kubernetes-resources-list-cached))
-        (setq kubel--kubernetes-resources-list-cached
-              (kubel--fetch-api-resource-list))
-      kubel--kubernetes-resources-list-cached))
+    :commands kubel
+    :config
+    (require 'vterm)
+    (kubel-vterm-setup)
+
+    ;; Override a function: 
+    (defun ns/kubel--kubernetes-resources-list ()
+      "Get list of resources from cache or from fetching the api resource."
+      (if (not (bound-and-true-p kubel--kubernetes-resources-list-cached))
+          (setq kubel--kubernetes-resources-list-cached
+                (kubel--fetch-api-resource-list))
+        kubel--kubernetes-resources-list-cached))
+    (advice-add #'kubel--kubernetes-resources-list :override
+                #'ns/kubel--kubernetes-resources-list))
 #+end_src
 
 * LANGUAGES
