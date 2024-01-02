@@ -1593,14 +1593,42 @@ So I could still use emacs when I open $EDITOR in vterm
     (use-package diredfl
       :hook (dired-mode . diredfl-mode))
 
-    ;; TODO: I found out that this package would slow down accessing a large remote directory
+    ;; DONE: I found out that this package would slow down accessing a large remote directory
     ;; because it will call `file-directory-p' on every file
     ;; Try to find a way around this maybe?
-    ;; (use-package nerd-icons-dired
-    ;;   :diminish
-    ;;   :custom-face
-    ;;   (nerd-icons-dired-dir-face ((t (:inherit nerd-icons-dsilver :foreground unspecified))))
-    ;;   :hook (dired-mode . nerd-icons-dired-mode))
+    (use-package nerd-icons-dired
+      :diminish
+      :custom-face
+      (nerd-icons-dired-dir-face ((t (:inherit nerd-icons-dsilver :foreground unspecified))))
+      :hook (dired-mode . nerd-icons-dired-mode)
+      :config
+      ;; avoid calling `file-directory-p' on every file
+      (defun my/dired-file-directory-p (file)
+        "Use ls command result to check if file of current line is directory, fallback to `file-directory-p' if permission string is not found."
+        (save-excursion
+          (beginning-of-line)
+          (if (re-search-forward "\\([d-]\\)\\([r-][w-][x-]\\)\\{3\\}" (line-end-position) t)
+              (string= "d" (substring (match-string 1) 0 1))
+            (file-directory-p file))))
+      (defun my/nerd-icons-dired--refresh ()
+        (nerd-icons-dired--remove-all-overlays)
+        (save-excursion
+          (goto-char (point-min))
+          (while (not (eobp))
+            (when (dired-move-to-filename nil)
+              (let ((file (dired-get-filename 'relative 'noerror)))
+                (when file
+                  (let ((icon (if (my/dired-file-directory-p file)
+                                  (nerd-icons-icon-for-dir file
+                                                           :face 'nerd-icons-dired-dir-face
+                                                           :v-adjust nerd-icons-dired-v-adjust)
+                                (nerd-icons-icon-for-file file :v-adjust nerd-icons-dired-v-adjust)))
+                        (inhibit-read-only t))
+                    (if (member file '("." ".."))
+                        (nerd-icons-dired--add-overlay (dired-move-to-filename) "  \t")
+                      (nerd-icons-dired--add-overlay (dired-move-to-filename) (concat icon "\t")))))))
+            (forward-line 1))))
+      (advice-add #'nerd-icons-dired--refresh :override #'my/nerd-icons-dired--refresh))
 
     (use-package dired-aux :ensure nil)
     (use-package dired-x
