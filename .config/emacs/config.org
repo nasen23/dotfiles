@@ -612,16 +612,66 @@ Using native modeline for now
   ;;   :init (setq doom-modeline-minor-modes nil
   ;;               doom-modeline-height 27))
 
-  ;; Using my own `mode-line-format'
-  (setq-default mode-line-format '("%e" mode-line-front-space
-                                   (:propertize
-                                    ("" mode-line-mule-info mode-line-client mode-line-modified mode-line-remote)
-                                    display
-                                    (min-width
-                                     (5.0)))
-                                   mode-line-frame-identification mode-line-buffer-identification "   " mode-line-position
-                                   (vc-mode vc-mode)
-                                   "  " mode-line-modes mode-line-misc-info mode-line-end-spaces))
+  (defun luna-mode-line-with-padding (text)
+    "Return TEXT with padding on the left.
+  The padding pushes TEXT to the right edge of the mode-line."
+    (if (and (>= emacs-major-version 29) (display-graphic-p))
+        (let* ((len (string-pixel-width text))
+               (space-prop
+                `(space :align-to (- (+ right right-margin) (,len))))
+               (padding (propertize "-" 'display space-prop)))
+          (concat padding text))
+      (concat " " text)))
+
+  (defun luna-mode-line-coding-system ()
+    "Display abnormal coding systems."
+    (let ((coding (symbol-name buffer-file-coding-system)))
+      (if (or (and (not (string-prefix-p "prefer-utf-8" coding))
+                   (not (string-prefix-p "utf-8" coding))
+                   (not (string-prefix-p "undecided" coding)))
+              (string-suffix-p "dos" coding))
+          (concat "  " coding)
+        "")))
+
+  ;; TODO: stealing from lunarymacs for now
+  ;; Write my own
+  (setq-default mode-line-format
+                (let* ((spaces
+                        (propertize " " 'display '(space :width 1.2)))
+                       (fringe (propertize
+                                " " 'display '(space :width fringe)))
+                       (percentage
+                        '(format
+                          "[%%l] %d%%"
+                          (/ (* (window-end) 100.0) (point-max)))))
+                  `(,fringe
+                    (:eval (if (window-dedicated-p) "🚷" ""))
+                    (:eval (if buffer-read-only "🔒" ""))
+                    (:propertize "%[%b%]" face (:weight semi-bold))
+                    (:eval (luna-mode-line-coding-system))
+                    ,spaces
+                    ,(if (boundp 'minions-mode-line-modes)
+                         'minions-mode-line-modes
+                       'mode-line-modes)
+                    ,spaces
+                    (:eval (if (buffer-modified-p)
+                               ,(if (display-graphic-p) "ΦAΦ" "OAO")
+                             ,(if (display-graphic-p) "ΦwΦ" "OwO")))
+                    (flymake-mode
+                     (,spaces
+                      flymake-mode-line-title
+                      flymake-mode-line-exception
+                      flymake-mode-line-counters))
+                    ,(if (display-graphic-p)
+                         (list (propertize "  " 'display '(raise 0.3))
+                               (propertize " " 'display '(raise -0.3)))
+                       " ")
+                    mode-line-misc-info
+                    (:eval (concat (luna-mode-line-with-padding ,percentage)
+                                   "%%"))
+                    ;; (:eval (concat ,spaces "(%l) " ,percentage "%%"))
+                    )))
+
   (cl-loop for font in '("Sarasa UI SC" "苹方-简" "SF Pro Text" "Helvetica")
            when (font-installed-p font)
            return (progn
