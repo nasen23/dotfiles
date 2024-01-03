@@ -660,7 +660,7 @@ Using native modeline for now
                     ,(if (display-graphic-p)
                          (propertize " " 'display '(raise -0.3))
                        " ")
-                    ,(propertize " " 'display '(space :align-to (+ left (string-pixel-width " Keypad  " 'face 'mode-line))))
+                    ,(propertize " " 'display '(space :align-to 10))
                     (:eval (if (window-dedicated-p) "🚷 " ""))
                     (:eval (if buffer-read-only "🔒" ""))
                     (:eval (let ((file (buffer-file-name))) (if file (concat (nerd-icons-icon-for-file file) " ") "")))
