@@ -621,7 +621,7 @@ Using native modeline for now
     (if (and (>= emacs-major-version 29) (display-graphic-p))
         (let* ((len (string-pixel-width text))
                (space-prop
-                `(space :align-to (- (+ right right-margin) (,len))))
+                `(space :align-to (- (+ right right-margin) (+ (,len) right-margin))))
                (padding (propertize "-" 'display space-prop)))
           (concat padding text))
       (concat " " text)))
@@ -649,10 +649,14 @@ Using native modeline for now
                           (/ (* (window-end) 100.0) (point-max)))))
                   `(,fringe
                     (:eval meow--indicator)
-                    ,spaces
+                    ,(if (display-graphic-p)
+                         (list (propertize " " 'display '(raise 0.3))
+                               (propertize " " 'display '(raise -0.3)))
+                       " ")
+                    ,(propertize " " 'display '(space :align-to 9))
                     (:eval (if (window-dedicated-p) "🚷 " ""))
                     (:eval (if buffer-read-only "🔒" ""))
-                    (:eval (let ((file (buffer-file-name))) (if file (concat (nerd-icons-icon-for-file file) " ") "")))
+                    (:eval (let ((file (buffer-file-name))) (if major-mode (concat (nerd-icons-icon-for file) " ") "")))
                     (:propertize "%[%b%]" face (:weight semi-bold))
                     (:eval (luna-mode-line-coding-system))
                     ,spaces
@@ -668,10 +672,6 @@ Using native modeline for now
                       flymake-mode-line-title
                       flymake-mode-line-exception
                       flymake-mode-line-counters))
-                    ,(if (display-graphic-p)
-                         (list (propertize "  " 'display '(raise 0.3))
-                               (propertize " " 'display '(raise -0.3)))
-                       " ")
                     mode-line-misc-info
                     (:eval (concat (luna-mode-line-with-padding ,percentage)
                                    "%%"))
