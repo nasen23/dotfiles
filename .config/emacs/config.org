@@ -518,6 +518,7 @@ I can eat glass, it does not hurt me.
   (setq scroll-step 1
         scroll-margin 0
         scroll-conservatively 100000
+        scroll-preserve-screen-position t
         auto-window-vscroll nil)
 
   (setq fast-but-imprecise-scrolling t)
@@ -612,6 +613,7 @@ Using native modeline for now
   ;;   :init (setq doom-modeline-minor-modes nil
   ;;               doom-modeline-height 27))
 
+  ;; Thanks to lunarymacs
   (defun luna-mode-line-with-padding (text)
     "Return TEXT with padding on the left.
   The padding pushes TEXT to the right edge of the mode-line."
@@ -645,8 +647,11 @@ Using native modeline for now
                           "[%%l] %d%%"
                           (/ (* (window-end) 100.0) (point-max)))))
                   `(,fringe
-                    (:eval (if (window-dedicated-p) "🚷" ""))
+                    (:eval meow--indicator)
+                    ,spaces
+                    (:eval (if (window-dedicated-p) "🚷 " ""))
                     (:eval (if buffer-read-only "🔒" ""))
+                    (:eval (let ((file (buffer-file-name))) (if file (concat (nerd-icons-icon-for-file file) " ") "")))
                     (:propertize "%[%b%]" face (:weight semi-bold))
                     (:eval (luna-mode-line-coding-system))
                     ,spaces
@@ -792,7 +797,7 @@ Using native modeline for now
   (use-package indent-bars
     :vc (:fetcher github :repo jdtsmith/indent-bars)
     :custom
-    (indent-bars-prefer-character t)
+    ;; (indent-bars-prefer-character t)
     (indent-bars-treesit-support t)
     (indent-bars-no-descend-string t)
     (indent-bars-treesit-ignore-blank-lines-types '("module"))
@@ -1048,17 +1053,13 @@ Using native modeline for now
 #+begin_src emacs-lisp
   ;; nesting `with-eval-after-load'
   (with-eval-after-load 'consult
-    (defun +consult-ripgrep-current-dir (prefix)
+    (defun +consult-ripgrep-current-dir (&optional initial)
       (interactive "P")
       (consult-ripgrep
-       (if (not prefix)
-           nil
-         (if (eq prefix 1)
-             t
-           (if (buffer-file-name) default-directory t)))))
+       (if default-directory default-directory nil) initial))
     (with-eval-after-load 'meow
       (meow-leader-define-key
-       '("," . +consult-ripgrep-current-dir))))
+       '("?" . +consult-ripgrep-current-dir))))
 #+end_src
 
 ** Embark
