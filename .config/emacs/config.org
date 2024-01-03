@@ -1504,6 +1504,11 @@ Indent-based folding that should just work
 #+begin_src emacs-lisp
   (use-package magit
     :init (setq magit-diff-refine-hunk t))
+
+  ;; enhanced diffing with delta
+  (when (executable-find "delta")
+    (use-package magit-delta
+      :hook (magit-mode . magit-delta-mode)))
 #+end_src
 
 *** Git Timemachine
