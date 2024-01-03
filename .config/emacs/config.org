@@ -159,7 +159,7 @@
         use-package-expand-minimally t
         use-package-enable-imenu-support t)
 
-  (use-package diminish :ensure t)
+  (use-package diminish :ensure t :config (diminish 'eldoc-mode))
 
   (use-package gnu-elpa-keyring-update)
 #+end_src
@@ -223,8 +223,8 @@
 
 #+begin_src emacs-lisp
   (use-package meow
-    :diminish
     :demand t
+    :diminish (meow-normal-mode meow-insert-mode meow-beacon-mode meow-motion-mode meow-keypad-mode)
     :init
     (setq meow-visit-sanitize-completion nil
           meow-expand-hint-remove-delay 0
@@ -615,16 +615,16 @@ Using native modeline for now
   ;;               doom-modeline-height 27))
 
   ;; Thanks to lunarymacs
-  (defun luna-mode-line-with-padding (text)
-    "Return TEXT with padding on the left.
+  (defun luna-mode-line-padding (text)
+    "Return padding on the left.
   The padding pushes TEXT to the right edge of the mode-line."
     (if (and (>= emacs-major-version 29) (display-graphic-p))
-        (let* ((len (string-pixel-width text))
+        (let* ((len (string-pixel-width (propertize text 'face 'mode-line)))
                (space-prop
-                `(space :align-to (- (+ right right-margin) (+ (,len) right-margin))))
+                `(space :align-to (- (+ right right-margin) (,len))))
                (padding (propertize "-" 'display space-prop)))
-          (concat padding text))
-      (concat " " text)))
+          padding)
+      " "))
 
   (defun luna-mode-line-coding-system ()
     "Display abnormal coding systems."
@@ -646,17 +646,24 @@ Using native modeline for now
                        (percentage
                         '(format
                           "[%%l] %d%%"
+                          (/ (* (window-end) 100.0) (point-max))))
+                       (line-percentage
+                        '(format
+                          "[%d] %d%%"
+                          (line-number-at-pos (point))
                           (/ (* (window-end) 100.0) (point-max)))))
                   `(,fringe
+                    ,(if (display-graphic-p)
+                         (propertize " " 'display '(raise 0.3))
+                       " ")
                     (:eval meow--indicator)
                     ,(if (display-graphic-p)
-                         (list (propertize " " 'display '(raise 0.3))
-                               (propertize " " 'display '(raise -0.3)))
+                         (propertize " " 'display '(raise -0.3))
                        " ")
-                    ,(propertize " " 'display '(space :align-to 9))
+                    ,(propertize " " 'display '(space :align-to (+ left (string-pixel-width " Keypad  " 'face 'mode-line))))
                     (:eval (if (window-dedicated-p) "🚷 " ""))
                     (:eval (if buffer-read-only "🔒" ""))
-                    (:eval (let ((file (buffer-file-name))) (if major-mode (concat (nerd-icons-icon-for file) " ") "")))
+                    (:eval (let ((file (buffer-file-name))) (if file (concat (nerd-icons-icon-for-file file) " ") "")))
                     (:propertize "%[%b%]" face (:weight semi-bold))
                     (:eval (luna-mode-line-coding-system))
                     ,spaces
@@ -667,13 +674,11 @@ Using native modeline for now
                     (:eval (if (buffer-modified-p)
                                ,(if (display-graphic-p) "ΦAΦ" "OAO")
                              ,(if (display-graphic-p) "ΦwΦ" "OwO")))
-                    (flymake-mode
-                     (,spaces
-                      flymake-mode-line-title
-                      flymake-mode-line-exception
-                      flymake-mode-line-counters))
                     mode-line-misc-info
-                    (:eval (concat (luna-mode-line-with-padding ,percentage)
+                    ;; Calculate the padding first
+                    ;; Get line number refreshed by using `%l'
+                    (:eval (concat (luna-mode-line-padding ,line-percentage)
+                                   ,percentage
                                    "%%"))
                     ;; (:eval (concat ,spaces "(%l) " ,percentage "%%"))
                     )))
@@ -1483,11 +1488,12 @@ Indent-based folding that should just work
 
 ** Direnv
 #+begin_src emacs-lisp
-      ;; Let's define a `first-file-hook' here
-      (use-package envrc
-        :hook (find-file . envrc-global-mode)
-        :config
-        (advice-add #'org-babel-execute-src-block :around #'envrc-propagate-environment))
+  ;; Let's define a `first-file-hook' here
+  (use-package envrc
+    :diminish
+    :hook (find-file . envrc-global-mode)
+    :config
+    (advice-add #'org-babel-execute-src-block :around #'envrc-propagate-environment))
 #+end_src
 
 ** Formatter
