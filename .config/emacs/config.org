@@ -652,18 +652,15 @@ Using native modeline for now
                           "[%d] %d%%"
                           (line-number-at-pos (point))
                           (/ (* (window-end) 100.0) (point-max)))))
-                  `(,fringe
-                    ,(if (display-graphic-p)
+                  `(,(if (display-graphic-p)
                          (propertize " " 'display '(raise 0.3))
                        " ")
-                    (:eval meow--indicator)
                     ,(if (display-graphic-p)
                          (propertize " " 'display '(raise -0.3))
                        " ")
-                    ,(propertize " " 'display '(space :align-to 10))
-                    (:eval (if (window-dedicated-p) "🚷 " ""))
+                    (:eval (if (window-dedicated-p) "🚷" ""))
                     (:eval (if buffer-read-only "🔒" ""))
-                    (:eval (let ((file (buffer-file-name))) (if file (concat (nerd-icons-icon-for-file file) " ") "")))
+                    (:eval (let ((file (buffer-file-name))) (if file (concat (propertize (nerd-icons-icon-for-file file) 'display '(raise 0.1)) " ") " ")))
                     (:propertize "%[%b%]" face (:weight semi-bold))
                     (:eval (luna-mode-line-coding-system))
                     ,spaces
