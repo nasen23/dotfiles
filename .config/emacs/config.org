@@ -1768,26 +1768,27 @@ So I could still use emacs when I open $EDITOR in vterm
                    (tramp-remote-shell-args ("-c")))))
 #+end_src
 
-** Emacs Rime
+** DONE Emacs Rime
+Not using emacs-rime anymore.
 #+begin_src emacs-lisp
-  (use-package rime
-    :init
-    (setq rime-librime-root (concat user-emacs-directory "librime/dist"))
-    :custom
-    (default-input-method "rime")
-    (rime-user-data-dir "~/Library/Rime")
-    (rime-show-candidate 'posframe)
-    :bind
-    (:map rime-mode-map ("C-`" . 'rime-send-keybinding)))
+  ;; (use-package rime
+  ;;   :init
+  ;;   (setq rime-librime-root (concat user-emacs-directory "librime/dist"))
+  ;;   :custom
+  ;;   (default-input-method "rime")
+  ;;   (rime-user-data-dir "~/Library/Rime")
+  ;;   (rime-show-candidate 'posframe)
+  ;;   :bind
+  ;;   (:map rime-mode-map ("C-`" . 'rime-send-keybinding)))
 #+end_src
 
 *** Let Meow Play Nice with Input Methods
 #+begin_src emacs-lisp
-  (with-eval-after-load 'meow
-    (defvar-local +meow-input-method-state nil)
-    (add-hook 'meow-insert-enter-hook (lambda () (when +meow-input-method-state (activate-input-method +meow-input-method-state))))
-    (add-hook 'meow-insert-exit-hook (lambda () (setq-local +meow-input-method-state current-input-method) (deactivate-input-method)))
-    )
+  ;; (with-eval-after-load 'meow
+  ;;   (defvar-local +meow-input-method-state nil)
+  ;;   (add-hook 'meow-insert-enter-hook (lambda () (when +meow-input-method-state (activate-input-method +meow-input-method-state))))
+  ;;   (add-hook 'meow-insert-exit-hook (lambda () (setq-local +meow-input-method-state current-input-method) (deactivate-input-method)))
+  ;;   )
 #+end_src
 
 ** IBuffer
