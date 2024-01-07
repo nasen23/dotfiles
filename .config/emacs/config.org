@@ -525,6 +525,8 @@ I can eat glass, it does not hurt me.
         scroll-preserve-screen-position t
         auto-window-vscroll nil)
 
+  (setq inhibit-startup-screen t)
+
   (setq fast-but-imprecise-scrolling t)
   (setq redisplay-skip-fontification-on-input t)
 
@@ -1827,8 +1829,7 @@ Currently using ~emacs-smart-input-source~.
       (add-hook 'meow-insert-exit-hook #'sis-set-english)
       (add-to-list 'sis-context-hooks 'meow-insert-enter-hook)
       ;; Fixing meow keypad mode issues when using sis
-      (add-hook 'meow-insert-exit-hook #'sis-prefix-override-buffer-disable)
-      (add-hook 'meow-insert-enter-hook #'sis-prefix-override-buffer-enable)
+      (add-to-list 'sis-prefix-override-buffer-disable-predicates (lambda () meow-normal-mode))
       ;; Dirty hack to let `meow-reverse' work properly
       (advice-add 'meow-reverse :before (lambda () (sis-global-respect-mode 0)))
       (advice-add 'meow-reverse :after (lambda () (sis-global-respect-mode t)))))
