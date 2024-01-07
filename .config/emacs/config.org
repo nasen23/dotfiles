@@ -71,6 +71,7 @@
   - [[#yadm-over-magit][YADM over Magit]]
   - [[#emacs-rime][Emacs Rime]]
   - [[#input-method-switcher][Input Method Switcher]]
+  - [[#cjk-tokenizer][CJK Tokenizer]]
   - [[#ibuffer][IBuffer]]
   - [[#zoom-window][Zoom Window]]
   - [[#treemacs][Treemacs]]
@@ -160,7 +161,7 @@
         use-package-expand-minimally t
         use-package-enable-imenu-support t)
 
-  (use-package diminish :ensure t :config (diminish 'eldoc-mode))
+  (use-package delight :ensure t :config (delight 'eldoc-mode))
 
   (use-package gnu-elpa-keyring-update)
 #+end_src
@@ -225,7 +226,7 @@
 #+begin_src emacs-lisp
   (use-package meow
     :demand t
-    :diminish (meow-normal-mode meow-insert-mode meow-beacon-mode meow-motion-mode meow-keypad-mode)
+    :delight '(meow-normal-mode meow-insert-mode meow-beacon-mode meow-motion-mode meow-keypad-mode)
     :init
     (setq meow-visit-sanitize-completion nil
           meow-expand-hint-remove-delay 0
@@ -801,6 +802,14 @@ Using native modeline for now
   (use-package indent-bars
     :vc (:fetcher github :repo jdtsmith/indent-bars)
     :custom
+    (indent-bars-treesit-support t)
+    (indent-bars-no-descend-string t)
+    (indent-bars-treesit-ignore-blank-lines-types '("module"))
+    (indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
+                                        list list_comprehension
+                                        dictionary dictionary_comprehension
+                                        parenthesized_expression subscript)))
+
     (indent-bars-color '(highlight :face-bg t :blend 0.15))
     (indent-bars-pattern ".")
     (indent-bars-width-frac 0.1)
@@ -846,7 +855,7 @@ Using native modeline for now
 
 #+begin_src emacs-lisp
   (use-package rainbow-mode
-    :diminish
+    :delight
     :hook (prog-mode . rainbow-mode))
 #+end_src
 
@@ -1142,7 +1151,7 @@ Builtin package autorevert
 #+begin_src emacs-lisp
   (use-package autorevert
     :ensure nil
-    :diminish
+    :delight
     :hook (after-init . global-auto-revert-mode))
 #+end_src
 
@@ -1178,14 +1187,14 @@ Some basic behaviors
 *** Dtrt Indent (For guessing Indent)
 #+begin_src emacs-lisp
   (use-package dtrt-indent
-    :diminish
+    :delight
     :hook (prog-mode . dtrt-indent-mode))
 #+end_src
 
 ** Smartparens
 #+begin_src emacs-lisp
   (use-package smartparens
-    :diminish
+    :delight
     :hook (prog-mode text-mode markdown-mode)
     :config
     (require 'smartparens-config))
@@ -1213,7 +1222,7 @@ Not using better jumper for now
 ** Trim Whitespaces (ws-butler)
 #+begin_src emacs-lisp
   (use-package ws-butler
-    :diminish ws-butler-mode
+    :delight ws-butler-mode
     :hook (prog-mode . ws-butler-mode))
 #+end_src
 
@@ -1254,7 +1263,7 @@ Not using better jumper for now
 #+begin_src emacs-lisp
   (use-package hideshow
     :ensure nil
-    :diminish hs-minor-mode
+    :delight hs-minor-mode
     :hook (prog-mode . hs-minor-mode))
 #+end_src
 
@@ -1310,6 +1319,12 @@ Indent-based folding that should just work
   (setenv "LSP_USE_PLISTS" "true")
 
   (use-package lsp-mode
+    :delight '(:eval
+               (concat " LSP[" (mapconcat
+                                (lambda (workspace) (let* ((s (lsp--workspace-print workspace))
+                                                           (pos (cl-position ?: s)))
+                                                      (if pos (cl-subseq s 0 pos) s)))
+                                lsp--buffer-workspaces "][") "]"))
     :autoload lsp-enable-which-key-integration
     :commands (lsp-format-buffer lsp-organize-imports)
     :hook ((prog-mode . (lambda ()
@@ -1449,7 +1464,7 @@ Indent-based folding that should just work
 ** YASnippet
 #+begin_src emacs-lisp
   (use-package yasnippet
-    :diminish yas-minor-mode
+    :delight yas-minor-mode
     :hook (after-init . yas-global-mode))
   (use-package yasnippet-snippets)
   (use-package yasnippet-capf
@@ -1469,7 +1484,7 @@ Indent-based folding that should just work
     (setq elisp-flymake-byte-compile-load-path (append elisp-flymake-byte-compile-load-path load-path)))
 
   (use-package sideline-flymake
-    :diminish sideline-mode
+    :delight sideline-mode
     :hook (flymake-mode . sideline-mode)
     :init (setq sideline-flymake-display-mode 'point
                 sideline-backends-right '(sideline-flymake)))
@@ -1488,7 +1503,7 @@ Indent-based folding that should just work
 #+begin_src emacs-lisp
   ;; Let's define a `first-file-hook' here
   (use-package envrc
-    :diminish
+    :delight
     :hook (find-file . envrc-global-mode)
     :config
     (advice-add #'org-babel-execute-src-block :around #'envrc-propagate-environment))
@@ -1658,7 +1673,7 @@ So I could still use emacs when I open $EDITOR in vterm
     ;; because it will call `file-directory-p' on every file
     ;; Try to find a way around this maybe?
     (use-package nerd-icons-dired
-      :diminish
+      :delight
       :custom-face
       (nerd-icons-dired-dir-face ((t (:inherit nerd-icons-dsilver :foreground unspecified))))
       :hook (dired-mode . nerd-icons-dired-mode)
@@ -1793,12 +1808,38 @@ Not using emacs-rime anymore.
 #+end_src
 
 ** Input Method Switcher
-Currently using macim.el on MacOS.
+Currently using ~emacs-smart-input-source~.
 #+begin_src emacs-lisp
-  ;; (when (eq system-type 'darwin)
-  ;;   (use-package macim
-  ;;     :vc (:fetcher github :repo "roife/macim.el")
-  ;;     :hook (after-init . macim-mode)))
+  (use-package sis
+    :demand t
+    :config
+    (sis-ism-lazyman-config
+     "com.apple.keylayout.ABC"
+     "com.apple.inputmethod.SCIM.Shuangpin")
+
+    (sis-global-cursor-color-mode t)
+    (sis-global-respect-mode t)
+    (sis-global-context-mode t)
+    (sis-global-inline-mode t)
+
+    (with-eval-after-load 'meow
+      (add-hook 'meow-insert-exit-hook #'sis-set-english)
+      (add-to-list 'sis-context-hooks 'meow-insert-enter-hook)
+      ;; Fixing meow keypad mode issues when using sis
+      (add-hook 'meow-insert-exit-hook #'sis-prefix-override-buffer-disable)
+      (add-hook 'meow-insert-enter-hook #'sis-prefix-override-buffer-enable)
+      ;; Dirty hack to let `meow-reverse' work properly
+      (advice-add 'meow-reverse :before (lambda () (sis-global-respect-mode 0)))
+      (advice-add 'meow-reverse :after (lambda () (sis-global-respect-mode t)))))
+#+end_src
+
+** CJK Tokenizer
+#+begin_src emacs-lisp
+  (when (and (eq system-type 'darwin) (file-exists-p "/Applications/Xcode.app"))
+    (use-package emt
+      :vc (:fetcher github :repo roife/emt)
+      :init (emt-compile-module)
+      :hook (after-init . emt-mode)))
 #+end_src
 
 ** IBuffer
