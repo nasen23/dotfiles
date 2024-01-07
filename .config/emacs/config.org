@@ -249,8 +249,6 @@
        '("j" . meow-next)
        '("k" . meow-prev)
        '("<escape>" . ignore))
-      (define-key meow-insert-state-keymap [control-bracketleft] 'meow-insert-exit)
-      (define-key meow-keypad-state-keymap [control-bracketleft] 'meow-keypad-quit)
       (meow-leader-define-key
        ;; Use SPC (0-9) for digit arguments.
        '("1" . meow-digit-argument)
@@ -357,7 +355,8 @@
 
 #+begin_src emacs-lisp
   (global-set-key (kbd "s-x") 'execute-extended-command)
-  (define-key input-decode-map (kbd "C-[") [control-bracketleft])
+  (define-key input-decode-map (kbd "C-[") [escape])
+  (define-key input-decode-map (kbd "C-【") [escape])
   (with-eval-after-load 'meow
     ;; TODO map RET in normal mode to button-click
     ;; Ref: https://github.com/emacs-evil/evil/blob/c4f95fd9ec284a8284405f84102bfdb74f0ee22f/evil-commands.el#L846-L876
