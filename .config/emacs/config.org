@@ -161,7 +161,8 @@
         use-package-expand-minimally t
         use-package-enable-imenu-support t)
 
-  (use-package delight :ensure t :config (delight 'eldoc-mode))
+  (use-package diminish :ensure t :config (diminish 'eldoc-mode))
+  (use-package delight :ensure t)
 
   (use-package gnu-elpa-keyring-update)
 #+end_src
@@ -226,7 +227,7 @@
 #+begin_src emacs-lisp
   (use-package meow
     :demand t
-    :delight '(meow-normal-mode meow-insert-mode meow-beacon-mode meow-motion-mode meow-keypad-mode)
+    :diminish (meow-normal-mode meow-insert-mode meow-beacon-mode meow-motion-mode meow-keypad-mode)
     :init
     (setq meow-visit-sanitize-completion nil
           meow-expand-hint-remove-delay 0
