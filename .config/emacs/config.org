@@ -356,7 +356,7 @@
 #+begin_src emacs-lisp
   (global-set-key (kbd "s-x") 'execute-extended-command)
   (define-key input-decode-map (kbd "C-[") [escape])
-  (define-key input-decode-map (kbd "C-【") [escape])
+  (define-key input-decode-map (kbd "C-【") [escape]) ;; For some weird cases using chinese input method
   (with-eval-after-load 'meow
     ;; TODO map RET in normal mode to button-click
     ;; Ref: https://github.com/emacs-evil/evil/blob/c4f95fd9ec284a8284405f84102bfdb74f0ee22f/evil-commands.el#L846-L876
@@ -379,13 +379,10 @@
                (fboundp 'push-button)
                (button-at (point)))
           (push-button)))))
-    (define-key meow-normal-state-keymap [control-bracketleft] 'meow-cancel)
     (meow-leader-define-key
      ;; Fi le
      '("." . find-file)
      '("fc" . (lambda () (interactive) (let ((default-directory user-emacs-directory)) (call-interactively 'find-file)))))
-    (add-hook 'minibuffer-setup-hook (lambda () (local-set-key [control-bracketleft] #'meow-minibuffer-quit)))
-
     )
 #+end_src
 
