@@ -1833,11 +1833,11 @@ Currently using ~emacs-smart-input-source~.
 
 ** CJK Tokenizer
 #+begin_src emacs-lisp
-  (when (and (eq system-type 'darwin) (file-exists-p "/Applications/Xcode.app"))
-    (use-package emt
-      :vc (:fetcher github :repo roife/emt)
-      :init (emt-compile-module)
-      :hook (after-init . emt-mode)))
+  ;; (when (and (eq system-type 'darwin) (file-exists-p "/Applications/Xcode.app"))
+  ;;   (use-package emt
+  ;;     :vc (:fetcher github :repo roife/emt)
+  ;;     :init (emt-compile-module)
+  ;;     :hook (after-init . emt-mode)))
 #+end_src
 
 ** IBuffer
@@ -1985,6 +1985,13 @@ Track my programming time.
     :after lsp-mode
     :hook (((python-mode python-ts-mode) . (lambda ()
                                              (require 'lsp-pyright)))))
+#+end_src
+
+**** Jupyter Notebooks
+#+begin_src emacs-lisp
+  (when (executable-find "jupytext")
+    (use-package code-cells
+      :hook (python-mode . code-cells-mode-maybe)))
 #+end_src
 
 *** Emacs Lisp
