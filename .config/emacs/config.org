@@ -1357,7 +1357,7 @@ Indent-based folding that should just work
           lsp-enable-indentation nil
           lsp-enable-on-type-formatting nil
 
-          lsp-signature-function #'lsp-signature-posframe
+          lsp-signature-function #'lsp-lv-message
 
           lsp-inlay-hint-enable nil
 
