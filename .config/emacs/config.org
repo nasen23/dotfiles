@@ -1332,11 +1332,7 @@ Indent-based folding that should just work
     (add-to-list 'completion-at-point-functions #'cape-file)
     (add-to-list 'completion-at-point-functions #'cape-elisp-block)
     (add-to-list 'completion-at-point-functions #'cape-keyword)
-    (add-to-list 'completion-at-point-functions #'cape-abbrev)
-
-    (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
-    (advice-add 'eglot-completion-at-point :around #'cape-wrap-noninterruptible)
-    )
+    (add-to-list 'completion-at-point-functions #'cape-abbrev))
 #+end_src
 
 ** LSP Mode
@@ -1377,17 +1373,17 @@ Indent-based folding that should just work
           lsp-semantic-tokens-enable t
           lsp-progress-spinner-type 'progress-bar-filled
 
-          lsp-enable-file-watchers nil
-          lsp-enable-folding nil
+          lsp-enable-file-watchers t
+          lsp-enable-folding t
           lsp-enable-symbol-highlighting t
-          lsp-enable-text-document-color nil
+          lsp-enable-text-document-color t
 
-          lsp-enable-indentation nil
-          lsp-enable-on-type-formatting nil
+          lsp-enable-indentation t
+          lsp-enable-on-type-formatting t
 
           lsp-signature-function #'lsp-lv-message
 
-          lsp-inlay-hint-enable nil
+          lsp-inlay-hint-enable t
 
           ;; disable headerline as it's a bit annoyying
           lsp-headerline-breadcrumb-enable nil
