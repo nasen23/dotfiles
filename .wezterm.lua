@@ -33,18 +33,6 @@ wezterm.on("window-config-reloaded", function(window, _)
 	window:toast_notification("wezterm", "configuration reloaded", nil, 4000)
 end)
 
-wezterm.on("update-right-status", function(window, _)
-	local date = wezterm.strftime("%H:%M  ")
-
-	-- Make it italic and underlined
-	window:set_right_status(wezterm.format({
-		"ResetAttributes",
-		{ Background = { Color = scheme.background } },
-		{ Foreground = { Color = scheme.tab_bar.inactive_tab.fg_color } },
-		{ Text = date },
-	}))
-end)
-
 wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
 	local title = tab.tab_title
 	if not title or #title == 0 then
@@ -66,8 +54,6 @@ wezterm.on("format-tab-title", function(tab, _, _, _, _, _)
 end)
 
 local config = {
-	front_end = "OpenGL",
-
 	color_scheme = color_scheme,
 	colors = {
 		tab_bar = {
@@ -98,27 +84,18 @@ local config = {
 		top = 0,
 		bottom = 0,
 	},
-	-- window_decorations = "RESIZE|TITLE|MACOS_FORCE_ENABLE_SHADOW",
-	-- window_background_opacity = 0.99,
-	-- force_reverse_video_cursor = true,
-	-- macos_window_background_blur = 12,
-	-- inactive_pane_hsb = {
-	-- 	saturation = 1.0,
-	-- 	brightness = 0.7,
-	-- },
 
 	font = wezterm.font_with_fallback({
+		"Cartograph CF",
 		"Sarasa Mono SC",
 		"Hack",
 		"Hasklig",
-		"Cartograph CF",
 		"JetBrains Mono",
 		"Victor Mono",
 		"Symbols Nerd Font",
 	}),
 	font_size = 14.0,
 	line_height = 1.0,
-	-- freetype_load_flags = "NO_HINTING",
 
 	ssh_domains = ssh_domains,
 
