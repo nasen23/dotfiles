@@ -862,7 +862,7 @@ Using native modeline for now
 
 ** Trailing Whitespaces
 #+begin_src emacs-lisp
-  (setq-default show-trailing-whitespace t)
+  (add-hook 'prog-mode-hook (lambda () (setq-local show-trailing-whitespace t)))
 #+end_src
 
 * ORG MODE
