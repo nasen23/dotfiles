@@ -410,6 +410,10 @@
 #+begin_src emacs-lisp
   (setq vc-handled-backends '(Git)) ;; I don't think I use something other than git
 
+  (with-eval-after-load 'tramp
+    ;; Fixing some path issues
+    (add-to-list 'tramp-remote-path 'tramp-own-remote-path))
+
   ;; (with-eval-after-load 'tramp
   ;;   (defun my/tramp-check-for-regexp (proc regexp)
   ;;     "Check, whether REGEXP is contained in process buffer of PROC.
