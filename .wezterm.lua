@@ -86,8 +86,8 @@ local config = {
 	},
 
 	font = wezterm.font_with_fallback({
-		"Cartograph CF",
 		"Sarasa Mono SC",
+		"Cartograph CF",
 		"Hack",
 		"Hasklig",
 		"JetBrains Mono",
