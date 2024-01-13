@@ -35,6 +35,7 @@
   - [[#tabs][Tabs]]
   - [[#display-hex-colors][Display Hex Colors]]
   - [[#trailing-whitespaces][Trailing Whitespaces]]
+  - [[#tweaking-fringes][Tweaking Fringes]]
 - [[#org-mode][ORG MODE]]
   - [[#toc][Toc]]
   - [[#org-bullets][Org Bullets]]
@@ -499,7 +500,7 @@ I can eat glass, it does not hurt me.
 
 ** Emoji 🥹
 #+begin_src emacs-lisp
-  (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 13) nil 'prepend)
+  (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 12) nil 'prepend)
 #+end_src
 
 ** Modeline
@@ -867,6 +868,46 @@ Using native modeline for now
 ** Trailing Whitespaces
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook (lambda () (setq-local show-trailing-whitespace t)))
+#+end_src
+
+** Tweaking Fringes
+#+begin_src emacs-lisp
+  (define-fringe-bitmap 'right-curly-arrow
+    [#b00110000
+     #b00110000
+     #b00000000
+     #b00110000
+     #b00110000
+     #b00000000
+     #b00110000
+     #b00110000])
+  (define-fringe-bitmap 'left-curly-arrow
+    [#b00110000
+     #b00110000
+     #b00000000
+     #b00110000
+     #b00110000
+     #b00000000
+     #b00110000
+     #b00110000])
+  (define-fringe-bitmap 'right-arrow
+    [#b00000000
+     #b00000000
+     #b00001110
+     #b00001110
+     #b00001110
+     #b00000000
+     #b00000000
+     #b00000000])
+  (define-fringe-bitmap 'left-arrow
+    [#b00000000
+     #b00000000
+     #b00000000
+     #b01110000
+     #b01110000
+     #b01110000
+     #b00000000
+     #b00000000])
 #+end_src
 
 * ORG MODE
