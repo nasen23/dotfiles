@@ -2010,8 +2010,8 @@ Currently using ~emacs-smart-input-source~.
 Track my programming time.
 #+begin_src emacs-lisp
   (use-package wakatime-mode
-    :config
-    (global-wakatime-mode))
+    :diminish wakatime-mode
+    :hook (after-init . global-wakatime-mode))
 #+end_src
 
 ** LeetCode
