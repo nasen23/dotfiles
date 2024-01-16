@@ -58,9 +58,9 @@
   - [[#text-folding][Text Folding]]
   - [[#undo-enhancements][Undo Enhancements]]
 - [[#completion][COMPLETION]]
-  - [[#corfu][Corfu]]
-  - [[#lsp-mode][LSP Mode]]
   - [[#yasnippet][YASnippet]]
+  - [[#corfu][Corfu]]
+  - [[#lsp][LSP]]
 - [[#tools][TOOLS]]
   - [[#diagnostics][Diagnostics]]
   - [[#treesitter][Treesitter]]
@@ -679,6 +679,7 @@ Using native modeline for now
                     (:eval (if (buffer-modified-p)
                                ,(if (display-graphic-p) "ΦAΦ" "OAO")
                              ,(if (display-graphic-p) "ΦwΦ" "OwO")))
+                    ,spaces
                     mode-line-misc-info
                     ;; Calculate the padding first
                     ;; Get line number refreshed by using `%l'
@@ -1352,8 +1353,16 @@ Indent-based folding that should just work
 
 * COMPLETION
 
-** Corfu
+** YASnippet
 #+begin_src emacs-lisp
+  (use-package yasnippet
+    :delight yas-minor-mode
+    :hook (after-init . yas-global-mode))
+  (use-package yasnippet-snippets)
+#+end_src
+
+** Corfu
+#+begin_src emacs-lisp :tangle no
   (use-package corfu
     :custom
     (corfu-auto t)
@@ -1378,10 +1387,14 @@ Indent-based folding that should just work
     (add-to-list 'completion-at-point-functions #'cape-elisp-block)
     (add-to-list 'completion-at-point-functions #'cape-keyword)
     (add-to-list 'completion-at-point-functions #'cape-abbrev))
+  (use-package yasnippet-capf
+    :init (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 #+end_src
 
-** LSP Mode
-#+begin_src emacs-lisp
+** LSP
+
+*** LSP Mode
+#+begin_src emacs-lisp :tangle no
   ;; Performance tweaks
   (setq read-process-output-max (* 1024 1024))
   (setenv "LSP_USE_PLISTS" "true")
@@ -1529,14 +1542,16 @@ Indent-based folding that should just work
           lsp-ui-imenu-buffer-position 'right))
 #+end_src
 
-** YASnippet
+*** LSP Bridge
 #+begin_src emacs-lisp
-  (use-package yasnippet
-    :delight yas-minor-mode
-    :hook (after-init . yas-global-mode))
-  (use-package yasnippet-snippets)
-  (use-package yasnippet-capf
-    :init (add-to-list 'completion-at-point-functions #'yasnippet-capf))
+  (use-package lsp-bridge
+    :diminish (lsp-bridge-mode)
+    :vc (:fetcher github :repo "manateelazycat/lsp-bridge")
+    :hook (after-init . global-lsp-bridge-mode)
+    :init (setq lsp-bridge-remote-start-automatically t))
+  (use-package flymake-bridge
+    :vc (:fetcher github :repo "liuyinz/flymake-bridge")
+    :hook (lsp-bridge-mode . flymake-bridge-setup))
 #+end_src
 
 * TOOLS
