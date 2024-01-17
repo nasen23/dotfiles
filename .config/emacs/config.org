@@ -564,7 +564,8 @@ I can eat glass, it does not hurt me.
   (use-package display-line-numbers
     :ensure nil
     :hook ((prog-mode yaml-mode yaml-ts-mode conf-mode toml-ts-mode) . display-line-numbers-mode)
-    :init (setq display-line-numbers-width-start t))
+    :init (setq display-line-numbers-width-start t
+                display-line-numbers-grow-only t))
 #+end_src
 
 ** Window Divider Mode
