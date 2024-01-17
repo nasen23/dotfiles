@@ -1370,6 +1370,7 @@ Indent-based folding that should just work
     :custom
     (company-minimum-prefix-length 2)
     (company-tooltip-idle-delay 0.1)
+    (company-idle-delay 0)
     :hook (after-init . global-company-mode))
 #+end_src
 
