@@ -413,8 +413,8 @@
 
   (with-eval-after-load 'tramp
     ;; Fixing some path issues
-    (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-    (add-to-list 'tramp-connection-properties '("/sshx:" "direct-async-process" t)))
+    ;; (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+    (add-to-list 'tramp-connection-properties '("/ssh:" "direct-async-process" t)))
 
   ;; (with-eval-after-load 'tramp
   ;;   (defun my/tramp-check-for-regexp (proc regexp)
@@ -1617,7 +1617,7 @@ Indent-based folding that should just work
     :vc (:fetcher github :repo "siddharthverma314/envrc")
     :diminish
     :init (setq envrc-remote t)
-    :hook (after-init . envrc-global-mode)
+    :hook (prog-mode . envrc-mode)
     :config
     (advice-add #'org-babel-execute-src-block :around #'envrc-propagate-environment))
 #+end_src
