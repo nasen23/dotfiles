@@ -1415,6 +1415,14 @@ Indent-based folding that should just work
                            (eglot-ensure)))))
 #+end_src
 
+**** LSP Booster
+#+begin_src emacs-lisp
+  (use-package eglot-booster
+    :vc (:fetcher github :repo "jdtsmith/eglot-booster")
+    :after eglot
+    :config (eglot-booster-mode))
+#+end_src
+
 *** LSP Mode
 #+begin_src emacs-lisp :tangle no
   ;; Performance tweaks
