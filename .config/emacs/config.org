@@ -1372,6 +1372,9 @@ Indent-based folding that should just work
     (company-tooltip-idle-delay 0.1)
     (company-idle-delay 0)
     :hook (after-init . global-company-mode))
+  (use-package company-quickhelp
+    :after company
+    :config (company-quickhelp-mode))
 #+end_src
 
 *** Corfu
