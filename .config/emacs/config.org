@@ -124,6 +124,7 @@
     (global-set-key (kbd "s-q") 'save-buffers-kill-emacs)
     (global-set-key (kbd "s-=") 'text-scale-increase)
     (global-set-key (kbd "s--") 'text-scale-decrease)
+    (global-set-key (kbd "s-u") 'revert-buffer)
     (setq mac-option-modifier 'meta)
     (setq mac-command-modifier 'super))
 #+end_src
@@ -1367,14 +1368,19 @@ Indent-based folding that should just work
 *** Company
 #+begin_src emacs-lisp
   (use-package company
+    :diminish
     :custom
     (company-minimum-prefix-length 2)
     (company-tooltip-idle-delay 0.1)
     (company-idle-delay 0)
     :hook (after-init . global-company-mode))
   (use-package company-quickhelp
+    :when (not (display-graphic-p))
     :after company
     :config (company-quickhelp-mode))
+  (use-package company-box
+    :when (display-graphic-p)
+    :hook (company-mode . company-box-mode))
 #+end_src
 
 *** Corfu
