@@ -414,7 +414,7 @@
 
   (with-eval-after-load 'tramp
     ;; Fixing some path issues
-    ;; (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
+    (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
     (add-to-list 'tramp-connection-properties '("/ssh:" "direct-async-process" t)))
 
   ;; (with-eval-after-load 'tramp
@@ -1379,6 +1379,7 @@ Indent-based folding that should just work
     :after company
     :config (company-quickhelp-mode))
   (use-package company-box
+    :diminish
     :when (display-graphic-p)
     :hook (company-mode . company-box-mode))
 #+end_src
