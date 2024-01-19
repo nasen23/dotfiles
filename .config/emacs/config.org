@@ -1628,7 +1628,7 @@ Indent-based folding that should just work
     :vc (:fetcher github :repo "siddharthverma314/envrc")
     :diminish
     :init (setq envrc-remote t)
-    :hook (prog-mode . envrc-mode)
+    :hook ((prog-mode inferior-python-mode) . envrc-mode)
     :config
     (advice-add #'org-babel-execute-src-block :around #'envrc-propagate-environment))
 #+end_src
