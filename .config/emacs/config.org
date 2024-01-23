@@ -415,7 +415,8 @@
   (with-eval-after-load 'tramp
     ;; Fixing some path issues
     (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
-    (add-to-list 'tramp-connection-properties '("/ssh:" "direct-async-process" t)))
+    ;; (add-to-list 'tramp-connection-properties '("/ssh:" "direct-async-process" t))
+    )
 
   ;; (with-eval-after-load 'tramp
   ;;   (defun my/tramp-check-for-regexp (proc regexp)
@@ -821,7 +822,7 @@ Using native modeline for now
     (indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)) ; blend=1: blend with BG only
     (indent-bars-highlight-current-depth '(:blend 0.5)) ; pump up the BG blend on current
     (indent-bars-display-on-blank-lines t)
-    :hook ((python-mode yaml-mode) . indent-bars-mode))
+    :hook ((python-mode yaml-mode yaml-ts-mode) . indent-bars-mode))
 #+end_src
 
 ** Tabs
@@ -1412,10 +1413,14 @@ Indent-based folding that should just work
 #+begin_src emacs-lisp
   (use-package eglot
     :commands eglot-ensure
+    :init (setq eglot-send-changes-idle-time 0)
     :hook (prog-mode . (lambda ()
                          (unless (or (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode 'snippet-mode)
                                      (eq major-mode 'prog-mode))
                            (eglot-ensure)))))
+  (use-package consult-eglot
+    :bind (:map eglot-mode-map
+                ("C-M-." . consult-eglot-symbols)))
 #+end_src
 
 **** LSP Booster
@@ -1563,8 +1568,8 @@ Indent-based folding that should just work
     :after lsp-mode
     :hook (lsp-mode . lsp-ui-mode)
     :bind (:map lsp-ui-mode-map
-           ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
-           ([remap xref-find-references] . lsp-ui-peek-find-references))
+                ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+                ([remap xref-find-references] . lsp-ui-peek-find-references))
     :init
     (setq lsp-ui-sideline-show-diagnostics nil
           lsp-ui-sideline-ignore-duplicate t
@@ -1573,6 +1578,12 @@ Indent-based folding that should just work
           lsp-ui-doc-show-with-cursor t
           lsp-ui-imenu-auto-refresh 'after-save
           lsp-ui-imenu-buffer-position 'right))
+
+  (use-package lsp-pyright
+    :after lsp-mode
+    :hook (((python-mode python-ts-mode) . (lambda ()
+                                             (require 'lsp-pyright)))))
+
 #+end_src
 
 *** LSP Bridge
@@ -2106,10 +2117,6 @@ Track my programming time.
     :ensure nil
     :hook (python-mode . (lambda ()
                            (setq format-all-formatters '(("Python" ruff))))))
-  (use-package lsp-pyright
-    :after lsp-mode
-    :hook (((python-mode python-ts-mode) . (lambda ()
-                                             (require 'lsp-pyright)))))
 #+end_src
 
 **** Jupyter Notebooks
@@ -2129,6 +2136,7 @@ Track my programming time.
 #+end_src
 
 *** Lua
+I just want to edit some configuration files for now.
 #+begin_src emacs-lisp
   (use-package lua-mode)
 #+end_src
