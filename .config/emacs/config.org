@@ -482,7 +482,7 @@
                       :height 140
                       :weight 'medium)
   (set-face-attribute 'variable-pitch nil
-                      :font "Sarasa UI SC"
+                      :font "Noto Serif CJK SC"
                       :height 150
                       :weight 'medium)
 #+end_src
@@ -591,13 +591,6 @@ I can eat glass, it does not hurt me.
     :ensure t
     :init
     (setq catppuccin-flavor 'latte))
-#+end_src
-
-*** Rose pine
-#+begin_src emacs-lisp
-  ;; (use-package rose-pine-emacs
-  ;;   :ensure t
-  ;;   :vc (:fetcher github :repo Caelie/rose-pine-emacs :rev master))
 #+end_src
 
 *** And I use...
