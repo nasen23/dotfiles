@@ -1413,7 +1413,9 @@ Indent-based folding that should just work
 #+begin_src emacs-lisp
   (use-package eglot
     :commands eglot-ensure
-    :init (setq eglot-send-changes-idle-time 0)
+    :init (setq eglot-autoshutdown t
+                eglot-send-changes-idle-time 0.5
+                read-process-output-max (* 1024 1024))
     :hook (prog-mode . (lambda ()
                          (unless (or (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode 'snippet-mode)
                                      (eq major-mode 'prog-mode))
