@@ -35,7 +35,7 @@
   - [[#highlight-indent][Highlight Indent]]
   - [[#tabs][Tabs]]
   - [[#display-hex-colors][Display Hex Colors]]
-  - [[#trailing-whitespaces][Trailing Whitespaces]]
+  - [[#whitespaces][Whitespaces]]
   - [[#tweaking-fringes][Tweaking Fringes]]
 - [[#org-mode][ORG MODE]]
   - [[#toc][Toc]]
@@ -877,9 +877,13 @@ Using native modeline for now
     :hook (prog-mode . rainbow-mode))
 #+end_src
 
-** Trailing Whitespaces
+** Whitespaces
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook (lambda () (setq-local show-trailing-whitespace t)))
+  (use-package whitespace4r
+    :vc (:fetcher github :repo "twlz0ne/whitespace4r.el")
+    :hook (prog-mode . whitespace4r-mode)
+    :init (setq whitespace4r-style '(tabs spaces hspaces zwspaces)))
 #+end_src
 
 ** Tweaking Fringes
