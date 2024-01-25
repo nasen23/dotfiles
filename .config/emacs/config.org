@@ -1625,7 +1625,7 @@ Indent-based folding that should just work
     :hook (prog-mode . flymake-mode)
     :ensure nil
     :init
-    (setq flymake-no-changes-timeout nil
+    (setq flymake-no-changes-timeout 0.5
           flymake-fringe-indicator-position 'right-fringe)
     :config
     (setq elisp-flymake-byte-compile-load-path (append elisp-flymake-byte-compile-load-path load-path)))
