@@ -655,6 +655,19 @@ Using native modeline for now
           (concat "  " coding)
         "")))
 
+  (defun my/mode-line-region-char-count ()
+    "Display character and line count in region."
+    (if (region-active-p)
+        (let* ((start (region-beginning))
+               (end (region-end))
+               (lines (count-lines start end))
+               (chars (- end start)))
+          (propertize (if (= lines 1)
+                          (format "%dC" chars)
+                        (format "%dL %dC" lines chars)) 'face '(:weight semi-bold)))
+      "")
+    )
+
   ;; TODO: stealing from lunarymacs for now
   ;; Write my own
   (setq-default mode-line-format
@@ -690,6 +703,8 @@ Using native modeline for now
                     (:eval (if (buffer-modified-p)
                                ,(if (display-graphic-p) "ΦAΦ" "OAO")
                              ,(if (display-graphic-p) "ΦwΦ" "OwO")))
+                    ,spaces
+                    (:eval (my/mode-line-region-char-count))
                     ,spaces
                     mode-line-misc-info
                     ;; Calculate the padding first
@@ -882,6 +897,7 @@ Using native modeline for now
   (add-hook 'prog-mode-hook (lambda () (setq-local show-trailing-whitespace t)))
   (use-package whitespace4r
     :vc (:fetcher github :repo "twlz0ne/whitespace4r.el")
+    :diminish
     :hook (prog-mode . whitespace4r-mode)
     :init (setq whitespace4r-style '(tabs spaces hspaces zwspaces)))
 #+end_src
