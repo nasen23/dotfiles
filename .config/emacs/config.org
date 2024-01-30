@@ -570,6 +570,10 @@ I can eat glass, it does not hurt me.
   (when (featurep 'ns)
     (setq ns-use-thin-smoothing t)
     (setq ns-pop-up-frames nil))
+
+  ;; Emacs-mac transparent title bar
+  (when (featurep 'mac)
+    (set-face-background 'scroll-bar "transparent"))
 #+end_src
 ** Disable Menubar, Toolbars and Scrollbars
 #+begin_src emacs-lisp
