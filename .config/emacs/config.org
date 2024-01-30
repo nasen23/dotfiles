@@ -743,6 +743,7 @@ Using native modeline for now
                     )))
 
   (defun my/setup-modeline-font ()
+    (interactive)
     (cl-loop for font in '("Sarasa UI SC" "苹方-简" "SF Pro Text" "Helvetica")
            when (font-installed-p font)
            return (progn
