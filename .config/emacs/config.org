@@ -903,7 +903,7 @@ Using native modeline for now
   (use-package whitespace4r
     :vc (:fetcher github :repo "twlz0ne/whitespace4r.el")
     :diminish
-    :hook (prog-mode . whitespace4r-mode)
+    :hook ((prog-mode yaml-mode) . whitespace4r-mode)
     :init (setq whitespace4r-style '(tabs spaces hspaces zwspaces)))
 #+end_src
 
