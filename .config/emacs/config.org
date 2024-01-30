@@ -613,9 +613,31 @@ I can eat glass, it does not hurt me.
     (setq catppuccin-flavor 'latte))
 #+end_src
 
+*** Ef-Themes
+#+begin_src emacs-lisp
+  (use-package ef-themes
+    :init
+    (setq ef-themes-headings '((0 variable-pitch light 1.9)
+                               (1 variable-pitch light 1.8)
+                               (2 variable-pitch regular 1.7)
+                               (3 variable-pitch regular 1.6)
+                               (4 variable-pitch regular 1.5)
+                               (5 variable-pitch 1.4) ; absence of weight means `bold'
+                               (6 variable-pitch 1.3)
+                               (7 variable-pitch 1.2)
+                               (t variable-pitch 1.1))
+          ef-themes-mixed-fonts t
+          ef-themes-variable-pitch-ui t))
+#+end_src
+
+*** Doom Themes
+#+begin_src emacs-lisp
+  (use-package doom-themes)
+#+end_src
+
 *** And I use...
 #+begin_src emacs-lisp
-  (load-theme 'catppuccin :no-confirm)
+  (load-theme 'ef-cyprus :no-confirm)
   (unless (eq catppuccin-flavor 'latte)
     (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 #+end_src
@@ -720,13 +742,20 @@ Using native modeline for now
                     ;; (:eval (concat ,spaces "(%l) " ,percentage "%%"))
                     )))
 
-  (cl-loop for font in '("Sarasa UI SC" "苹方-简" "SF Pro Text" "Helvetica")
+  (defun my/setup-modeline-font ()
+    (cl-loop for font in '("Sarasa UI SC" "苹方-简" "SF Pro Text" "Helvetica")
            when (font-installed-p font)
            return (progn
                     (set-face-attribute 'mode-line nil :family font :weight 'regular :height 140)
                     (when (facep 'mode-line-active)
                       (set-face-attribute 'mode-line-active nil :family font :weight 'regular :height 140))
-                    (set-face-attribute 'mode-line-inactive nil :family font :weight 'regular :height 140)))
+                    (set-face-attribute 'mode-line-inactive nil :family font :weight 'regular :height 140))))
+
+  (my/setup-modeline-font)
+  (add-hook 'after-load-theme-hook #'my/setup-modeline-font)
+  (defun run-after-load-theme-hook (&rest _)
+    (run-hooks 'after-load-theme-hook))
+  (advice-add #'load-theme :after #'run-after-load-theme-hook)
 #+end_src
 
 *** Hide Modeline in Some Modes
@@ -1454,7 +1483,8 @@ Indent-based folding that should just work
     :commands eglot-ensure
     :init (setq eglot-autoshutdown t
                 eglot-send-changes-idle-time 0.5
-                read-process-output-max (* 1024 1024))
+                read-process-output-max (* 1024 1024)
+                eldoc-echo-area-use-multiline-p 1)
     :custom-face
     (eglot-mode-line ((t (:inherit bold))))
     :hook (prog-mode . (lambda ()
@@ -1700,6 +1730,10 @@ Indent-based folding that should just work
 ** Version Control System
 *** Magit
 #+begin_src emacs-lisp
+  (defvar +magit-open-windows-in-direction 'right
+    "What direction to open new windows from the status buffer.
+  For example, diffs and log buffers. Accepts `left', `right', `up', and `down'.")
+
   (defun +magit-display-buffer-fn (buffer)
     "Same as `magit-display-buffer-traditional', except...
 
