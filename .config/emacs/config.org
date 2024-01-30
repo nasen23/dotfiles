@@ -637,7 +637,7 @@ I can eat glass, it does not hurt me.
 
 *** And I use...
 #+begin_src emacs-lisp
-  (load-theme 'ef-cyprus :no-confirm)
+  (load-theme 'ef-frost :no-confirm)
   (unless (eq catppuccin-flavor 'latte)
     (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 #+end_src
