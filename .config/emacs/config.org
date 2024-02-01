@@ -26,6 +26,7 @@
   - [[#display-line-numbers][Display Line Numbers]]
   - [[#window-divider-mode][Window Divider Mode]]
   - [[#get-shell-env-loaded][Get Shell Env Loaded]]
+  - [[#dashboard][Dashboard]]
   - [[#theme][Theme]]
   - [[#icons][Icons]]
   - [[#modeline-1][Modeline]]
@@ -241,7 +242,7 @@
           meow-cursor-type-region-cursor 'hbar)
     :custom
     (meow-use-cursor-position-hack t)
-    (meow-use-clipboard t)
+    (meow-use-clipboard nil)
     :config
     (require 'meow)
     (setq meow-replace-state-name-list
@@ -606,6 +607,25 @@ I can eat glass, it does not hurt me.
   (when (display-graphic-p)
     (use-package exec-path-from-shell
       :init (exec-path-from-shell-initialize)))
+#+end_src
+
+** Dashboard
+Yes, it's a bit useless but I think I need it.
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :ensure t
+    :demand t
+    :custom
+    (dashboard-startup-banner 'logo)
+    (dashboard-display-icons-p t)
+    (dashboard-icon-type 'nerd-icons)
+    (dashboard-set-heading-icons t)
+    (dashboard-set-file-icons t)
+    (dashboard-items '((recents . 5) (projects . 5) (bookmarks . 5)))
+    (dashboard-projects-backend 'project-el)
+    :config
+    (dashboard-setup-startup-hook)
+    (add-hook 'dashboard-mode-hook 'hide-mode-line-mode))
 #+end_src
 
 ** Theme
