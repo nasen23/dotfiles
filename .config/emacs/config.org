@@ -1718,11 +1718,11 @@ Indent-based folding that should just work
 ** Treesitter
 #+begin_src emacs-lisp
   (use-package treesit-auto
+    :hook (after-init . global-treesit-auto-mode)
     :custom
     (treesit-auto-install 'prompt)
     :config
-    (treesit-auto-add-to-auto-mode-alist 'all)
-    (global-treesit-auto-mode))
+    (treesit-auto-add-to-auto-mode-alist 'all))
 #+end_src
 
 ** Direnv
