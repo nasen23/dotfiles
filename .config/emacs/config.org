@@ -498,6 +498,10 @@
                       :font "Sarasa Mono SC"
                       :height 140
                       :weight 'medium)
+  (set-face-attribute 'fixed-pitch-serif nil
+                      :font "Sarasa Mono Slab SC"
+                      :height 140
+                      :weight 'medium)
   (set-face-attribute 'variable-pitch nil
                       :font "Noto Serif CJK SC"
                       :height 150
