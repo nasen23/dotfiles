@@ -83,6 +83,7 @@
   - [[#wakatime][Wakatime]]
   - [[#leetcode][LeetCode]]
   - [[#kubernetes-client][Kubernetes Client]]
+  - [[#jupyter][Jupyter]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -2255,14 +2256,28 @@ Track my programming time.
                 #'ns/kubel--kubernetes-resources-list))
 #+end_src
 
+** Jupyter
+#+begin_src emacs-lisp
+  (use-package jupyter
+    :commands (jupyter-run-repl jupyter-connect-repl)
+    :config
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (jupyter . t)))
+    (setq org-babel-default-header-args:jupyter-python '((:async . "yes")
+                                                         (:session . "py"))))
+#+end_src
+
 * LANGUAGES
 ** Programming languages
 *** Python
 #+begin_src emacs-lisp
-  (use-package python
-    :ensure nil
-    :hook ((python-mode python-ts-mode) . (lambda ()
-                           (setq format-all-formatters '(("Python" ruff))))))
+  ;; (use-package python
+  ;;   :ensure nil
+  ;;   :hook ((python-mode python-ts-mode) . (lambda ()
+  ;;                          (setq format-all-formatters '(("Python" ruff))))))
 #+end_src
 
 **** Jupyter Notebooks
