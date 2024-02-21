@@ -580,6 +580,10 @@ I can eat glass, it does not hurt me.
   ;; Emacs-mac transparent title bar
   (when (featurep 'mac)
     (set-face-background 'scroll-bar "transparent"))
+
+  ;; Compilation buffer ansi-coloring
+  (use-package ansi-color
+    :hook (compilation-filter . ansi-color-compilation-filter))
 #+end_src
 ** Disable Menubar, Toolbars and Scrollbars
 #+begin_src emacs-lisp
