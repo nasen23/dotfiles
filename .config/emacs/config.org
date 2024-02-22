@@ -83,7 +83,7 @@
   - [[#wakatime][Wakatime]]
   - [[#leetcode][LeetCode]]
   - [[#kubernetes-client][Kubernetes Client]]
-  - [[#jupyter][Jupyter]]
+  - [[#jupyter-series][Jupyter Series]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -659,8 +659,7 @@ Yes, it's a bit useless but I think I need it.
                                (6 variable-pitch 1.3)
                                (7 variable-pitch 1.2)
                                (t variable-pitch 1.1))
-          ef-themes-mixed-fonts t
-          ef-themes-variable-pitch-ui t))
+          ef-themes-mixed-fonts t))
 #+end_src
 
 *** Doom Themes
@@ -1746,9 +1745,21 @@ Indent-based folding that should just work
   (use-package envrc
     :vc (:fetcher github :repo "siddharthverma314/envrc")
     :diminish
-    :hook (find-file . envrc-global-mode)
+    :init (setq envrc-remote t)
+    :hook ((prog-mode inferior-python-mode compilation-mode) . envrc-mode)
     :config
-    (advice-add #'org-babel-execute-src-block :around #'envrc-propagate-environment))
+    (advice-add #'org-babel-execute-src-block :around #'envrc-propagate-environment)
+    (defun my/envrc-propagate-tramp-env-to-local (&rest args)
+      (when (and envrc-mode (file-remote-p default-directory))
+        (setq-local exec-path envrc--remote-path)
+        (setq-local process-environment tramp-remote-process-environment)))
+    (defun my/envrc-restore-local-env-from-tramp (&rest args)
+      (when (and envrc-mode (file-remote-p default-directory))
+        (kill-local-variable 'exec-path)
+        (kill-local-variable 'process-environment)))
+    (advice-add #'compilation-start :before #'my/envrc-propagate-tramp-env-to-local)
+    (advice-add #'compilation-start :after #'my/envrc-restore-local-env-from-tramp))
+
 #+end_src
 
 ** Formatter
@@ -2259,7 +2270,7 @@ Track my programming time.
                 #'ns/kubel--kubernetes-resources-list))
 #+end_src
 
-** Jupyter
+** Jupyter Series
 #+begin_src emacs-lisp
   (use-package jupyter
     :commands (jupyter-run-repl jupyter-connect-repl)
@@ -2271,6 +2282,11 @@ Track my programming time.
        (jupyter . t)))
     (setq org-babel-default-header-args:jupyter-python '((:async . "yes")
                                                          (:session . "py"))))
+#+end_src
+
+*** EIN (emacs-ipython-notebook)
+#+begin_src emacs-lisp
+  (use-package ein)
 #+end_src
 
 * LANGUAGES
@@ -2333,13 +2349,13 @@ I just want to edit some configuration files for now.
 #+end_src
 
 ** Text
-
 *** Markdown
 This is quite essential as ~eglot~ uses this to highlight help buffer.
 #+begin_src emacs-lisp
   (use-package markdown-mode
     :mode ("README\\.md\\'" . gfm-mode)
-    :init (setq markdown-command "multimarkdown")
+    :init (setq markdown-command "multimarkdown"
+                markdown-fontify-code-blocks-natively t)
     )
 #+end_src
 
