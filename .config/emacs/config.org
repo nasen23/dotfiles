@@ -84,6 +84,7 @@
   - [[#leetcode][LeetCode]]
   - [[#kubernetes-client][Kubernetes Client]]
   - [[#jupyter-series][Jupyter Series]]
+  - [[#wgrep-to-edit-grep-buffers][Wgrep, to edit grep buffers]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -2289,6 +2290,12 @@ Track my programming time.
   (use-package ein)
 #+end_src
 
+** Wgrep, to edit grep buffers
+#+begin_src emacs-lisp
+  (use-package wgrep
+    :demand t)
+#+end_src
+
 * LANGUAGES
 ** Programming languages
 *** Python
@@ -2301,9 +2308,9 @@ Track my programming time.
 
 **** Jupyter Notebooks
 #+begin_src emacs-lisp
-  (when (executable-find "jupytext")
-    (use-package code-cells
-      :hook (python-mode . code-cells-mode-maybe)))
+  ;; (when (executable-find "jupytext")
+  ;;   (use-package code-cells
+  ;;     :hook (python-mode . code-cells-mode-maybe)))
 #+end_src
 
 *** Emacs Lisp
