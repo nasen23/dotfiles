@@ -2058,7 +2058,10 @@ So I could still use emacs when I open $EDITOR in vterm
 
       (setq dired-omit-files
             (concat dired-omit-files
-                    "\\|^.DS_Store$\\|^.projectile$\\|^.git*\\|^.svn$\\|^.vscode$\\|\\.js\\.meta$\\|\\.meta$\\|\\.elc$\\|^.emacs.*"))))
+                    "\\|^.DS_Store$\\|^.projectile$\\|^.git*\\|^.svn$\\|^.vscode$\\|\\.js\\.meta$\\|\\.meta$\\|\\.elc$\\|^.emacs.*")))
+
+    (add-hook 'dired-mode-hook (lambda () (unless (file-remote-p default-directory)
+                                            (auto-revert-mode)))))
 
   (when (executable-find "fd")
     (use-package fd-dired))
