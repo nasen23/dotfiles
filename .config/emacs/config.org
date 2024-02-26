@@ -1462,7 +1462,7 @@ Indent-based folding that should just work
 
 ** Frontend
 *** Company
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package company
     :diminish
     :custom
@@ -1481,7 +1481,7 @@ Indent-based folding that should just work
 #+end_src
 
 *** Corfu
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (use-package corfu
     :custom
     (corfu-auto t)
@@ -1505,7 +1505,9 @@ Indent-based folding that should just work
     (add-to-list 'completion-at-point-functions #'cape-file)
     (add-to-list 'completion-at-point-functions #'cape-elisp-block)
     (add-to-list 'completion-at-point-functions #'cape-keyword)
-    (add-to-list 'completion-at-point-functions #'cape-abbrev))
+    (add-to-list 'completion-at-point-functions #'cape-abbrev)
+
+    (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
   (use-package yasnippet-capf
     :init (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 #+end_src
