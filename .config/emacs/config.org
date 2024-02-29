@@ -38,6 +38,8 @@
   - [[#display-hex-colors][Display Hex Colors]]
   - [[#whitespaces][Whitespaces]]
   - [[#tweaking-fringes][Tweaking Fringes]]
+  - [[#better-text-scale-adjustment][Better Text Scale Adjustment]]
+  - [[#windmove][Windmove]]
 - [[#org-mode][ORG MODE]]
   - [[#toc][Toc]]
   - [[#org-bullets][Org Bullets]]
@@ -1011,6 +1013,22 @@ Using native modeline for now
      #b00000000])
 #+end_src
 
+** Better Text Scale Adjustment
+#+begin_src emacs-lisp
+  (use-package default-text-scale
+    :hook (after-init . default-text-scale-mode)
+    :bind (:map default-text-scale-mode-map
+                ("s-=" . default-text-scale-increase)
+                ("s--" . default-text-scale-decrease)
+                ("s-0" . default-text-scale-reset)))
+#+end_src
+
+** Windmove
+#+begin_src emacs-lisp
+  (use-package windmove
+    :ensure nil
+    :hook (after-init . (lambda () (windmove-default-keybindings 'super))))
+#+end_src
 * ORG MODE
 ** Toc
 #+begin_src emacs-lisp
