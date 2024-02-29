@@ -63,6 +63,7 @@
   - [[#yasnippet][YASnippet]]
   - [[#frontend][Frontend]]
   - [[#lsp][LSP]]
+  - [[#ai][AI]]
 - [[#tools][TOOLS]]
   - [[#diagnostics][Diagnostics]]
   - [[#treesitter][Treesitter]]
@@ -1707,6 +1708,15 @@ Indent-based folding that should just work
     :hook (lsp-bridge-mode . flymake-bridge-setup))
 #+end_src
 
+** AI
+*** Codeium
+#+begin_src emacs-lisp
+  (use-package codeium
+    :vc (:fetcher github :repo "Exafunction/codeium.el")
+    :demand t
+    :init
+    (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
+#+end_src
 * TOOLS
 ** Diagnostics
 #+begin_src emacs-lisp
@@ -2312,10 +2322,10 @@ Track my programming time.
 #+end_src
 
 **** Jupyter Notebooks
-#+begin_src emacs-lisp
-  ;; (when (executable-find "jupytext")
-  ;;   (use-package code-cells
-  ;;     :hook (python-mode . code-cells-mode-maybe)))
+#+begin_src emacs-lisp :tangle no
+  (when (executable-find "jupytext")
+    (use-package code-cells
+      :hook (python-mode . code-cells-mode-maybe)))
 #+end_src
 
 *** Emacs Lisp
