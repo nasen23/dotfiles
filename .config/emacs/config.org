@@ -281,10 +281,6 @@
        '("wv" . split-window-right)
        '("ws" . split-window-below)
        '("wo" . other-window)
-       '("wh" . windmove-left)
-       '("wj" . windmove-down)
-       '("wk" . windmove-up)
-       '("wl" . windmove-right)
        '("wq" . delete-window)
        '("bi" . ibuffer)
        '("bn" . next-buffer)
@@ -686,16 +682,20 @@ Yes, it's a bit useless but I think I need it.
 #+end_src
 
 ** Modeline
+*** Doom Modeline
 Using native modeline for now
 #+begin_src emacs-lisp
-  ;; (use-package doom-modeline
-  ;;   ;; :hook (after-init . doom-modeline-mode)
-  ;;   :custom-face
-  ;;   (mode-line ((t (:weight light))))
-  ;;   (mode-line-active ((t (:weight light))))
-  ;;   :init (setq doom-modeline-minor-modes nil
-  ;;               doom-modeline-height 27))
+  (use-package doom-modeline
+    :hook (after-init . doom-modeline-mode)
+    :custom-face
+    (mode-line ((t (:family "Sarasa UI SC"))))
+    (mode-line-inactive ((t (:family "Sarasa UI SC"))))
+    :init (setq doom-modeline-minor-modes nil
+                doom-modeline-height 27))
+#+end_src
 
+*** Self-written modeline
+#+begin_src emacs-lisp :tangle no
   ;; Thanks to lunarymacs
   (defun luna-mode-line-padding (text)
     "Return padding on the left.
@@ -1027,7 +1027,14 @@ Using native modeline for now
 #+begin_src emacs-lisp
   (use-package windmove
     :ensure nil
-    :hook (after-init . (lambda () (windmove-default-keybindings 'super))))
+    :bind (("C-c w k" . windmove-up)
+           ("C-c w h" . windmove-left)
+           ("C-c w j" . windmove-down)
+           ("C-c w l" . windmove-right)
+           ("s-<up>" . windmove-display-up)
+           ("s-<left>" . windmove-display-left)
+           ("s-<down>" . windmove-display-down)
+           ("s-<right>" . windmove-display-right)))
 #+end_src
 * ORG MODE
 ** Toc
@@ -1526,7 +1533,8 @@ Indent-based folding that should just work
     (add-to-list 'completion-at-point-functions #'cape-keyword)
     (add-to-list 'completion-at-point-functions #'cape-abbrev)
 
-    (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
+    (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
+    (advice-add 'eglot-copmletion-at-point :around #'cape-wrap-noninterruptible))
   (use-package yasnippet-capf
     :init (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 #+end_src
@@ -1728,7 +1736,8 @@ Indent-based folding that should just work
 
 ** AI
 *** Codeium
-#+begin_src emacs-lisp
+It crashes my emacs sometimes... So I'm not using it for now.
+#+begin_src emacs-lisp :tangle no 
   (use-package codeium
     :vc (:fetcher github :repo "Exafunction/codeium.el")
     :demand t
@@ -2138,7 +2147,7 @@ Not using emacs-rime anymore.
 #+end_src
 
 ** Input Method Switcher
-Currently using ~emacs-smart-input-source~.
+Currently using ~emacs-smart-input-source~ and ~macim.el~.
 #+begin_src emacs-lisp
   (use-package sis
     :demand t
