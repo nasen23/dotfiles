@@ -88,6 +88,7 @@
   - [[#kubernetes-client][Kubernetes Client]]
   - [[#jupyter-series][Jupyter Series]]
   - [[#wgrep-to-edit-grep-buffers][Wgrep, to edit grep buffers]]
+  - [[#run-file-directly][Run file directly]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -355,7 +356,10 @@
        '("="   . meow-indent)
        '("&"   . align-regexp)
        '("RET" . push-button)
-       '("/"   . comment-or-uncomment-region)))
+       '("/"   . comment-or-uncomment-region)
+       '("<"   . "C-c <")
+       '(">"   . "C-c >")
+       ))
     (meow-setup)
     (meow-global-mode)
     (meow--enable-shims))
@@ -1553,10 +1557,11 @@ Indent-based folding that should just work
     :hook (prog-mode . (lambda ()
                          (unless (or (derived-mode-p 'emacs-lisp-mode 'lisp-mode 'makefile-mode 'snippet-mode)
                                      (eq major-mode 'prog-mode))
-                           (eglot-ensure)))))
-  (use-package consult-eglot
-    :bind (:map eglot-mode-map
-                ("C-M-." . consult-eglot-symbols)))
+                           (eglot-ensure))))
+    :config
+    (use-package consult-eglot
+      :bind (:map eglot-mode-map
+                  ("C-M-." . consult-eglot-symbols))))
 #+end_src
 
 **** LSP Booster
@@ -2336,6 +2341,14 @@ Track my programming time.
 #+begin_src emacs-lisp
   (use-package wgrep
     :demand t)
+#+end_src
+
+** Run file directly
+#+begin_src emacs-lisp
+  ;; Run commands quickly
+  (use-package quickrun
+    :bind (("C-<f5>" . quickrun)
+           ("C-c X"  . quickrun)))
 #+end_src
 
 * LANGUAGES
