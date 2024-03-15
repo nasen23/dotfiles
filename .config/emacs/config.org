@@ -44,6 +44,7 @@
   - [[#toc][Toc]]
   - [[#org-bullets][Org Bullets]]
   - [[#tag-expansion][Tag Expansion]]
+  - [[#verb-http-integration][Verb (http integration)]]
 - [[#vertico-with-consult][VERTICO (WITH CONSULT)]]
   - [[#vertico][vertico]]
   - [[#marginaliael][Marginalia.el]]
@@ -89,6 +90,7 @@
   - [[#jupyter-series][Jupyter Series]]
   - [[#wgrep-to-edit-grep-buffers][Wgrep, to edit grep buffers]]
   - [[#run-file-directly][Run file directly]]
+  - [[#http-client][Http Client]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -673,7 +675,7 @@ Yes, it's a bit useless but I think I need it.
 
 *** And I use...
 #+begin_src emacs-lisp
-  (load-theme 'ef-frost :no-confirm)
+  (load-theme 'doom-one-light :no-confirm)
   (unless (eq catppuccin-flavor 'latte)
     (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 #+end_src
@@ -1058,6 +1060,15 @@ Using native modeline for now
 
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook (lambda () (require 'org-tempo)))
+#+end_src
+
+** Verb (http integration)
+#+begin_src emacs-lisp
+  (use-package verb
+    :demand t
+    :config
+    (with-eval-after-load 'org
+      (define-key org-mode-map (kbd "C-c C-r") verb-command-map)))
 #+end_src
 
 * VERTICO (WITH CONSULT)
@@ -2349,6 +2360,12 @@ Track my programming time.
   (use-package quickrun
     :bind (("C-<f5>" . quickrun)
            ("C-c X"  . quickrun)))
+#+end_src
+
+** Http Client
+#+begin_src emacs-lisp
+  (use-package restclient
+    :demand t)
 #+end_src
 
 * LANGUAGES
