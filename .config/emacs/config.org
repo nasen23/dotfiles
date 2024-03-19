@@ -435,56 +435,19 @@
 #+begin_src emacs-lisp
   (setq vc-handled-backends '(Git)) ;; I don't think I use something other than git
 
+  ;; Some options that makes tramp "proper" and faster
+  ;; But at some costs...
+  (setq tramp-terminal-type "tramp"
+        tramp-default-method "ssh"
+        remote-file-name-inhibit-cache nil
+        remote-file-name-inhibit-locks t
+        tramp-auto-save-directory temporary-file-directory)
+
   (with-eval-after-load 'tramp
     ;; Fixing some path issues
     (add-to-list 'tramp-remote-path 'tramp-own-remote-path)
     ;; (add-to-list 'tramp-connection-properties '("/ssh:" "direct-async-process" t))
     )
-
-  ;; (with-eval-after-load 'tramp
-  ;;   (defun my/tramp-check-for-regexp (proc regexp)
-  ;;     "Check, whether REGEXP is contained in process buffer of PROC.
-  ;; Erase echoed commands if exists."
-  ;;     (with-current-buffer (process-buffer proc)
-  ;;       (if (> (point-max) 1000)
-  ;;           (progn
-  ;;             (goto-char (point-max))
-  ;;             (ignore-errors (re-search-backward regexp (- (point-max) 1000) t)))
-  ;;         (progn
-  ;;           (goto-char (point-min))
-
-  ;;           ;; Check whether we need to remove echo output.
-  ;;           (when (and (tramp-get-connection-property proc "check-remote-echo" nil)
-  ;;                      (re-search-forward tramp-echoed-echo-mark-regexp nil t))
-  ;;             (let ((begin (match-beginning 0)))
-  ;;               (when (re-search-forward tramp-echoed-echo-mark-regexp nil t)
-  ;;                 ;; Discard echo from remote output.
-  ;;                 (tramp-set-connection-property proc "check-remote-echo" nil)
-  ;;                 (tramp-message proc 5 "echo-mark found")
-  ;;                 (forward-line 1)
-  ;;                 (delete-region begin (point))
-  ;;                 (goto-char (point-min)))))
-
-  ;;           (when (or (not (tramp-get-connection-property proc "check-remote-echo" nil))
-  ;;                     ;; Sometimes, the echo string is suppressed on the remote side.
-  ;;                     (not (string-equal
-  ;;                           (tramp-compat-funcall
-  ;;                            'substring-no-properties tramp-echo-mark-marker
-  ;;                            0 (min tramp-echo-mark-marker-length (1- (point-max))))
-  ;;                           (tramp-compat-funcall
-  ;;                            'buffer-substring-no-properties
-  ;;                            (point-min)
-  ;;                            (min (+ (point-min) tramp-echo-mark-marker-length)
-  ;;                                 (point-max))))))
-  ;;             ;; No echo to be handled, now we can look for the regexp.
-  ;;             ;; Sometimes, lines are much to long, and we run into a "Stack
-  ;;             ;; overflow in regexp matcher".  For example, //DIRED// lines of
-  ;;             ;; directory listings with some thousand files.  Therefore, we
-  ;;             ;; look from the end.
-  ;;             (goto-char (point-max))
-  ;;             (ignore-errors (re-search-backward regexp nil t)))))))
-  ;;     (advice-add #'tramp-check-for-regexp :override #'ns/tramp-check-for-regexp))
-
 #+end_src
 
 * FONTS
@@ -1786,6 +1749,26 @@ It crashes my emacs sometimes... So I'm not using it for now.
     :custom
     (treesit-auto-install 'prompt)
     :config
+    (add-to-list 'treesit-auto-recipe-list
+                 (make-treesit-auto-recipe
+                  :lang 'tsx
+                  :ts-mode 'tsx-ts-mode
+                  :remap '(typescript-tsx-mode)
+                  :requires 'typescript
+                  :url "https://github.com/tree-sitter/tree-sitter-typescript"
+                  :revision "v0.20.3"
+                  :source-dir "tsx/src"
+                  :ext "\\.tsx\\'"))
+    (add-to-list 'treesit-auto-recipe-list
+                 (make-treesit-auto-recipe
+                  :lang 'typescript
+                  :ts-mode 'typescript-ts-mode
+                  :remap '(typescript-mode)
+                  :requires 'tsx
+                  :url "https://github.com/tree-sitter/tree-sitter-typescript"
+                  :revision "v0.20.3"
+                  :source-dir "typescript/src"
+                  :ext "\\.ts\\'"))
     (treesit-auto-add-to-auto-mode-alist 'all))
 #+end_src
 
