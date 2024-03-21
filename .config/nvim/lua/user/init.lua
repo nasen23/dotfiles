@@ -13,7 +13,7 @@ M.modules = {
 	"ui.rainbow",
 	"ui.statusline",
 	"ui.tabs",
-	{ "ui.theme.catppuccin", flavour = "frappe" },
+	{ "ui.theme.catppuccin", flavour = "latte" },
 	"ui.todo",
 	"ui.which-key",
 
