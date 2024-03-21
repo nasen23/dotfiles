@@ -91,6 +91,8 @@
   - [[#wgrep-to-edit-grep-buffers][Wgrep, to edit grep buffers]]
   - [[#run-file-directly][Run file directly]]
   - [[#http-client][Http Client]]
+  - [[#gpt-in-emacs][GPT in Emacs]]
+  - [[#taking-nice-screenshots][Taking Nice Screenshots]]
 - [[#languages][LANGUAGES]]
   - [[#programming-languages][Programming languages]]
   - [[#configuration-languages][Configuration languages]]
@@ -2350,6 +2352,46 @@ Track my programming time.
 #+begin_src emacs-lisp
   (use-package restclient
     :demand t)
+#+end_src
+
+** GPT in Emacs
+#+begin_src emacs-lisp
+  (use-package gptel
+    :demand t
+    :config
+    ;; NOTE: need to put content like "machine openrouter.ai login apikey password <token>" into ~/.authinfo
+    (setq gptel-backend (gptel-make-openai "OpenRouter"
+                          :protocol "https"
+                          :host "openrouter.ai"
+                          :endpoint "/api/v1/chat/completions"
+                          :stream t
+                          :key #'gptel-api-key-from-auth-source
+                          :models '("anthropic/claude-3-opus"
+                                   "anthropic/claude-3-sonnet"
+                                   "anthropic/claude-3-haiku"
+                                   "openai/gpt-3.5-turbo-0125"
+                                   "openai/gpt-4-turbo-preview")))
+    (setq gptel-model "anthropic/claude-3-haiku"))
+#+end_src
+
+** Taking Nice Screenshots
+#+begin_src emacs-lisp
+  (when (featurep 'mac)
+    (defun x-export-frames (&rest args)
+      (interactive)
+      (apply #'mac-export-frames args)))
+
+  (use-package screenshot
+    :vc (:fetcher github :repo "tecosaur/screenshot")
+    :commands (screenshot)
+    :config
+    (screenshot--def-action copy
+      "Copy the current selection (BEG-END) as an image to the clipboard."
+      (call-process "osascript" nil nil nil
+                    "-e"
+                    (format "set the clipboard to (read (POSIX file \"%s\") as «class PNGf»)" screenshot--tmp-file))
+      (delete-file screenshot--tmp-file)
+      (message "Screenshot copied")))
 #+end_src
 
 * LANGUAGES
