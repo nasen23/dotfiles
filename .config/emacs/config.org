@@ -66,7 +66,6 @@
   - [[#yasnippet][YASnippet]]
   - [[#frontend][Frontend]]
   - [[#lsp][LSP]]
-  - [[#ai][AI]]
 - [[#tools][TOOLS]]
   - [[#diagnostics][Diagnostics]]
   - [[#treesitter][Treesitter]]
@@ -80,7 +79,6 @@
   - [[#yadm-over-magit][YADM over Magit]]
   - [[#emacs-rime][Emacs Rime]]
   - [[#input-method-switcher][Input Method Switcher]]
-  - [[#cjk-tokenizer][CJK Tokenizer]]
   - [[#ibuffer][IBuffer]]
   - [[#zoom-window][Zoom Window]]
   - [[#treemacs][Treemacs]]
@@ -440,7 +438,7 @@
   ;; Some options that makes tramp "proper" and faster
   ;; But at some costs...
   (setq tramp-terminal-type "tramp"
-        tramp-default-method "ssh"
+        ;; tramp-default-method "ssh"
         remote-file-name-inhibit-cache nil
         remote-file-name-inhibit-locks t
         tramp-auto-save-directory temporary-file-directory)
@@ -875,10 +873,12 @@ Using native modeline for now
         (setq rows (cons row rows)))))
 
   (use-package indent-bars
-    :vc (:fetcher github :repo jdtsmith/indent-bars)
+    :vc (indent-bars :url "https://github.com/jdtsmith/indent-bars"
+                     :branch "main")
     :custom
     (indent-bars-treesit-support t)
     (indent-bars-no-descend-string t)
+    (indent-bars-prefer-character t)
     (indent-bars-treesit-ignore-blank-lines-types '("module"))
     (indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
                                         list list_comprehension
@@ -938,7 +938,8 @@ Using native modeline for now
 #+begin_src emacs-lisp
   (add-hook 'prog-mode-hook (lambda () (setq-local show-trailing-whitespace t)))
   (use-package whitespace4r
-    :vc (:fetcher github :repo "twlz0ne/whitespace4r.el")
+    :vc (whitespace4r :url "https://github.com/twlz0ne/whitespace4r.el"
+                      :branch "master")
     :diminish
     :hook ((prog-mode yaml-mode) . whitespace4r-mode)
     :init (setq whitespace4r-style '(tabs spaces hspaces zwspaces)))
@@ -1544,7 +1545,8 @@ Indent-based folding that should just work
 **** LSP Booster
 #+begin_src emacs-lisp
   (use-package eglot-booster
-    :vc (:fetcher github :repo "jdtsmith/eglot-booster")
+    :vc (eglot-booster :url "https://github.com/jdtsmith/eglot-booster"
+                       :branch "main")
     :after eglot
     :config (eglot-booster-mode))
 #+end_src
@@ -1704,28 +1706,6 @@ Indent-based folding that should just work
 
 #+end_src
 
-*** LSP Bridge
-#+begin_src emacs-lisp :tangle no
-  (use-package lsp-bridge
-    :diminish (lsp-bridge-mode)
-    :vc (:fetcher github :repo "manateelazycat/lsp-bridge")
-    :hook (after-init . global-lsp-bridge-mode)
-    :init (setq lsp-bridge-remote-start-automatically t))
-  (use-package flymake-bridge
-    :vc (:fetcher github :repo "liuyinz/flymake-bridge")
-    :hook (lsp-bridge-mode . flymake-bridge-setup))
-#+end_src
-
-** AI
-*** Codeium
-It crashes my emacs sometimes... So I'm not using it for now.
-#+begin_src emacs-lisp :tangle no 
-  (use-package codeium
-    :vc (:fetcher github :repo "Exafunction/codeium.el")
-    :demand t
-    :init
-    (add-to-list 'completion-at-point-functions #'codeium-completion-at-point))
-#+end_src
 * TOOLS
 ** Diagnostics
 #+begin_src emacs-lisp
@@ -1785,7 +1765,7 @@ It crashes my emacs sometimes... So I'm not using it for now.
 
   ;; Use a forked version of envrc as it supports tramp
   (use-package envrc
-    :vc (:fetcher github :repo "siddharthverma314/envrc")
+    :vc (envrc :url "https://github.com/siddharthverma314/envrc")
     :diminish
     :init (setq envrc-remote t)
     :hook ((prog-mode inferior-python-mode compilation-mode) . envrc-mode)
@@ -2173,15 +2153,6 @@ Currently using ~emacs-smart-input-source~ and ~macim.el~.
       (advice-add 'meow-reverse :after (lambda () (sis-global-respect-mode t)))))
 #+end_src
 
-** CJK Tokenizer
-#+begin_src emacs-lisp
-  ;; (when (and (eq system-type 'darwin) (file-exists-p "/Applications/Xcode.app"))
-  ;;   (use-package emt
-  ;;     :vc (:fetcher github :repo roife/emt)
-  ;;     :init (emt-compile-module)
-  ;;     :hook (after-init . emt-mode)))
-#+end_src
-
 ** IBuffer
 #+begin_src emacs-lisp
   (use-package ibuffer
@@ -2382,7 +2353,7 @@ Track my programming time.
       (apply #'mac-export-frames args)))
 
   (use-package screenshot
-    :vc (:fetcher github :repo "tecosaur/screenshot")
+    :vc (screenshot :url "https://github.com/tecosaur/screenshot")
     :commands (screenshot)
     :config
     (screenshot--def-action copy
