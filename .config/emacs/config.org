@@ -462,8 +462,7 @@
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
                       :font "Sarasa Mono SC"
-                      :height 140
-                      :weight 'medium)
+                      :height 140)
   (set-face-attribute 'fixed-pitch nil
                       :font "Sarasa Mono SC"
                       :height 140
@@ -2380,6 +2379,15 @@ Track my programming time.
   (when (executable-find "jupytext")
     (use-package code-cells
       :hook (python-mode . code-cells-mode-maybe)))
+#+end_src
+
+**** Docstring
+#+begin_src emacs-lisp
+  (use-package numpydoc
+    :custom
+    (numpydoc-insertion-style 'yas)
+    :bind (:map python-mode-map
+                ("C-c C-n" . numpydoc-generate)))
 #+end_src
 
 *** Emacs Lisp
