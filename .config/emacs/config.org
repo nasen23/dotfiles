@@ -1064,9 +1064,38 @@ Using native modeline for now
   (use-package orderless
     :ensure t
     :custom
-    (completion-styles '(orderless basic))
-    (completion-category-overrides '((file (styles basic partial-completion))))
-    (orderless-component-separator #'orderless-escapable-split-on-space))
+    (completion-styles '(orderless flex))
+    (completion-ignore-case t)
+    (completion-category-overrides '((file (styles orderless))
+                                     (eglot (styles orderless))))
+    (orderless-component-separator "[ &]")
+    :config
+    (defun +vertico-orderless-dispatch (pattern _index _total)
+      (cond
+       ;; Ensure $ works with Consult commands, which add disambiguation suffixes
+       ((string-suffix-p "$" pattern) `(orderless-regexp . ,(concat (substring pattern 0 -1) "[\x200000-\x300000]*$")))
+       ;; Ignore single !
+       ((string= "!" pattern) `(orderless-literal . ""))
+       ;; Without literal
+       ((string-prefix-p "!" pattern) `(orderless-without-literal . ,(substring pattern 1)))
+       ;; Character folding
+       ((string-prefix-p "%" pattern) `(char-fold-to-regexp . ,(substring pattern 1)))
+       ((string-suffix-p "%" pattern) `(char-fold-to-regexp . ,(substring pattern 0 -1)))
+       ;; Initialism matching
+       ((string-prefix-p "^" pattern) `(orderless-initialism . ,(substring pattern 1)))
+       ((string-suffix-p "^" pattern) `(orderless-initialism . ,(substring pattern 0 -1)))
+       ;; Literal matching
+       ((string-prefix-p "=" pattern) `(orderless-literal . ,(substring pattern 1)))
+       ((string-suffix-p "=" pattern) `(orderless-literal . ,(substring pattern 0 -1)))
+       ;; Flex matching
+       ((string-prefix-p "~" pattern) `(orderless-flex . ,(substring pattern 1)))
+       ((string-suffix-p "~" pattern) `(orderless-flex . ,(substring pattern 0 -1)))
+       ;; Annotations
+       ((string-prefix-p "@" pattern) `(orderless-annotation . ,(substring pattern 1)))
+       ((string-suffix-p "@" pattern) `(orderless-annotation . ,(substring pattern 0 -1)))
+       ))
+    (setq orderless-style-dispatchers '(+vertico-orderless-dispatch))
+    )
 
   (use-package vertico
     :bind (:map vertico-map
