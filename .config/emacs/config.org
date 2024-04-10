@@ -1064,7 +1064,7 @@ Using native modeline for now
   (use-package orderless
     :ensure t
     :custom
-    (completion-styles '(orderless flex))
+    (completion-styles '(orderless basic))
     (completion-ignore-case t)
     (completion-category-overrides '((file (styles orderless))
                                      (eglot (styles orderless))))
