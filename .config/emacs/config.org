@@ -2001,9 +2001,11 @@ So I could still use emacs when I open $EDITOR in vterm
 
 ** Recent Files
 #+begin_src emacs-lisp
-  (setq recentf-max-saved-items 100)
-  (recentf-mode 1)
-  (with-eval-after-load 'meow (meow-leader-define-key '("fr" . consult-recent-file)))
+  (use-package recentf
+    :bind ("C-x C-r" . recentf-open-files)
+    :hook (after-init . recentf-mode)
+    :config
+    (setq recentf-max-saved-items 300))
 #+end_src
 
 ** Dired
@@ -2187,7 +2189,7 @@ Currently using ~emacs-smart-input-source~ and ~macim.el~.
 #+begin_src emacs-lisp
   (use-package ibuffer
     :ensure nil
-    :commands ibuffer
+    :bind ("C-x C-b" . ibuffer)
     :init (setq ibuffer-filter-group-name-face '(:inherit (font-lock-string-face bold))))
 
   (use-package nerd-icons-ibuffer
