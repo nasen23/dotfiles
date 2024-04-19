@@ -40,6 +40,7 @@
   - [[#tweaking-fringes][Tweaking Fringes]]
   - [[#better-text-scale-adjustment][Better Text Scale Adjustment]]
   - [[#windmove][Windmove]]
+  - [[#ace-window][Ace Window]]
 - [[#org-mode][ORG MODE]]
   - [[#toc][Toc]]
   - [[#org-bullets][Org Bullets]]
@@ -58,6 +59,10 @@
   - [[#goto-last-changed][Goto Last Changed]]
   - [[#trim-whitespaces-ws-butler][Trim Whitespaces (ws-butler)]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
+  - [[#multiple-cursors][Multiple Cursors]]
+  - [[#move-to-beginning-of-line-or-code][Move to beginning of line or code]]
+  - [[#fancy-narrowing][Fancy Narrowing]]
+  - [[#smart-region][Smart Region]]
   - [[#highlight-todos][Highlight TODOs]]
   - [[#git-diff-highlights][Git Diff Highlights]]
   - [[#text-folding][Text Folding]]
@@ -1008,6 +1013,14 @@ Using native modeline for now
            ("s-<down>" . windmove-display-down)
            ("s-<right>" . windmove-display-right)))
 #+end_src
+
+** Ace Window
+#+begin_src emacs-lisp
+  (use-package ace-window
+    :bind (("M-o" . ace-window))
+    :init
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+#+end_src
 * ORG MODE
 ** Toc
 #+begin_src emacs-lisp
@@ -1420,6 +1433,34 @@ Not using better jumper for now
     :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
+** Multiple Cursors
+#+begin_src emacs-lisp
+  (use-package multiple-cursors
+    :bind (("C-S-c C-S-c" . mc/edit-lines)
+           ("C->" . mc/mark-next-like-this)
+           ("C-<" . mc/mark-previous-like-this)
+           ("C-c C-<" . mc/mark-all-like-this)))
+#+end_src
+
+** Move to beginning of line or code
+#+begin_src emacs-lisp
+  (use-package mwim
+    :bind (([remap move-beginning-of-line] . mwim-beginning)
+           ([remap move-end-of-line] . mwim-end)))
+#+end_src
+
+** Fancy Narrowing
+#+begin_src emacs-lisp
+  (use-package fancy-narrow
+    :hook (after-init . fancy-narrow-mode))
+#+end_src
+
+** Smart Region
+#+begin_src emacs-lisp
+  (use-package smart-region
+    :hook (after-init . smart-region-on))
+#+end_src
+
 ** Highlight TODOs
 #+begin_src emacs-lisp
   (use-package hl-todo
@@ -1499,7 +1540,7 @@ Indent-based folding that should just work
 
 ** Frontend
 *** Company
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (use-package company
     :diminish
     :custom
@@ -1518,7 +1559,7 @@ Indent-based folding that should just work
 #+end_src
 
 *** Corfu
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package corfu
     :custom
     (corfu-auto t)
