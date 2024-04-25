@@ -60,8 +60,8 @@
   - [[#trim-whitespaces-ws-butler][Trim Whitespaces (ws-butler)]]
   - [[#rainbow-delimiters][Rainbow Delimiters]]
   - [[#multiple-cursors][Multiple Cursors]]
-  - [[#move-to-beginning-of-line-or-code][Move to beginning of line or code]]
   - [[#fancy-narrowing][Fancy Narrowing]]
+  - [[#avy-jump-to-things][Avy (Jump to things)]]
   - [[#region][Region]]
   - [[#highlight-todos][Highlight TODOs]]
   - [[#git-diff-highlights][Git Diff Highlights]]
@@ -1354,7 +1354,6 @@ Basic editing tweaks
 Builtin package autorevert
 #+begin_src emacs-lisp
   (use-package autorevert
-    :ensure nil
     :delight
     :hook (after-init . global-auto-revert-mode))
 #+end_src
@@ -1373,6 +1372,20 @@ Builtin package saveplace
     :ensure nil
     :hook (after-init . global-so-long-mode))
 #+end_src
+
+*** Delete selection on insert
+#+begin_src emacs-lisp
+  (use-package delsel
+    :hook (after-init . delete-selection-mode))
+#+end_src
+
+*** Move to beginning of line or code
+#+begin_src emacs-lisp
+  (use-package mwim
+    :bind (([remap move-beginning-of-line] . mwim-beginning)
+           ([remap move-end-of-line] . mwim-end)))
+#+end_src
+
 ** Indent
 Some basic behaviors
 #+begin_src emacs-lisp
@@ -1382,17 +1395,42 @@ Some basic behaviors
   (setq-default tab-always-indent nil)
 #+end_src
 
-#+begin_src emacs-lisp
-  ;; (use-package aggressive-indent
-  ;;   :config
-  ;;   (global-aggressive-indent-mode 1))
-#+end_src
-
 *** Dtrt Indent (For guessing Indent)
 #+begin_src emacs-lisp
   (use-package dtrt-indent
     :delight
     :hook (prog-mode . dtrt-indent-mode))
+#+end_src
+
+*** Aggressive Indent
+#+begin_src emacs-lisp
+  ;; Minor mode to aggressively keep your code always indented
+  (use-package aggressive-indent
+    :diminish
+    :hook ((after-init . global-aggressive-indent-mode)
+           ;; NOTE: Disable in large files due to the performance issues
+           ;; https://github.com/Malabarba/aggressive-indent-mode/issues/73
+           (find-file . (lambda ()
+                          (when (too-long-file-p)
+                            (aggressive-indent-mode -1)))))
+    :config
+    ;; Disable in some modes
+    (dolist (mode '(gitconfig-mode
+                    asm-mode web-mode html-mode css-mode
+                    go-mode scala-mode
+                    shell-mode term-mode vterm-mode
+                    prolog-inferior-mode))
+      (add-to-list 'aggressive-indent-excluded-modes mode))
+
+    ;; Disable in some commands
+    (add-to-list 'aggressive-indent-protected-commands #'delete-trailing-whitespace t)
+
+    ;; Be slightly less aggressive in C/C++/C#/Java/Go/Swift
+    (add-to-list 'aggressive-indent-dont-indent-if
+                 '(and (derived-mode-p 'c-mode 'c++-mode 'csharp-mode
+                                       'java-mode 'go-mode 'swift-mode)
+                       (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+                                           (thing-at-point 'line))))))
 #+end_src
 
 ** Smartparens
@@ -1459,17 +1497,33 @@ Not using better jumper for now
                    '(iedit-mode nil))))
 #+end_src
 
-** Move to beginning of line or code
-#+begin_src emacs-lisp
-  (use-package mwim
-    :bind (([remap move-beginning-of-line] . mwim-beginning)
-           ([remap move-end-of-line] . mwim-end)))
-#+end_src
-
 ** Fancy Narrowing
 #+begin_src emacs-lisp
   (use-package fancy-narrow
     :hook (after-init . fancy-narrow-mode))
+#+end_src
+
+** Avy (Jump to things)
+#+begin_src emacs-lisp
+  (use-package avy
+    :bind (("C-:" . avy-goto-char)
+           ("C-'" . avy-goto-char-2)
+           ("M-g l" . avy-goto-line)
+           ("M-g w" . avy-goto-word-1)
+           ("M-g e" . avy-goto-word-0))
+    :hook (after-init . avy-setup-default)
+    :config
+    (setq avy-all-windows nil
+          avy-all-windows-alt t
+          avy-background t
+          avy-style 'pre))
+#+end_src
+
+*** Zap (Kill text between point and CHAR)
+#+begin_src emacs-lisp
+  (use-package avy-zap
+    :bind (("M-z" . avy-zap-to-char-dwim)
+           ("M-Z" . avy-zap-up-to-char-dwim)))
 #+end_src
 
 ** Region
