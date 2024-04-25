@@ -1411,7 +1411,9 @@ Some basic behaviors
            ;; NOTE: Disable in large files due to the performance issues
            ;; https://github.com/Malabarba/aggressive-indent-mode/issues/73
            (find-file . (lambda ()
-                          (when (too-long-file-p)
+                          (when (or (> (buffer-size) 500000)
+                                    (and (fboundp 'buffer-line-statistics)
+                                         (> (car (buffer-line-statistics)) 10000)))
                             (aggressive-indent-mode -1)))))
     :config
     ;; Disable in some modes
