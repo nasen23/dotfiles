@@ -1077,7 +1077,8 @@ Using native modeline for now
   (use-package orderless
     :ensure t
     :custom
-    (completion-styles '(orderless basic))
+    (completion-styles '(basic partial-completion orderless))
+    (orderless-matching-styles '(orderless-literal orderless-regexp orderless-flex))
     (completion-ignore-case t)
     (completion-category-overrides '((file (styles orderless))
                                      (eglot (styles orderless))))
@@ -1107,14 +1108,13 @@ Using native modeline for now
        ((string-prefix-p "@" pattern) `(orderless-annotation . ,(substring pattern 1)))
        ((string-suffix-p "@" pattern) `(orderless-annotation . ,(substring pattern 0 -1)))
        ))
-    (setq orderless-style-dispatchers '(+vertico-orderless-dispatch))
-    )
+    (setq orderless-style-dispatchers '(+vertico-orderless-dispatch)))
 
   (use-package vertico
     :bind (:map vertico-map
-           ("RET" . vertico-directory-enter)
-           ("DEL" . vertico-directory-delete-char)
-           ("M-DEL" . vertico-directory-delete-word))
+                ("RET" . vertico-directory-enter)
+                ("DEL" . vertico-directory-delete-char)
+                ("M-DEL" . vertico-directory-delete-word))
     :hook ((after-init . vertico-mode)
            (rfn-eshadow-update-overlay . vertico-directory-tidy)))
 
