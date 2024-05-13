@@ -48,6 +48,7 @@
   - [[#verb-http-integration][Verb (http integration)]]
 - [[#vertico-with-consult][VERTICO (WITH CONSULT)]]
   - [[#vertico][vertico]]
+  - [[#orderless][Orderless]]
   - [[#marginaliael][Marginalia.el]]
   - [[#consult][Consult]]
   - [[#embark][Embark]]
@@ -940,7 +941,7 @@ Using native modeline for now
 #+end_src
 
 ** Whitespaces
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (add-hook 'prog-mode-hook (lambda () (setq-local show-trailing-whitespace t)))
   (use-package whitespace4r
     :vc (whitespace4r :url "https://github.com/twlz0ne/whitespace4r.el"
@@ -1017,9 +1018,7 @@ Using native modeline for now
 ** Ace Window
 #+begin_src emacs-lisp
   (use-package ace-window
-    :bind (("M-o" . ace-window))
-    :init
-    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+    :bind (("M-o" . ace-window)))
 #+end_src
 * ORG MODE
 ** Toc
@@ -1073,15 +1072,37 @@ Using native modeline for now
     ;; `completion-at-point' is often bound to M-TAB.
     (setq tab-always-indent 'complete))
 
+  (use-package vertico
+    :bind (:map vertico-map
+                ("RET" . vertico-directory-enter)
+                ("DEL" . vertico-directory-delete-char)
+                ("M-DEL" . vertico-directory-delete-word))
+    :hook ((after-init . vertico-mode)
+           (rfn-eshadow-update-overlay . vertico-directory-tidy)))
+
+  ;; (when (display-graphic-p)
+  ;;   (use-package vertico-posframe
+  ;;     :hook (vertico-mode . vertico-posframe-mode)
+  ;;     :init (setq vertico-posframe-poshandler
+  ;;                 #'posframe-poshandler-frame-center-near-bottom
+  ;;                 vertico-posframe-parameters
+  ;;                 '((left-fringe  . 8)
+  ;;                   (right-fringe . 8)))))
+
+  (use-package nerd-icons-completion
+    :hook (vertico-mode . nerd-icons-completion-mode))
+#+end_src
+
+** Orderless
+#+begin_src emacs-lisp
   ;; Optionally use the `orderless' completion style.
   (use-package orderless
     :ensure t
     :custom
-    (completion-styles '(basic partial-completion orderless))
-    (orderless-matching-styles '(orderless-literal orderless-regexp orderless-flex))
-    (completion-ignore-case t)
-    (completion-category-overrides '((file (styles orderless))
-                                     (eglot (styles orderless))))
+    (completion-styles '(orderless basic))
+    (orderless-matching-styles '(orderless-literal orderless-regexp))
+    (completion-category-overrides '((file (styles basic partial-completion))
+                                     (eglot (styles . ()))))
     (orderless-component-separator "[ &]")
     :config
     (defun +vertico-orderless-dispatch (pattern _index _total)
@@ -1109,26 +1130,6 @@ Using native modeline for now
        ((string-suffix-p "@" pattern) `(orderless-annotation . ,(substring pattern 0 -1)))
        ))
     (setq orderless-style-dispatchers '(+vertico-orderless-dispatch)))
-
-  (use-package vertico
-    :bind (:map vertico-map
-                ("RET" . vertico-directory-enter)
-                ("DEL" . vertico-directory-delete-char)
-                ("M-DEL" . vertico-directory-delete-word))
-    :hook ((after-init . vertico-mode)
-           (rfn-eshadow-update-overlay . vertico-directory-tidy)))
-
-  ;; (when (display-graphic-p)
-  ;;   (use-package vertico-posframe
-  ;;     :hook (vertico-mode . vertico-posframe-mode)
-  ;;     :init (setq vertico-posframe-poshandler
-  ;;                 #'posframe-poshandler-frame-center-near-bottom
-  ;;                 vertico-posframe-parameters
-  ;;                 '((left-fringe  . 8)
-  ;;                   (right-fringe . 8)))))
-
-  (use-package nerd-icons-completion
-    :hook (vertico-mode . nerd-icons-completion-mode))
 #+end_src
 
 ** Marginalia.el
