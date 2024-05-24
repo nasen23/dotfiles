@@ -55,7 +55,7 @@
 - [[#editing][EDITING]]
   - [[#basic-3][Basic]]
   - [[#indent][Indent]]
-  - [[#smartparens][Smartparens]]
+  - [[#auto-parens][Auto parens]]
   - [[#better-jumper][Better Jumper]]
   - [[#goto-last-changed][Goto Last Changed]]
   - [[#trim-whitespaces-ws-butler][Trim Whitespaces (ws-butler)]]
@@ -1436,13 +1436,21 @@ Some basic behaviors
                                            (thing-at-point 'line))))))
 #+end_src
 
-** Smartparens
-#+begin_src emacs-lisp
+** Auto parens
+#+begin_src emacs-lisp :tangle no
   (use-package smartparens
     :delight
     :hook (prog-mode text-mode markdown-mode)
     :config
     (require 'smartparens-config))
+#+end_src
+
+Not using smartparens because it's too intrusive
+#+begin_src emacs-lisp
+  (use-package elec-pair
+    :ensure nil
+    :hook (after-init . electric-pair-mode)
+    :init (setq electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit))
 #+end_src
 
 ** DONE Better Jumper
