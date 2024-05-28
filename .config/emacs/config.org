@@ -68,6 +68,7 @@
   - [[#git-diff-highlights][Git Diff Highlights]]
   - [[#text-folding][Text Folding]]
   - [[#undo-enhancements][Undo Enhancements]]
+  - [[#links][Links]]
 - [[#completion][COMPLETION]]
   - [[#yasnippet][YASnippet]]
   - [[#frontend][Frontend]]
@@ -1019,7 +1020,8 @@ Using native modeline for now
 ** Ace Window
 #+begin_src emacs-lisp
   (use-package ace-window
-    :bind (("M-o" . ace-window)))
+    :hook (emacs-startup . ace-window-display-mode)
+    :bind (([remap other-window] . ace-window)))
 #+end_src
 * ORG MODE
 ** Toc
@@ -1632,6 +1634,20 @@ Indent-based folding that should just work
 *** Vundo
 #+begin_src emacs-lisp
   (use-package vundo)
+#+end_src
+
+** Links
+#+begin_src emacs-lisp
+  ;; Quickly follow links
+  (use-package link-hint
+    :bind (("M-o" . link-hint-open-link)
+           ("C-c l o" . link-hint-open-link)
+           ("C-c l c" . link-hint-copy-link)))
+
+  (use-package goto-addr
+    :ensure nil
+    :hook ((text-mode . goto-address-mode)
+           (prog-mode . goto-address-prog-mode)))
 #+end_src
 
 * COMPLETION
