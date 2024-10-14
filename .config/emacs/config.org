@@ -1904,6 +1904,9 @@ Indent-based folding that should just work
 #+begin_src emacs-lisp
   (use-package flymake
     :hook (prog-mode . flymake-mode)
+    :bind (:map flymake-mode-map
+                ("M-n" . flymake-goto-next-error)
+                ("M-p" . flymake-goto-prev-error))
     :ensure nil
     :init
     (setq flymake-no-changes-timeout 0.5
@@ -2542,10 +2545,10 @@ Track my programming time.
 
 ** Taking Nice Screenshots
 #+begin_src emacs-lisp
-  (when (featurep 'mac)
-    (defun x-export-frames (&rest args)
-      (interactive)
-      (apply #'mac-export-frames args)))
+  ;; (when (featurep 'mac)
+  ;;   (defun x-export-frames (&rest args)
+  ;;     (interactive)
+  ;;     (apply #'mac-export-frames args)))
 
   (use-package screenshot
     :vc (screenshot :url "https://github.com/tecosaur/screenshot")
