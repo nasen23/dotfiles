@@ -2535,11 +2535,10 @@ Track my programming time.
                           :endpoint "/api/v1/chat/completions"
                           :stream t
                           :key #'gptel-api-key-from-auth-source
-                          :models '("anthropic/claude-3-opus"
-                                   "anthropic/claude-3-sonnet"
-                                   "anthropic/claude-3-haiku"
-                                   "openai/gpt-3.5-turbo-0125"
-                                   "openai/gpt-4-turbo-preview")))
+                          :models '("anthropic/claude-3.5-sonnet"
+                                    "openai/gpt-4o-mini-2024-07-18"
+                                    "openai/gpt-4o-2024-08-06"
+                                    "openai/o1-mini-2024-09-12")))
     (setq gptel-model "anthropic/claude-3-haiku"))
 #+end_src
 
