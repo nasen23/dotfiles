@@ -105,6 +105,8 @@
   - [[#configuration-languages][Configuration languages]]
   - [[#text][Text]]
   - [[#just-tools][Just Tools]]
+- [[#various-useful-functions][VARIOUS USEFUL FUNCTIONS]]
+  - [[#inserting-a-uuid][Inserting a UUID]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
 ** Basic
@@ -2763,4 +2765,13 @@ What??
     (org-babel-do-load-languages
      'org-babel-load-languages
      '((elasticsearch . t))))
+#+end_src
+  
+* VARIOUS USEFUL FUNCTIONS
+** Inserting a UUID
+#+begin_src emacs-lisp
+  (defun uuid-insert ()
+    (interactive)
+    (require 'uuid)
+    (insert (uuid-string)))
 #+end_src
