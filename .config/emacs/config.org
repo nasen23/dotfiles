@@ -883,17 +883,16 @@ Using native modeline for now
         (setq rows (cons row rows)))))
 
   (use-package indent-bars
-    :vc (indent-bars :url "https://github.com/jdtsmith/indent-bars"
-                     :branch "main")
+    :config
+    (require 'indent-bars-ts)
     :custom
     (indent-bars-treesit-support t)
     (indent-bars-no-descend-string t)
     (indent-bars-prefer-character t)
-    (indent-bars-treesit-ignore-blank-lines-types '("module"))
-    (indent-bars-treesit-wrap '((python argument_list parameters ; for python, as an example
-                                        list list_comprehension
-                                        dictionary dictionary_comprehension
-                                        parenthesized_expression subscript)))
+    (indent-bars-display-on-blank-lines 'least)
+    (indent-bars-treesit-scope '((python function_definition class_definition for_statement
+                                         if_statement with_statement while_statement)))
+    (indent-bars-highlight-selection-method 'on-bar)
 
     (indent-bars-color '(highlight :face-bg t :blend 0.15))
     (indent-bars-pattern ".")
@@ -902,7 +901,7 @@ Using native modeline for now
     (indent-bars-zigzag nil)
     (indent-bars-color-by-depth '(:regexp "outline-\\([0-9]+\\)" :blend 1)) ; blend=1: blend with BG only
     (indent-bars-highlight-current-depth '(:blend 0.5)) ; pump up the BG blend on current
-    (indent-bars-display-on-blank-lines t)
+    ;; (indent-bars-display-on-blank-lines t)
     :hook ((python-mode python-ts-mode yaml-mode yaml-ts-mode) . indent-bars-mode))
 #+end_src
 
