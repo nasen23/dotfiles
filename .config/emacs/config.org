@@ -2770,8 +2770,13 @@ What??
 * VARIOUS USEFUL FUNCTIONS
 ** Inserting a UUID
 #+begin_src emacs-lisp
+  (use-package uuid
+    :defer t)
+
   (defun uuid-insert ()
     (interactive)
     (require 'uuid)
+    (when (region-active-p)
+      (delete-active-region))
     (insert (uuid-string)))
 #+end_src
