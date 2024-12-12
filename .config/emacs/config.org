@@ -648,7 +648,7 @@ Yes, it's a bit useless but I think I need it.
 
 *** And I use...
 #+begin_src emacs-lisp
-  (load-theme 'doom-feather-light :no-confirm)
+  (load-theme 'doom-one-light :no-confirm)
   (unless (eq catppuccin-flavor 'latte)
     (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 #+end_src
@@ -1663,7 +1663,7 @@ Indent-based folding that should just work
 
 ** Frontend
 *** Company
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package company
     :diminish
     :custom
@@ -1682,7 +1682,7 @@ Indent-based folding that should just work
 #+end_src
 
 *** Corfu
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (use-package corfu
     :custom
     (corfu-auto t)
@@ -1720,8 +1720,6 @@ Indent-based folding that should just work
   (use-package eglot
     :commands eglot-ensure
     :init (setq eglot-autoshutdown t
-                eglot-send-changes-idle-time 0.5
-                eglot-events-buffer-size 0
                 read-process-output-max (* 1024 1024)
                 eldoc-echo-area-use-multiline-p 1)
     :custom-face
