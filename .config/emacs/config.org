@@ -97,6 +97,7 @@
   - [[#run-file-directly][Run file directly]]
   - [[#http-client][Http Client]]
   - [[#gpt-in-emacs][GPT in Emacs]]
+  - [[#ai-paired-programming][AI Paired Programming]]
   - [[#taking-nice-screenshots][Taking Nice Screenshots]]
   - [[#debugger-dape][Debugger (dape)]]
   - [[#documentation][Documentation]]
@@ -472,16 +473,14 @@
 ** Setting The Font Face
 #+begin_src emacs-lisp
   (set-face-attribute 'default nil
-                      :font "Sarasa Mono SC"
+                      :family "DM Mono"
                       :height 140)
   (set-face-attribute 'fixed-pitch nil
-                      :font "Sarasa Mono SC"
-                      :height 140
-                      :weight 'medium)
+                      :family "DM Mono"
+                      :height 140)
   (set-face-attribute 'fixed-pitch-serif nil
-                      :font "Sarasa Mono Slab SC"
-                      :height 140
-                      :weight 'medium)
+                      :family "DM Mono"
+                      :height 140)
   (set-face-attribute 'variable-pitch nil
                       :font "Noto Serif CJK SC"
                       :height 150
@@ -1351,8 +1350,9 @@ Basic editing tweaks
   (setq kill-do-not-save-duplicates t)
   (setq require-final-newline t)
 
-  (add-hook 'prog-mode-hook (lambda () (setq cursor-type 'bar)))
-  (add-hook 'text-mode-hook (lambda () (setq cursor-type 'bar)))
+  ;; (add-hook 'prog-mode-hook (lambda () (setq cursor-type 'bar)))
+  ;; (add-hook 'text-mode-hook (lambda () (setq cursor-type 'bar)))
+  ;; no need to be a bar now
 #+end_src
 
 *** Auto Revert
@@ -2542,6 +2542,17 @@ Track my programming time.
                                     "openai/gpt-4o-2024-08-06"
                                     "openai/o1-mini-2024-09-12")))
     (setq gptel-model "anthropic/claude-3-haiku"))
+#+end_src
+
+** AI Paired Programming
+#+begin_src emacs-lisp
+  (use-package aider
+    :ensure t
+    :vc (aider :url "https://github.com/tninja/aider.el" :files ("aider.el"))
+    :config
+    (setq aider-args '("--model" "openrouter/anthropic/claude-3.5-sonnet"))
+    (setenv "OPENROUTER_API_KEY" (auth-source-pick-first-password
+                                  :host "openrouter.ai")))
 #+end_src
 
 ** Taking Nice Screenshots
