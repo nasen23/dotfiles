@@ -108,6 +108,7 @@
   - [[#just-tools][Just Tools]]
 - [[#various-useful-functions][VARIOUS USEFUL FUNCTIONS]]
   - [[#inserting-a-uuid][Inserting a UUID]]
+  - [[#enabling-and-disabling-proxy][Enabling and disabling proxy]]
 
 * IMPORTANT PROGRAMS TO LOAD FIRST
 ** Basic
@@ -472,19 +473,23 @@
 
 ** Setting The Font Face
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil
-                      :family "DM Mono"
-                      :height 140)
-  (set-face-attribute 'fixed-pitch nil
-                      :family "DM Mono"
-                      :height 140)
-  (set-face-attribute 'fixed-pitch-serif nil
-                      :family "DM Mono"
-                      :height 140)
-  (set-face-attribute 'variable-pitch nil
-                      :font "Noto Serif CJK SC"
-                      :height 150
-                      :weight 'medium)
+  (defun my-setup-fonts ()
+    (set-face-attribute 'default nil
+                        :family "Sarasa Mono SC"
+                        :height 140)
+    (set-face-attribute 'fixed-pitch nil
+                        :family "Sarasa Mono SC"
+                        :height 140)
+    (set-face-attribute 'fixed-pitch-serif nil
+                        :family "Sarasa Mono SC"
+                        :height 140)
+    (set-face-attribute 'variable-pitch nil
+                        :font "Noto Serif CJK SC"
+                        :height 150
+                        :weight 'medium))
+
+  (add-hook 'window-setup-hook #'my-setup-fonts)
+  (add-hook 'after-make-frame-functions #'my-setup-fonts)
 #+end_src
 
 I can eat glass, it does not hurt me.
@@ -2608,15 +2613,29 @@ Track my programming time.
         (setf (alist-get 'left-fringe eldoc-box-frame-parameters) 8
               (alist-get 'right-fringe eldoc-box-frame-parameters) 8))))
 #+end_src
-
+  
 * LANGUAGES
 ** Programming languages
 *** Python
 #+begin_src emacs-lisp
-  ;; (use-package python
-  ;;   :ensure nil
-  ;;   :hook ((python-mode python-ts-mode) . (lambda ()
-  ;;                          (setq format-all-formatters '(("Python" ruff))))))
+  (use-package python
+    :ensure nil
+    :hook (inferior-python-mode . (lambda ()
+                                    (process-query-on-exit-flag
+                                     (get-process "Python"))))
+    :init
+    ;; Disable readline based native completion
+    (setq python-shell-completion-native-enable nil)
+    :config
+    ;; Default to Python 3. Prefer the versioned Python binaries since some
+    ;; systems stupidly make the unversioned one point at Python 2.
+    (when (and (executable-find "python3")
+               (string= python-shell-interpreter "python"))
+      (setq python-shell-interpreter "python3"))
+
+    ;; Env vars
+    (with-eval-after-load 'exec-path-from-shell
+      (exec-path-from-shell-copy-env "PYTHONPATH")))
 #+end_src
 
 **** Jupyter Notebooks
@@ -2790,4 +2809,21 @@ What??
     (when (region-active-p)
       (delete-active-region))
     (insert (uuid-string)))
+#+end_src
+
+** Enabling and disabling proxy
+#+begin_src emacs-lisp
+  (defun enable-socks-proxy ()
+    "Enable SOCKS proxy."
+    (interactive)
+    (require 'socks)
+    (setq url-gateway-method 'socks
+          socks-noproxy '("localhost"))
+    (setenv "all_proxy" "socks5://127.0.0.1:7897"))
+
+  (defun disable-socks-proxy ()
+    "Disable socks proxy."
+    (interactive)
+    (setq url-gateway-method 'native)
+    (setenv "all_proxy" ""))
 #+end_src
