@@ -2550,7 +2550,7 @@ Track my programming time.
 #+end_src
 
 ** AI Paired Programming
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package aider
     :ensure t
     :vc (aider :url "https://github.com/tninja/aider.el" :files ("aider.el"))
@@ -2778,6 +2778,14 @@ This is quite essential as ~eglot~ uses this to highlight help buffer.
     :init (setq markdown-command "multimarkdown"
                 markdown-fontify-code-blocks-natively t)
     )
+#+end_src
+
+*** Typst
+#+begin_src emacs-lisp
+  (use-package typst-ts-mode
+    :vc (typst-ts-mode :url "https://git.sr.ht/~meow_king/typst-ts-mode"
+                       :branch "main")
+    :mode ("\\.typ\\'" . typst-ts-mode))
 #+end_src
 
 ** Just Tools
