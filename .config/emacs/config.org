@@ -1100,8 +1100,7 @@ Using native modeline for now
             '(:eval (let ((face (if (doom-modeline--active)
                                     'doom-modeline-emphasis
                                   'doom-modeline)))
-                      (if (and (icons-displayable-p)
-                               (bound-and-true-p doom-modeline-icon)
+                      (if (and (bound-and-true-p doom-modeline-icon)
                                (bound-and-true-p doom-modeline-mode))
                           (format " %s "
                                   (nerd-icons-octicon "nf-oct-pin" :face face))
