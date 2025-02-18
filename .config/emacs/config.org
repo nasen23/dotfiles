@@ -1828,7 +1828,9 @@ Indent-based folding that should just work
     (add-to-list 'completion-at-point-functions #'cape-abbrev)
 
     (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster)
-    (advice-add 'eglot-copmletion-at-point :around #'cape-wrap-noninterruptible))
+    (advice-add 'eglot-copmletion-at-point :around #'cape-wrap-noninterruptible)
+    (advice-add 'python-shell-completion-at-point :around #'cape-wrap-noninterruptible)
+    )
   (use-package yasnippet-capf
     :init (add-to-list 'completion-at-point-functions #'yasnippet-capf))
 #+end_src
