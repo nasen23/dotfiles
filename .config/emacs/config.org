@@ -84,6 +84,7 @@
   - [[#with-editor][With Editor]]
   - [[#recent-files][Recent Files]]
   - [[#dired][Dired]]
+  - [[#ediff][Ediff]]
   - [[#yadm-over-magit][YADM over Magit]]
   - [[#emacs-rime][Emacs Rime]]
   - [[#input-method-switcher][Input Method Switcher]]
@@ -488,11 +489,10 @@
     (set-face-attribute 'variable-pitch nil
                         :font "Noto Serif CJK SC"
                         :height 150
-                        :weight 'medium)
-    (set-fontset-font t 'han (font-spec :family "Sarasa Mono SC")))
+                        :weight 'medium))
 
   (add-hook 'window-setup-hook #'my-setup-fonts)
-  (add-hook 'after-make-frame-functions #'my-setup-fonts)
+  ;; (add-hook 'after-make-frame-functions #'my-setup-fonts)
 #+end_src
 
 I can eat glass, it does not hurt me.
@@ -2404,6 +2404,17 @@ So I could still use emacs when I open $EDITOR in vterm
 
   (when (executable-find "fd")
     (use-package fd-dired))
+#+end_src
+
+** Ediff
+#+begin_src emacs-lisp
+  (use-package ediff
+    :ensure nil
+    :hook ((ediff-prepare-buffer . outline-show-all))
+    :config
+    (setq ediff-window-setup-function 'ediff-setup-windows-plain
+          ediff-split-window-function 'split-window-horizontally
+          ediff-merge-split-window-function 'split-window-horizontally))
 #+end_src
 
 ** YADM over Magit
