@@ -43,10 +43,12 @@
   - [[#pop-up-windows][Pop-up windows]]
   - [[#ace-window][Ace Window]]
 - [[#org-mode][ORG MODE]]
+  - [[#basic-settings][Basic Settings]]
   - [[#toc][Toc]]
   - [[#org-bullets][Org Bullets]]
   - [[#tag-expansion][Tag Expansion]]
   - [[#verb-http-integration][Verb (http integration)]]
+  - [[#org-roam][Org Roam]]
 - [[#vertico-with-consult][VERTICO (WITH CONSULT)]]
   - [[#vertico][vertico]]
   - [[#orderless][Orderless]]
@@ -1140,6 +1142,12 @@ Using native modeline for now
     :bind (([remap other-window] . ace-window)))
 #+end_src
 * ORG MODE
+** Basic Settings
+#+begin_src emacs-lisp
+  (with-eval-after-load 'org
+    (setq org-return-follows-link t))
+#+end_src
+
 ** Toc
 #+begin_src emacs-lisp
   (use-package toc-org
@@ -1166,6 +1174,38 @@ Using native modeline for now
     :config
     (with-eval-after-load 'org
       (define-key org-mode-map (kbd "C-c C-r") verb-command-map)))
+#+end_src
+
+** Org Roam
+#+begin_src emacs-lisp
+  (when (and (fboundp 'sqlite-available-p) (sqlite-available-p))
+    (use-package org-roam
+      :diminish
+      :defines org-roam-graph-viewer
+      :bind (("C-c n l" . org-roam-buffer-toggle)
+             ("C-c n f" . org-roam-node-find)
+             ("C-c n g" . org-roam-graph)
+             ("C-c n i" . org-roam-node-insert)
+             ("C-c n c" . org-roam-capture)
+             ("C-c n j" . org-roam-dailies-capture-today))
+      :init
+      (setq org-roam-directory "~/Documents/org"
+            org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag))
+            ;; org-roam-graph-viewer #'browse-url
+            )
+      :config
+      (unless (file-exists-p org-roam-directory)
+        (make-directory org-roam-directory))
+      (add-to-list 'org-agenda-files (format "%s/%s" org-roam-directory "roam"))
+
+      (org-roam-db-autosync-enable))
+
+    (require 'tar-mode)
+    (use-package org-roam-ui
+      :bind ("C-c n u" . org-roam-ui-mode)
+      ;; :init (setq org-roam-ui-browser-function #'browse-url)
+      )
+    )
 #+end_src
 
 * VERTICO (WITH CONSULT)
