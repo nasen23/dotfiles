@@ -2949,7 +2949,17 @@ This is quite essential as ~eglot~ uses this to highlight help buffer.
   (use-package typst-ts-mode
     :vc (typst-ts-mode :url "https://git.sr.ht/~meow_king/typst-ts-mode"
                        :branch "main")
-    :mode ("\\.typ\\'" . typst-ts-mode))
+    :mode ("\\.typ\\'" . typst-ts-mode)
+    :custom (typst-ts-mode-watch-options "--open")
+    :config
+    (with-eval-after-load 'eglot
+      (add-to-list 'eglot-server-programs
+                   '(typst-ts-mode . ,(eglot-alternatives '("typst-lsp"
+                                                            "tinymist"))))))
+  (use-package websocket)
+  (use-package typst-preview
+    :vc (typst-preview :url "https://github.com/havarddj/typst-preview.el"
+                       :branch "main"))
 #+end_src
 
 ** Just Tools
