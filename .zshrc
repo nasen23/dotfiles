@@ -69,3 +69,7 @@ notify() {
 unset_proxy() {
   export http_proxy=; export https_proxy=; export all_proxy=;
 }
+
+if [[ "$TERM_PROGRAM" == "ghostty" ]]; then
+export TERM=xterm-256color
+fi
