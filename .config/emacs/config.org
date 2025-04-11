@@ -1901,7 +1901,9 @@ Indent-based folding that should just work
     :vc (eglot-booster :url "https://github.com/jdtsmith/eglot-booster"
                        :branch "main")
     :after eglot
-    :config (eglot-booster-mode))
+    :config
+    (when (version<= "30" emacs-version) (setq eglot-booster-io-only t))
+    (eglot-booster-mode))
 #+end_src
 
 *** LSP Mode
@@ -2349,6 +2351,7 @@ So I could still use emacs when I open $EDITOR in vterm
     :bind (:map dired-mode-map
                 ("C-c C-p" . wdired-change-to-wdired-mode))
     :config
+    (setq dired-mouse-drag-files t)
     (setq dired-auto-revert-buffer t)
 
     ;; Guess a default target directory
@@ -2969,8 +2972,8 @@ This is quite essential as ~eglot~ uses this to highlight help buffer.
     :config
     (with-eval-after-load 'eglot
       (add-to-list 'eglot-server-programs
-                   '(typst-ts-mode . ,(eglot-alternatives '("typst-lsp"
-                                                            "tinymist"))))))
+                   '(typst-ts-mode . ,(eglot-alternatives '("tinymist"
+                                                            "typst-lsp"))))))
   (use-package websocket)
   (use-package typst-preview
     :vc (typst-preview :url "https://github.com/havarddj/typst-preview.el"
