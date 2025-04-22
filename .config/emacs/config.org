@@ -657,7 +657,7 @@ Yes, it's a bit useless but I think I need it.
 
 *** And I use...
 #+begin_src emacs-lisp
-  (load-theme 'doom-one-light :no-confirm)
+  (load-theme 'doom-plain :no-confirm)
   (unless (eq catppuccin-flavor 'latte)
     (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 #+end_src
@@ -1847,7 +1847,7 @@ Indent-based folding that should just work
     (corfu-auto t)
     (corfu-auto-prefix 2)
     (corfu-preview-current nil)
-    (corfu-auto-delay 0.2)
+    (corfu-auto-delay 0.1)
     (corfu-popupinfo-delay '(0.4 . 0.2))
     ;; NOTE: Settings this to `insert' will automatically expand snippets, which is not what I want
     (corfu-on-exact-match nil)
@@ -2719,7 +2719,7 @@ Track my programming time.
                           :endpoint "/api/v1/chat/completions"
                           :stream t
                           :key #'gptel-api-key-from-auth-source
-                          :models '("anthropic/claude-3.5-sonnet"
+                          :models '("anthropic/claude-3.7-sonnet"
                                     "openai/gpt-4o-mini-2024-07-18"
                                     "openai/gpt-4o-2024-08-06"
                                     "openai/o1-mini-2024-09-12")))
