@@ -1564,7 +1564,7 @@ Some basic behaviors
 #+end_src
 
 *** Aggressive Indent
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   ;; Minor mode to aggressively keep your code always indented
   (use-package aggressive-indent
     :diminish
@@ -2698,7 +2698,15 @@ Track my programming time.
   ;; Run commands quickly
   (use-package quickrun
     :bind (("C-<f5>" . quickrun)
-           ("C-c X"  . quickrun)))
+           ("C-c X"  . quickrun))
+    :config
+    ;; specify c++ standard as default will use c++98
+    (quickrun-add-command "c++/default"
+      '((:command . "clang++")
+        (:exec . ("%c -std=c++20 %o -o %e %s" "%e %a"))
+        (:remove . ("%e")))
+      :default "c++")
+    )
 #+end_src
 
 ** Http Client
