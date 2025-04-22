@@ -1880,6 +1880,11 @@ Indent-based folding that should just work
 #+begin_src emacs-lisp
   (use-package eglot
     :commands eglot-ensure
+    :custom
+    ;; It's here to fix a stupid formatting issue
+    ;; when dtrt-indent is guessing a different indentation from lsp's default indent
+    ;; happened especially when I'm editing c++ files
+    (eglot-ignored-server-capabilities '(:documentOnTypeFormattingProvider))
     :init (setq eglot-autoshutdown t
                 read-process-output-max (* 1024 1024)
                 eldoc-echo-area-use-multiline-p 1)
