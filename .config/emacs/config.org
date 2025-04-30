@@ -657,7 +657,7 @@ Yes, it's a bit useless but I think I need it.
 
 *** And I use...
 #+begin_src emacs-lisp
-  (load-theme 'doom-plain :no-confirm)
+  (load-theme 'doom-earl-grey :no-confirm)
   (unless (eq catppuccin-flavor 'latte)
     (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 #+end_src
@@ -2708,7 +2708,7 @@ Track my programming time.
     ;; specify c++ standard as default will use c++98
     (quickrun-add-command "c++/default"
       '((:command . "clang++")
-        (:exec . ("%c -std=c++20 %o -o %e %s" "%e %a"))
+        (:exec . ("%c -std=c++20 -fsanitize=address %o -o %e %s" "%e %a"))
         (:remove . ("%e")))
       :default "c++")
     )
