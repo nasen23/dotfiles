@@ -583,6 +583,9 @@ I can eat glass, it does not hurt me.
   ;; Compilation buffer ansi-coloring
   (use-package ansi-color
     :hook (compilation-filter . ansi-color-compilation-filter))
+  
+  ;; truncate lines by default
+  (setq-default truncate-lines nil)
 #+end_src
 ** Disable Menubar, Toolbars and Scrollbars
 #+begin_src emacs-lisp
@@ -1897,6 +1900,7 @@ Indent-based folding that should just work
     ;; happened especially when I'm editing c++ files
     (eglot-ignored-server-capabilities '(:documentOnTypeFormattingProvider))
     :init (setq eglot-autoshutdown t
+                eglot-events-buffer-size 0
                 read-process-output-max (* 1024 1024)
                 eldoc-echo-area-use-multiline-p 1)
     :custom-face
@@ -2666,6 +2670,7 @@ Track my programming time.
 #+end_src
 
 ** Kubernetes Client
+*** Kubel
 #+begin_src emacs-lisp
   (use-package kubel
     :commands kubel
@@ -2682,6 +2687,12 @@ Track my programming time.
         kubel--kubernetes-resources-list-cached))
     (advice-add #'kubel--kubernetes-resources-list :override
                 #'ns/kubel--kubernetes-resources-list))
+#+end_src
+*** Kubed
+#+begin_src emacs-lisp
+  (use-package kubed
+    :bind
+    (("C-c C-k" . kubed-prefix-map)))
 #+end_src
 
 ** Jupyter Series
