@@ -257,7 +257,7 @@
 
 ** Load Meow
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
   (use-package meow
     :demand t
     :diminish (meow-normal-mode meow-insert-mode meow-beacon-mode meow-motion-mode meow-keypad-mode)
@@ -2654,7 +2654,7 @@ Currently using ~emacs-smart-input-source~ and ~macim.el~.
 
 ** Wakatime
 Track my programming time.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
   (use-package wakatime-mode
     :diminish wakatime-mode
     :hook (after-init . global-wakatime-mode))
@@ -2926,8 +2926,8 @@ I just want to edit some configuration files for now.
       (exec-path-from-shell-copy-envs '("GOPATH" "GO111MODULE" "GOPROXY")))
 
     ;; Try to install go tools if `gopls' is not found
-    (unless (executable-find "gopls")
-      (go-install-tools))
+    ;; (unless (executable-find "gopls")
+    ;;   (go-install-tools))
 
     ;; Misc
     (use-package go-dlv)
