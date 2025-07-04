@@ -624,7 +624,8 @@ I can eat glass, it does not hurt me.
 ** Dashboard
 Yes, it's a bit useless but I think I need it.
 #+begin_src emacs-lisp
-  (use-package dashboard
+  (when (display-graphic-p)
+    (use-package dashboard
     :ensure t
     :demand t
     :custom
@@ -637,7 +638,7 @@ Yes, it's a bit useless but I think I need it.
     (dashboard-projects-backend 'project-el)
     :config
     (dashboard-setup-startup-hook)
-    (add-hook 'dashboard-mode-hook 'hide-mode-line-mode))
+    (add-hook 'dashboard-mode-hook 'hide-mode-line-mode)))
 #+end_src
 
 ** Theme
