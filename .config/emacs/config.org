@@ -593,7 +593,7 @@ I can eat glass, it does not hurt me.
   (unless (eq system-type 'darwin)
     (menu-bar-mode -1))
   (tool-bar-mode -1)
-  (scroll-bar-mode -1)
+  (when (display-graphic-p) (scroll-bar-mode -1))
 #+end_src
 
 ** Display Line Numbers
