@@ -514,16 +514,17 @@ I can eat glass, it does not hurt me.
 
 ** Unicode
 #+begin_src emacs-lisp
-  (cl-loop for font in '("Segoe UI Symbol" "Symbola" "Symbol")
+  (when (display-graphic-p)
+    (cl-loop for font in '("Segoe UI Symbol" "Symbola" "Symbol")
            when (font-installed-p font)
            return (if (< emacs-major-version 27)
                       (set-fontset-font "fontset-default" 'unicode font nil 'prepend)
-                    (set-fontset-font t 'symbol (font-spec :family font) nil 'prepend)))
+                    (set-fontset-font t 'symbol (font-spec :family font) nil 'prepend))))
 #+end_src
 
 ** Emoji 🥹
 #+begin_src emacs-lisp
-  (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 12) nil 'prepend)
+  (when (display-graphic-p) (set-fontset-font t 'emoji (font-spec :family "Apple Color Emoji" :size 12) nil 'prepend))
 #+end_src
 
 ** Modeline
