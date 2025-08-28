@@ -673,7 +673,7 @@ Yes, it's a bit useless but I think I need it.
 
 *** And I use...
 #+begin_src emacs-lisp
-  (load-theme 'doom-earl-grey :no-confirm)
+  (load-theme 'doom-one :no-confirm)
   (unless (eq catppuccin-flavor 'latte)
     (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 #+end_src
@@ -2110,7 +2110,7 @@ Indent-based folding that should just work
   (use-package treesit-auto
     :hook (after-init . global-treesit-auto-mode)
     :custom
-    (treesit-auto-install 'prompt)
+    (treesit-auto-install nil)
     :config
     (delete 'go treesit-auto-langs)
     (add-to-list 'treesit-auto-recipe-list

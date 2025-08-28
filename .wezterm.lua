@@ -2,7 +2,7 @@ local wezterm = require("wezterm")
 local act = wezterm.action
 local co = wezterm.color.parse
 
-local color_scheme = "Catppuccin Latte"
+local color_scheme = "Catppuccin Frappe"
 local scheme = wezterm.color.get_builtin_schemes()[color_scheme]
 
 local ssh_domains = {}
@@ -67,7 +67,7 @@ local config = {
 		inactive_titlebar_bg = scheme.background,
 	},
 
-	default_cursor_style = "BlinkingBlock",
+	default_cursor_style = "SteadyBlock",
 	cursor_blink_ease_in = "Constant",
 	cursor_blink_ease_out = "Constant",
 	cursor_blink_rate = 500,
@@ -103,8 +103,6 @@ local config = {
 	keys = {
 		{ key = "d", mods = "CMD", action = act.SplitHorizontal({ domain = "CurrentPaneDomain" }) },
 		{ key = "d", mods = "CMD|SHIFT", action = act.SplitVertical({ domain = "CurrentPaneDomain" }) },
-		{ key = "d", mods = "ALT", action = act.SplitHorizontal({ cwd = "~" }) },
-		{ key = "d", mods = "ALT|SHIFT", action = act.SplitVertical({ cwd = "~" }) },
 		{ key = "t", mods = "CMD", action = act.SpawnCommandInNewTab({ cwd = "~" }) },
 		{ key = "t", mods = "CMD|SHIFT", action = act.SpawnTab("CurrentPaneDomain") },
 		{ key = "0", mods = "CMD", action = wezterm.action_callback(function(win, _)
