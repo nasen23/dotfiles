@@ -142,10 +142,7 @@ return {
 	fn = {
 		on_attach = on_attach,
 		register_lsp = function(lsp, config)
-			vim.lsp.config("*", {
-				on_attach = on_attach,
-				settings = config,
-			})
+			vim.lsp.enable({ lsp })
 			require("fidget").setup({})
 		end,
 	},
