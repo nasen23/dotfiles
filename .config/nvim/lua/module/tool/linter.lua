@@ -11,6 +11,7 @@ return {
 					lua = { "luacheck" },
 				}
 
+				local linters_by_ft = {}
 				for filetype, executables in pairs(desired_linters) do
 					linters_by_ft[filetype] = linters_by_ft[filetype] or {}
 
