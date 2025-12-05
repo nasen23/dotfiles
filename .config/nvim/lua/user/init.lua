@@ -13,7 +13,7 @@ M.modules = {
 	"ui.rainbow",
 	"ui.statusline",
 	"ui.tabs",
-	{ "ui.theme.catppuccin", flavour = "latte" },
+	{ "ui.theme.catppuccin", flavour = "mocha" },
 	"ui.todo",
 	"ui.which-key",
 
@@ -40,7 +40,7 @@ M.modules = {
 	"lang.python",
 	"lang.rust",
 
-	"app.wakatime",
+	-- "app.wakatime",
 }
 
 return M

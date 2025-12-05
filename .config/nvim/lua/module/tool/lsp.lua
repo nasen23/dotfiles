@@ -142,8 +142,7 @@ return {
 	fn = {
 		on_attach = on_attach,
 		register_lsp = function(lsp, config)
-			local lspconfig = require("lspconfig")
-			lspconfig[lsp].setup({
+			vim.lsp.config("*", {
 				on_attach = on_attach,
 				settings = config,
 			})

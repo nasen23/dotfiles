@@ -2,7 +2,7 @@ local wezterm = require("wezterm")
 local act = wezterm.action
 local co = wezterm.color.parse
 
-local color_scheme = "Catppuccin Frappe"
+local color_scheme = "Catppuccin Mocha"
 local scheme = wezterm.color.get_builtin_schemes()[color_scheme]
 
 local ssh_domains = {}

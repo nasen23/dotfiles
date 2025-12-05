@@ -10,7 +10,6 @@ return {
 				"nvim-treesitter/nvim-treesitter",
 			},
 			ft = { "go", "gomod" },
-			event = { "CmdLineEnter" },
 			config = function()
 				require("go").setup({
 					go = "go", -- go command, can be go[default] or go1.18beta1
