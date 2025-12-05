@@ -5,13 +5,24 @@ return {
 			event = "LazyFile",
 			config = function()
 				local lint = require("lint")
-				lint.linters_by_ft = {
+
+				local desired_linters = {
 					python = { "ruff" },
-					lua = {},
+					lua = { "luacheck" },
 				}
-				if vim.fn.executable("luacheck") == 1 then
-				  table.insert(lint.linters_by_ft.lua, "luacheck")
+
+				for filetype, executables in pairs(desired_linters) do
+					linters_by_ft[filetype] = linters_by_ft[filetype] or {}
+
+					for _, executable in ipairs(executables) do
+						-- Check if the executable exists in the system PATH
+						if vim.fn.executable(executable) == 1 then
+							table.insert(linters_by_ft[filetype], executable)
+						end
+					end
 				end
+
+				lint.linters_by_ft = linters_by_ft
 				vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost" }, {
 					callback = function()
 						lint.try_lint()
