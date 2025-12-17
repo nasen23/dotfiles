@@ -170,6 +170,7 @@ local config = {
 config.quick_select_patterns = {
 	"\\b[a-z0-9]+(?:\\-[a-z0-9]+)+\\b", -- looking like kubernetes resource
 }
+config.notification_handling = "AlwaysShow"
 
 local vim_map = { ["h"] = "Left", ["j"] = "Down", ["k"] = "Up", ["l"] = "Right" }
 for k, v in pairs(vim_map) do
@@ -179,5 +180,8 @@ for k, v in pairs(vim_map) do
 		action = wezterm.action.ActivatePaneDirection(v),
 	})
 end
+
+local tabline = wezterm.plugin.require("https://github.com/michaelbrusegard/tabline.wez")
+tabline.setup({ options = { theme = color_scheme } })
 
 return config
