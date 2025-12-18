@@ -31,6 +31,7 @@ return {
 			},
 			dependencies = {
 				"nvim-telescope/telescope-file-browser.nvim",
+				"nvim-telescope/telescope-project.nvim",
 			},
 			config = function()
 				local telescope = require("telescope")
@@ -55,7 +56,7 @@ return {
 						},
 					},
 				})
-				telescope.load_extension("projects")
+				telescope.load_extension("project")
 				telescope.load_extension("file_browser")
 			end,
 		},

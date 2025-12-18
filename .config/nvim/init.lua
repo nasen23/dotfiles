@@ -3,7 +3,6 @@ vim.loader.enable()
 require("core.options")
 require("core.keymaps")
 require("core.autocmds")
-require("core.trim")
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -38,19 +37,27 @@ for _, module_opts in pairs(modules) do
 	end
 	opts = opts or {}
 
-	local module = require("module." .. path)
-	local plugins
-	if type(module.plugins) == "function" then
-		plugins = module.plugins(opts, user_config.opts)
-	else
-		plugins = module.plugins
+	local m = "module." .. path
+	local ok, module = xpcall(function() return require(m) end, function(err) 
+		error("failed to load " .. m .. ": " .. err) 
+	end)
+	if ok == false then
+		error("failed to load module." .. path .. ": " .. module)	
 	end
-	-- Run config
-	if module.config ~= nil then
-		table.insert(config_fn, module.config)
-	end
-	if plugins ~= nil then
-		vim.list_extend(lazy_plugins, plugins, nil, nil)
+	if type(module) == "table" then
+		local plugins
+		if type(module.plugins) == "function" then
+			plugins = module.plugins(opts, user_config.opts)
+		else
+			plugins = module.plugins
+		end
+		-- Run config
+		if module.config ~= nil then
+			table.insert(config_fn, module.config)
+		end
+		if plugins ~= nil then
+			vim.list_extend(lazy_plugins, plugins, nil, nil)
+		end
 	end
 end
 

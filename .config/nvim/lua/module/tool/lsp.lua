@@ -40,33 +40,14 @@ local function lsp_keymaps(bufnr)
 	vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>q", "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
 end
 
-local function lsp_diagnostics(bufnr)
-	vim.api.nvim_create_autocmd("CursorHold", {
-		buffer = bufnr,
-		callback = function()
-			local float_ops = {
-				focusable = false,
-				close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-			}
-			if not vim.b.diagnostic_pos then
-				vim.b.diagnostic_pos = { nil, nil }
-			end
-			local cursor_pos = vim.api.nvim_win_get_cursor(0)
-			if
-				(cursor_pos[1] ~= vim.b.diagnostic_pos[1] or cursor_pos[2] ~= vim.b.diagnostic_pos[2])
-				and #vim.diagnostic.get() > 0
-			then
-				vim.diagnostic.open_float({ scope = "cursor" }, float_ops)
-			end
-			vim.b.diagnostic_pos = cursor_pos
-		end,
-	})
-end
-
-local function on_attach(client, bufnr)
+local function on_attach(bufnr)
 	lsp_keymaps(bufnr)
-	lsp_diagnostics(bufnr)
 end
+vim.api.nvim_create_autocmd("LspAttach", {
+  callback = function(args)
+    on_attach(args.buf)
+  end,
+})
 
 --  diagnostics = {
 --   Error = " ",
@@ -138,9 +119,17 @@ return {
 				require("fidget").setup({})
 			end,
 		},
+		{
+    	"rachartier/tiny-inline-diagnostic.nvim",
+    	event = "VeryLazy",
+    	priority = 1000,
+    	config = function()
+        require("tiny-inline-diagnostic").setup()
+        vim.diagnostic.config({ virtual_text = false }) -- Disable Neovim's default virtual text diagnostics
+    	end,
+		}
 	},
 	fn = {
-		on_attach = on_attach,
 		register_lsp = function(lsp, config)
 			vim.lsp.enable({ lsp })
 			require("fidget").setup({})

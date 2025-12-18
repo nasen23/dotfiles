@@ -23,6 +23,8 @@ M.modules = {
 	"editor.indent",
 	"editor.motion",
 	"editor.pairs",
+	"editor.lastplace",
+	"editor.whitespace",
 
 	"tool.diff",
 	"tool.file-browser",

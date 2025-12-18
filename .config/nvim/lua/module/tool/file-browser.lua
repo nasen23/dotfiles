@@ -4,7 +4,7 @@ return {
 			"nvim-neo-tree/neo-tree.nvim",
 			branch = "v3.x",
 			keys = {
-				{ "<leader>bi", "<cmd>Neotree source=buffers position=current<cr>", desc = "List Buffers" },
+				{ "<leader>bi", "<cmd>Neotree source=buffers", desc = "List Buffers" },
 				{
 					"<leader>fd",
 					"<cmd>Neotree source=filesystem position=current dir=%:p:h<cr>",

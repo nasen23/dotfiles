@@ -2,12 +2,13 @@ return {
 	plugins = {
 		{
 			"FabijanZulj/blame.nvim",
-			cmd = { "ToggleBlame", "EnableBlame" },
-			config = function()
-				require("blame").setup({
-					merge_consecutive = true,
-				})
-			end,
+			cmd = { "BlameToggle", "EnableBlame" },
+			keys = {
+				{ "<leader>gb", "<cmd>BlameToggle<CR>", desc = "Toggle git blame view" }
+			},
+			opts = {
+				merge_consecutive = true,
+			},
 		},
 	},
 }
