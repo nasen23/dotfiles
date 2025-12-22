@@ -168,7 +168,7 @@ local config = {
 }
 
 config.quick_select_patterns = {
-	"\\b[a-z0-9]+(?:\\-[a-z0-9]+)+\\b", -- looking like kubernetes resource
+	"\\b[a-zA-Z0-9]+(?:[a-zA-Z0-9_]+){10,}\\b", -- looking like kubernetes resource
 }
 config.notification_handling = "AlwaysShow"
 
